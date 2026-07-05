@@ -37,7 +37,6 @@ To make digital banking more inclusive, accessible, and user-friendly by enablin
 
 ## Contributors
 
-* **Abhinav** — **@abhii-navv**
-* **Vivek Namburi** — **@NamburiVivek**
-* **Ethish** — **@Ethish107**
-
+- **Abhinav** — [@abhii-navv](https://github.com/abhii-navv)
+- **Vivek Namburi** — [@NamburiVivek](https://github.com/NamburiVivek)
+- **Ethish** — [@Ethish107](https://github.com/Ethish107)
