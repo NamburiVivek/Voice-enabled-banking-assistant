@@ -1,42 +1,16 @@
-# VoxaBank AI
+# React + Vite
 
-**VoxaBank AI** is a multilingual, voice-enabled banking assistant that leverages **Natural Language Processing (NLP)**, **Large Language Models (LLMs)**, and **Retrieval-Augmented Generation (RAG)** to provide accurate and accessible banking assistance.
+This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
-## Features
+Currently, two official plugins are available:
 
-* 🎙️ Voice-based interaction
-* 🌍 Multilingual support
-* 🤖 AI-powered conversational assistance
-* 📚 RAG-based retrieval from official banking documents
-* 🔊 Speech-to-Text (STT) and Text-to-Speech (TTS)
-* ♿ Accessible for elderly, visually impaired, and low digital literacy users
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## Technology Stack
+## React Compiler
 
-* Python
-* NLP
-* Large Language Models (LLMs)
-* Retrieval-Augmented Generation (RAG)
-* Speech-to-Text (STT)
-* Text-to-Speech (TTS)
-* Vector Database (FAISS/ChromaDB)
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Workflow
+## Expanding the Oxlint configuration
 
-1. User speaks a banking query.
-2. Speech is converted into text.
-3. The system detects the user's language.
-4. Relevant information is retrieved from the banking knowledge base.
-5. The LLM generates an accurate response.
-6. The response is converted into speech and returned to the user.
-
-## Project Goal
-
-To make digital banking more inclusive, accessible, and user-friendly by enabling secure, multilingual voice-based interactions.
-
-
-## Contributors
-
-- **Abhinav** — [@abhii-navv](https://github.com/abhii-navv)
-- **Vivek Namburi** — [@NamburiVivek](https://github.com/NamburiVivek)
-- **Ethish** — [@Ethish107](https://github.com/Ethish107)
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
