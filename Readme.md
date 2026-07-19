@@ -20,6 +20,3 @@ An AI-powered voice-enabled banking assistant that provides accurate banking inf
 * Banking FAQs and RBI guideline support
 * Secure and user-friendly interface
 
-## Author
-
-Abhi — [@abhii-navv](https://github.com/abhii-navv)
