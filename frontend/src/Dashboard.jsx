@@ -125,6 +125,28 @@ function QuickActions() {
     );
 }
 
+function SpendingSummary() {
+    const totalIncome = transactions
+        .filter((tx) => tx.type === 'credit')
+        .reduce((sum, tx) => sum + tx.amount, 0);
+    const totalExpenses = transactions
+        .filter((tx) => tx.type === 'debit')
+        .reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
+
+    return (
+        <div className="spending-summary">
+            <div className="summary-card glass glass-card">
+                <span className="summary-label">Monthly Income</span>
+                <span className="summary-amount credit">+${totalIncome.toFixed(2)}</span>
+            </div>
+            <div className="summary-card glass glass-card">
+                <span className="summary-label">Monthly Expenses</span>
+                <span className="summary-amount debit">-${totalExpenses.toFixed(2)}</span>
+            </div>
+        </div>
+    );
+}
+
 function TransactionsList() {
     return (
         <div className="transactions-card glass glass-card">
@@ -178,6 +200,7 @@ function MainContent() {
             </div>
 
             <BalanceCard />
+            <SpendingSummary />
             <QuickActions />
             <TransactionsList />
         </main>
