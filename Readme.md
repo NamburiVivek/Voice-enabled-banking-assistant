@@ -1,16 +1,52 @@
-# React + Vite
+# Voxa Bank AI — Voice-Enabled Banking Assistant
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A modern, voice-first banking assistant built with React + Vite. Voxa lets users perform banking operations — transfers, balance checks, and more — entirely through natural language voice commands.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- 🎙️ **Voice Commands** — Send money, check balances, and pay bills using your voice
+- 🔐 **Voice Biometrics** — Authenticate securely using your unique vocal signature
+- 📊 **Live Dashboard** — Real-time transaction history and balance overview
+- 🤖 **AI Assistant** — Type or speak to get instant banking support 24/7
+- 🌙 **Dark Glassmorphism UI** — Premium, responsive interface
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Layer    | Technology          |
+|----------|---------------------|
+| Frontend | React 19, Vite      |
+| Styling  | Vanilla CSS         |
+| Icons    | Lucide React        |
+| Backend  | Python (Flask/FastAPI — WIP) |
 
-## Expanding the Oxlint configuration
+## Project Structure
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+```
+projectfiles/
+├── frontend/          # React + Vite app
+│   ├── src/
+│   │   ├── App.jsx        # Landing page & hero
+│   │   ├── Dashboard.jsx  # Banking dashboard
+│   │   ├── App.css        # Landing page styles
+│   │   └── Dashboard.css  # Dashboard styles
+│   └── index.html
+└── backend/           # API server (coming soon)
+```
+
+## Getting Started
+
+```bash
+# Install dependencies
+cd frontend
+npm install
+
+# Start the dev server
+npm run dev
+```
+
+The app will be available at `http://localhost:5173`.
+
+## Contributors
+
+- [@NamburiVivek](https://github.com/NamburiVivek)
+- [@Abhi](https://github.com/Abhi)
