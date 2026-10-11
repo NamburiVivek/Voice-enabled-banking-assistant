@@ -1,20 +1,23 @@
-# 📦 Inventory & Order Management API
+# 🎙️ Voice-Enabled Banking Assistant
 
-A full-stack Inventory and Order Management system built with Node.js, Express, PostgreSQL, and React.
+An AI-powered voice-enabled banking assistant that provides accurate banking information through natural conversations using NLP, LLMs, and Retrieval-Augmented Generation (RAG).
 
 > 🚧 Currently in development
 
 ## Tech Stack
-- **Backend** — Node.js, Express.js, PostgreSQL, JWT
-- **Frontend** — React 18, Vite, Axios
+
+* **Backend** — Python, Flask
+* **AI** — NLP, LLM, RAG, FAISS
+* **Speech** — Whisper (STT), gTTS (TTS)
+* **Frontend** — React, Vite
 
 ## Features (planned)
-- JWT authentication + role-based access (user/admin)
-- Product & category management with soft deletes
-- Order placement with database transactions
-- Stock audit logging
-- Low-stock alerts
-- PDF invoice generation
 
-## Author
-Abhi — [@abhii-navv](https://github.com/abhii-navv)
+* Voice-based banking assistance
+* Speech-to-Text and Text-to-Speech
+* Banking knowledge retrieval using RAG
+* Context-aware AI responses
+* Banking FAQs and RBI guideline support
+* Secure and user-friendly interface
+
+
