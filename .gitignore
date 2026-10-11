@@ -1,3 +1,32 @@
+# ── Node ─────────────────────────────────────────────────────────
 node_modules/
-.env
+dist/
 .DS_Store
+
+# ── 🔒 Secrets — NEVER commit these ─────────────────────────────
+.env
+.env.local
+.env.production
+.env.*.local
+backend/.env
+
+# ── Python ────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── Vercel ────────────────────────────────────────────────────────
+.vercel/
+
+# ── IDE / OS ──────────────────────────────────────────────────────
+.vscode/
+*.swp
+*.swo
+Thumbs.db
