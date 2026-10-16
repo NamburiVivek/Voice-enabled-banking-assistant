@@ -23,10 +23,3 @@ dist-ssr
 *.sln
 *.sw?
 
-# Ignore specific src files
-src/App.css
-src/App.jsx
-src/Dashboard.css
-src/Dashboard.jsx
-src/index.css
-src/main.jsx
