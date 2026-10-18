@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
     Home,
     CreditCard,
@@ -34,9 +34,13 @@ import {
     Clock,
     Check,
     AlertTriangle,
+    Volume2,
+    VolumeX,
+    Sparkles,
+    RefreshCw,
 } from 'lucide-react';
 import { useAuth } from './AuthContext.jsx';
-import { authApi, bankingApi } from './api.js';
+import { authApi, bankingApi, voiceApi } from './api.js';
 import './Dashboard.css';
 
 // ── Leaf Logo ────────────────────────────────────────────────────────────────
@@ -65,6 +69,35 @@ function LeafLogo({ size = 40 }) {
 }
 
 // ── Currency Formatter (INR ₹) ───────────────────────────────────────────────
+
+// ─── CSV Statement Export Helper ──────────────────────────────────────────────
+export function exportCsvToUser(transactions) {
+    if (!transactions || transactions.length === 0) {
+        alert('No transactions to export.');
+        return;
+    }
+    const headers = ['Transaction ID', 'Date', 'Description', 'Category', 'Type', 'Amount (INR)', 'Status'];
+    const rows = transactions.map((t) => [
+        t.id,
+        t.date,
+        `"${(t.name || '').replace(/"/g, '""')}"`,
+        t.category || 'General',
+        (t.type || 'DEBIT').toUpperCase(),
+        typeof t.amount === 'number' ? t.amount.toFixed(2) : t.amount,
+        t.status || 'Completed',
+    ]);
+    const csvContent =
+        'data:text/csv;charset=utf-8,' +
+        [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `Voxa_Statement_INR_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 function formatINR(val) {
     const num = Number(val) || 0;
     return `₹${num.toLocaleString('en-IN', {
@@ -120,6 +153,91 @@ function getInitialBankingData(user) {
 }
 
 // ── Confirmation Logout Modal ────────────────────────────────────────────────
+
+// ─── Voice Action Authorization Modal ───────────────────────────────────────
+function VoiceActionConfirmModal({ actionData, onClose, onConfirm, onCancel }) {
+    if (!actionData) return null;
+    const isBill = actionData.action === 'BILL_CONFIRMATION' || Boolean(actionData.biller);
+    const isDeposit = actionData.action === 'DEPOSIT_CONFIRMATION';
+
+    const title = isBill ? 'Voice Bill Payment Authorization' : isDeposit ? 'Voice Deposit Authorization' : 'Voice Transfer Authorization';
+    const sub = isBill ? 'VoxaBank AI detected a utility bill payment request' : isDeposit ? 'VoxaBank AI detected an account deposit request' : 'VoxaBank AI detected a fund transfer request';
+    const partyLabel = isBill ? 'Biller / Provider' : isDeposit ? 'Payment Method' : 'Recipient';
+    const partyVal = isBill ? (actionData.biller || 'Utility Provider') : isDeposit ? (actionData.method || 'UPI') : (actionData.recipient || 'Beneficiary');
+    const categoryVal = isBill ? 'Utility Bill Payment' : isDeposit ? 'Deposit' : (actionData.category || 'Peer Transfer');
+    const confirmBtnText = isBill ? 'Confirm Bill Payment' : isDeposit ? 'Confirm Deposit' : 'Confirm Transfer';
+
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-card voice-confirm-modal-card glass-card" onClick={(e) => e.stopPropagation()}>
+                <div className="voice-modal-header">
+                    <div className="voice-modal-icon pulse-glow">
+                        {isBill ? <Zap size={26} /> : isDeposit ? <ArrowDownLeft size={26} /> : <Send size={26} />}
+                    </div>
+                    <div>
+                        <h3 className="voice-modal-title">{title}</h3>
+                        <p className="voice-modal-sub">{sub}</p>
+                    </div>
+                </div>
+
+                <div className="voice-confirm-details">
+                    <div className="voice-detail-row">
+                        <span className="voice-detail-label">{partyLabel}</span>
+                        <span className="voice-detail-val highlight">{partyVal}</span>
+                    </div>
+                    <div className="voice-detail-row">
+                        <span className="voice-detail-label">Amount</span>
+                        <span className="voice-detail-val amount-highlight">{formatINR(actionData.amount)}</span>
+                    </div>
+                    <div className="voice-detail-row">
+                        <span className="voice-detail-label">Category</span>
+                        <span className="voice-detail-val">{categoryVal}</span>
+                    </div>
+                    {actionData.memo && (
+                        <div className="voice-detail-row">
+                            <span className="voice-detail-label">Note</span>
+                            <span className="voice-detail-val">{actionData.memo}</span>
+                        </div>
+                    )}
+                </div>
+
+                <p className="voice-confirm-prompt">
+                    Say <strong>"Yes"</strong> aloud or click below to authorize this transaction securely.
+                </p>
+
+                <div className="voice-modal-actions">
+                    <button type="button" className="btn-modal-cancel" onClick={onCancel} id="voice-cancel-action-btn">
+                        Cancel
+                    </button>
+                    <button
+                        type="button"
+                        className="btn-modal-confirm-transfer"
+                        onClick={onConfirm}
+                        id="voice-confirm-action-btn"
+                    >
+                        <CheckCircle size={18} />
+                        <span>{confirmBtnText}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ─── Floating Voice Assistant Trigger ─────────────────────────────────────────
+function FloatingVoiceButton({ onClick, isListening }) {
+    return (
+        <button
+            className={`floating-voice-trigger ${isListening ? 'listening' : ''}`}
+            onClick={onClick}
+            title={isListening ? 'Assistant listening...' : 'VoxaBank Voice Assistant'}
+            id="floating-voice-trigger-btn"
+        >
+            <Mic size={26} />
+        </button>
+    );
+}
+
 function ConfirmLogoutModal({ isOpen, onClose, onConfirm }) {
     if (!isOpen) return null;
 
@@ -238,8 +356,11 @@ function HomeView({
     onOpenDeposit,
     onOpenBillPay,
     onNavigateTab,
+    isMasked,
+    setIsMasked,
 }) {
-    const [balanceVisible, setBalanceVisible] = useState(false);
+    const balanceVisible = !isMasked;
+    const toggleBalanceVisible = () => setIsMasked((prev) => !prev);
 
     const hour = new Date().getHours();
     const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
@@ -273,7 +394,7 @@ function HomeView({
                     <span className="balance-label">Total Balance</span>
                     <button
                         className="balance-toggle"
-                        onClick={() => setBalanceVisible(!balanceVisible)}
+                        onClick={toggleBalanceVisible}
                         aria-label={balanceVisible ? 'Hide balance' : 'Show balance'}
                     >
                         {balanceVisible ? <Eye size={18} /> : <EyeOff size={18} />}
@@ -660,6 +781,7 @@ function TransfersView({
     setBankingData,
     onOpenDeposit,
     onTransferSuccess,
+    onRefreshAccount,
 }) {
     const [recipient, setRecipient] = useState('');
     const [amount, setAmount] = useState('');
@@ -778,69 +900,85 @@ function TransfersView({
 
         if (!targetUser) {
             setError('Recipient must be a registered Voxa user in the database.');
+            setVerifying(false);
             return;
         }
 
-        const now = new Date();
-        const dateStr = `Today, ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-        const refId = `TXN-${Date.now().toString(36).toUpperCase()}`;
-
-        // 1. Debit current sender account
-        const debitTx = {
-            id: refId,
-            name: `Transfer to ${targetUser.full_name} (${targetUser.email})`,
-            date: dateStr,
-            amount: -numericAmount,
-            type: 'debit',
-            category: category,
-            status: 'Completed',
-            ref: refId,
-        };
-
-        setBankingData((prev) => ({
-            ...prev,
-            balance: prev.balance - numericAmount,
-            transactions: [debitTx, ...prev.transactions],
-        }));
-
-        // 2. Synchronize recipient account in localStorage so when recipient logs in, they see the money!
         try {
-            const recipientStorageKey = `voxa_banking_${targetUser.id}`;
-            const existingRecipientDataRaw = localStorage.getItem(recipientStorageKey);
-            const recipientData = existingRecipientDataRaw
-                ? JSON.parse(existingRecipientDataRaw)
-                : getInitialBankingData(targetUser);
-
-            const creditTx = {
-                id: refId,
-                name: `Received from ${user?.full_name || 'Voxa User'} (${user?.email || ''})`,
-                date: dateStr,
+            const transferRes = await bankingApi.transfer({
+                recipient: targetUser.email || targetUser.id || recipient.trim(),
                 amount: numericAmount,
-                type: 'credit',
                 category: category,
-                status: 'Completed',
-                ref: refId,
-            };
+                note: note || '',
+            });
 
-            recipientData.balance = (recipientData.balance || 0) + numericAmount;
-            recipientData.transactions = [creditTx, ...(recipientData.transactions || [])];
-            localStorage.setItem(recipientStorageKey, JSON.stringify(recipientData));
-        } catch (storageErr) {
-            console.error('Failed to credit recipient storage:', storageErr);
+            const dateStr = transferRes.data.date;
+            const refId = transferRes.data.ref_id;
+
+            // Also keep recipient localStorage updated for immediate local fallback if on same device
+            try {
+                const recipientStorageKey = `voxa_banking_${targetUser.id}`;
+                const existingRecipientDataRaw = localStorage.getItem(recipientStorageKey);
+                const recipientData = existingRecipientDataRaw
+                    ? JSON.parse(existingRecipientDataRaw)
+                    : getInitialBankingData(targetUser);
+
+                const creditTx = {
+                    id: refId,
+                    name: `Received from ${user?.full_name || 'Voxa User'} (${user?.email || ''})`,
+                    date: dateStr,
+                    amount: numericAmount,
+                    type: 'credit',
+                    category: category,
+                    status: 'Completed',
+                    ref: refId,
+                };
+
+                recipientData.balance = (recipientData.balance || 0) + numericAmount;
+                recipientData.transactions = [creditTx, ...(recipientData.transactions || [])];
+                localStorage.setItem(recipientStorageKey, JSON.stringify(recipientData));
+            } catch {}
+
+            if (onRefreshAccount) {
+                await onRefreshAccount();
+            } else {
+                setBankingData((prev) => ({
+                    ...prev,
+                    balance: transferRes.data.new_balance,
+                    transactions: [
+                        {
+                            id: refId,
+                            name: `Transfer to ${targetUser.full_name} (${targetUser.email})`,
+                            date: dateStr,
+                            amount: -numericAmount,
+                            type: 'debit',
+                            category: category,
+                            status: 'Completed',
+                            ref: refId,
+                        },
+                        ...prev.transactions,
+                    ],
+                }));
+            }
+
+            setAmount('');
+            setRecipient('');
+            setNote('');
+            setVerifiedUser(null);
+
+            onTransferSuccess({
+                refId,
+                recipient: `${targetUser.full_name} (${targetUser.email})`,
+                amount: numericAmount,
+                category,
+                date: dateStr,
+            });
+        } catch (err) {
+            const msg = err.response?.data?.detail || 'Transfer failed. Please check recipient and balance.';
+            setError(typeof msg === 'string' ? msg : 'Transfer execution failed.');
+        } finally {
+            setVerifying(false);
         }
-
-        setAmount('');
-        setRecipient('');
-        setNote('');
-        setVerifiedUser(null);
-
-        onTransferSuccess({
-            refId,
-            recipient: `${targetUser.full_name} (${targetUser.email})`,
-            amount: numericAmount,
-            category,
-            date: dateStr,
-        });
     };
 
     return (
@@ -1052,7 +1190,9 @@ function StatementsView({ bankingData, onOpenDeposit }) {
         });
     }, [transactions, filter, searchTerm]);
 
-    const handleExportCsv = () => {
+    const handleExportCsv = () => { exportCsvToUser(transactions); return;
+    /* original */
+
         if (transactions.length === 0) {
             alert('No transactions to export.');
             return;
@@ -1763,19 +1903,614 @@ function TransferReceiptModal({ receipt, onClose }) {
 }
 
 // ── Assistant Panel (Voice / Queries) ────────────────────────────────────────
-function AssistantPanel() {
+function AssistantPanel({
+    user,
+    bankingData,
+    setBankingData,
+    isMasked,
+    setIsMasked,
+    onVoiceTransferConfirm,
+    setTransferReceipt,
+    onNavigateTab,
+    voiceAssistantRef,
+    onRefreshAccount,
+}) {
     const [isTyping, setIsTyping] = useState(false);
     const [query, setQuery] = useState('');
-    const [voiceActive, setVoiceActive] = useState(false);
+    const [isListening, setIsListening] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    const [ttsEnabled, setTtsEnabled] = useState(true);
+    const [interimTranscript, setInterimTranscript] = useState('');
+    const [messages, setMessages] = useState([
+        {
+            id: 1,
+            sender: 'bot',
+            text: 'Hello! I am your VoxaBank AI Voice Assistant. Speak or type to transfer money, check balances, freeze cards, or export statements.',
+            time: 'Just now',
+        },
+    ]);
 
-    const handleSend = (e) => {
-        e.preventDefault();
-        if (!query.trim()) return;
-        setQuery('');
+    const recognitionRef = useRef(null);
+    const silenceTimerRef = useRef(null);
+    const accumulatedTranscriptRef = useRef('');
+    const isListeningRef = useRef(false);
+    const handleSendQueryRef = useRef(null);
+    const [voiceError, setVoiceError] = useState('');
+    const [voiceLang, setVoiceLang] = useState('en-IN');
+    const voiceLangRef = useRef('en-IN');
+    useEffect(() => {
+        voiceLangRef.current = voiceLang;
+    }, [voiceLang]);
+
+    // Speak helper using Web Speech API
+    const speakText = useCallback(
+        (text) => {
+            if (!ttsEnabled || !('speechSynthesis' in window)) return;
+            try {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+
+                const voices = window.speechSynthesis.getVoices();
+                const preferred =
+                    voices.find((v) => v.lang.includes('en-IN') || v.name.includes('India')) ||
+                    voices.find((v) => v.lang.startsWith('en'));
+                if (preferred) utterance.voice = preferred;
+
+                utterance.onstart = () => setIsSpeaking(true);
+                utterance.onend = () => setIsSpeaking(false);
+                utterance.onerror = () => setIsSpeaking(false);
+
+                window.speechSynthesis.speak(utterance);
+            } catch (e) {
+                console.error('TTS error:', e);
+                setIsSpeaking(false);
+            }
+        },
+        [ttsEnabled]
+    );
+
+    // Main query processor
+    const handleSendQuery = useCallback(
+        async (rawText) => {
+            const text = (rawText || query).trim();
+            if (!text) return;
+
+            setQuery('');
+            setInterimTranscript('');
+            setIsProcessing(true);
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const userMsg = {
+                id: Date.now(),
+                sender: 'user',
+                text,
+                time: timeStr,
+            };
+            setMessages((prev) => [...prev, userMsg]);
+
+            try {
+                const sessionId = user?.id || 'voxa_guest_session';
+                const totalInflow = bankingData.transactions
+                    ? bankingData.transactions.filter((tx) => tx.type === 'credit').reduce((s, tx) => s + tx.amount, 0)
+                    : 0;
+                const totalOutflow = bankingData.transactions
+                    ? bankingData.transactions.filter((tx) => tx.type === 'debit').reduce((s, tx) => s + Math.abs(tx.amount), 0)
+                    : 0;
+
+                const res = await voiceApi.chat({
+                    query: text,
+                    session_id: sessionId,
+                    current_balance: Number(bankingData.balance),
+                    user_name: user?.full_name || 'Member',
+                    user_email: user?.email,
+                    account_number: bankingData.accountNumber,
+                    card: bankingData.card,
+                    preferences: bankingData.preferences,
+                    transactions: bankingData.transactions,
+                    inflow: totalInflow,
+                    outflow: totalOutflow,
+                });
+                const data = res.data;
+
+                const botMsg = {
+                    id: Date.now() + 1,
+                    sender: 'bot',
+                    text: data.bot_response,
+                    status: data.status,
+                    intent: data.intent,
+                    subIntent: data.sub_intent,
+                    actionPayload: data.action_payload,
+                    time: timeStr,
+                };
+                setMessages((prev) => [...prev, botMsg]);
+
+                speakText(data.bot_response);
+
+                // 1. Privacy Toggle Sync
+                if (data.intent === 'account_overview' && data.sub_intent === 'privacy_toggle') {
+                    setIsMasked((prev) => !prev);
+                } else if (data.action_payload?.action === 'TOGGLE_PRIVACY') {
+                    setIsMasked(Boolean(data.action_payload.is_masked));
+                }
+
+                // 2. Transfer & Bill Payment Confirmation / Execution Sync
+                if (data.status === 'confirm' && (
+                    data.action_payload?.action === 'TRANSFER_CONFIRMATION' ||
+                    data.action_payload?.action === 'BILL_CONFIRMATION' ||
+                    data.action_payload?.action === 'DEPOSIT_CONFIRMATION'
+                )) {
+                    onVoiceTransferConfirm(data.action_payload);
+                } else if (data.status === 'ok' && data.action_payload?.action === 'TRANSFER_SUCCESS') {
+                    const amt = parseFloat(data.action_payload.amount);
+                    const recipient = data.action_payload.recipient || 'Beneficiary';
+                    const recipientTarget = data.action_payload.recipient_id || data.action_payload.recipient_email || recipient;
+                    const cat = data.action_payload.category || 'Peer Transfer';
+                    const refId = `TXN-VOX-${Date.now().toString(36).toUpperCase()}`;
+
+                    // Execute transfer against backend database so recipient ledger is credited in Supabase
+                    try {
+                        const transferRes = await bankingApi.transfer({
+                            recipient: recipientTarget,
+                            amount: amt,
+                            category: cat,
+                        });
+
+                        const actualRefId = transferRes.data.ref_id || refId;
+                        const actualDate = transferRes.data.date || `Today, ${timeStr}`;
+
+                        if (onRefreshAccount) {
+                            await onRefreshAccount();
+                        } else {
+                            setBankingData((prev) => ({
+                                ...prev,
+                                balance: transferRes.data.new_balance,
+                                transactions: [
+                                    {
+                                        id: actualRefId,
+                                        name: `Transfer to ${transferRes.data.recipient || recipient}`,
+                                        date: actualDate,
+                                        amount: -amt,
+                                        type: 'debit',
+                                        category: cat,
+                                        status: 'Completed',
+                                        ref: actualRefId,
+                                    },
+                                    ...prev.transactions,
+                                ],
+                            }));
+                        }
+
+                        setTransferReceipt({
+                            id: actualRefId,
+                            recipient: transferRes.data.recipient || recipient,
+                            amount: amt,
+                            date: actualDate,
+                            category: cat,
+                            type: 'debit',
+                        });
+                    } catch (transferErr) {
+                        console.error('Voice transfer backend sync error:', transferErr);
+                        const newTx = {
+                            id: refId,
+                            name: `Transfer to ${recipient}`,
+                            date: `Today, ${timeStr}`,
+                            amount: -amt,
+                            type: 'debit',
+                            category: cat,
+                            status: 'Completed',
+                            ref: refId,
+                        };
+
+                        setBankingData((prev) => ({
+                            ...prev,
+                            balance: Math.max(0, prev.balance - amt),
+                            transactions: [newTx, ...prev.transactions],
+                        }));
+
+                        setTransferReceipt({
+                            id: refId,
+                            recipient,
+                            amount: amt,
+                            date: `Today, ${timeStr}`,
+                            category: cat,
+                            type: 'debit',
+                        });
+                    }
+                } else if (data.status === 'ok' && data.action_payload?.action === 'BILL_SUCCESS') {
+                    const amt = parseFloat(data.action_payload.amount);
+                    const biller = data.action_payload.biller || 'Electricity & Gas';
+                    const refId = `TXN-BILL-${Date.now().toString(36).toUpperCase()}`;
+
+                    // Execute bill payment against backend database so user ledger is deducted in Supabase
+                    try {
+                        const billRes = await bankingApi.billPay({
+                            biller,
+                            amount: amt,
+                        });
+
+                        const actualRefId = billRes.data?.ref_id || refId;
+                        const actualDate = billRes.data?.date || `Today, ${timeStr}`;
+
+                        if (onRefreshAccount) {
+                            await onRefreshAccount();
+                        } else {
+                            setBankingData((prev) => ({
+                                ...prev,
+                                balance: billRes.data?.new_balance ?? Math.max(0, prev.balance - amt),
+                                transactions: [
+                                    {
+                                        id: actualRefId,
+                                        name: `Bill Payment — ${biller}`,
+                                        date: actualDate,
+                                        amount: -amt,
+                                        type: 'debit',
+                                        category: 'Utilities',
+                                        status: 'Completed',
+                                        ref: actualRefId,
+                                    },
+                                    ...prev.transactions,
+                                ],
+                            }));
+                        }
+                    } catch (billErr) {
+                        console.error('Voice bill payment backend sync error:', billErr);
+                        const newTx = {
+                            id: refId,
+                            name: `Bill Payment — ${biller}`,
+                            date: `Today, ${timeStr}`,
+                            amount: -amt,
+                            type: 'debit',
+                            category: 'Utilities',
+                            status: 'Completed',
+                            ref: refId,
+                        };
+
+                        setBankingData((prev) => ({
+                            ...prev,
+                            balance: Math.max(0, prev.balance - amt),
+                            transactions: [newTx, ...prev.transactions],
+                        }));
+                    }
+                }
+
+                // 3b. Security & Notification Preferences Sync (2FA & Email Alerts)
+                if (data.action_payload?.action === 'TOGGLE_PREFERENCE') {
+                    const { two_factor, email_alerts, has_2fa, has_email } = data.action_payload;
+                    setBankingData((prev) => {
+                        const newPrefs = { ...(prev.preferences || {}) };
+                        if (has_2fa && two_factor !== undefined) {
+                            newPrefs.twoFactor = Boolean(two_factor);
+                        }
+                        if (has_email && email_alerts !== undefined) {
+                            newPrefs.emailAlerts = Boolean(email_alerts);
+                        }
+                        return {
+                            ...prev,
+                            preferences: newPrefs,
+                        };
+                    });
+                }
+
+                // 3. Card Management Sync
+                if (data.action_payload?.action === 'FREEZE_CARD') {
+                    setBankingData((prev) => ({
+                        ...prev,
+                        card: { ...prev.card, frozen: true },
+                    }));
+                } else if (data.action_payload?.action === 'UNFREEZE_CARD') {
+                    setBankingData((prev) => ({
+                        ...prev,
+                        card: { ...prev.card, frozen: false },
+                    }));
+                } else if (data.action_payload?.action === 'TOGGLE_CARD_CHANNEL') {
+                    const channelKey = data.action_payload.channel; // 'international', 'domestic', 'online', 'atm'
+                    const isEnabled = Boolean(data.action_payload.enabled);
+                    setBankingData((prev) => ({
+                        ...prev,
+                        card: {
+                            ...prev.card,
+                            [channelKey]: isEnabled,
+                        },
+                    }));
+                } else if (data.action_payload?.action === 'SET_CARD_LIMIT') {
+                    const limKey = data.action_payload.limit_type === 'per_txn' ? 'perTxLimit' : 'dailyLimit';
+                    const val = Number(data.action_payload.amount);
+                    if (!isNaN(val) && val > 0) {
+                        setBankingData((prev) => ({
+                            ...prev,
+                            card: {
+                                ...prev.card,
+                                [limKey]: val,
+                            },
+                        }));
+                    }
+                }
+
+                // 4. Statements CSV Export Sync
+                if (data.sub_intent === 'export_csv' || data.action_payload?.action === 'EXPORT_CSV') {
+                    exportCsvToUser(bankingData.transactions);
+                } else if (data.sub_intent === 'print_statement' || data.action_payload?.action === 'PRINT_STATEMENT') {
+                    window.print();
+                }
+
+                // 5. Deposit Sync
+                if (data.status === 'ok' && data.action_payload?.action === 'DEPOSIT_SUCCESS') {
+                    const amt = parseFloat(data.action_payload.amount);
+                    const method = data.action_payload.method || 'UPI';
+                    const refId = `TXN-DEP-${Date.now().toString(36).toUpperCase()}`;
+
+                    const newTx = {
+                        id: refId,
+                        name: `Deposit via ${method}`,
+                        date: `Today, ${timeStr}`,
+                        amount: amt,
+                        type: 'credit',
+                        category: 'Deposit',
+                        status: 'Completed',
+                    };
+
+                    setBankingData((prev) => ({
+                        ...prev,
+                        balance: prev.balance + amt,
+                        transactions: [newTx, ...prev.transactions],
+                    }));
+                }
+            } catch (err) {
+                console.error('Voice assistant request error:', err);
+                const errDetail =
+                    err.response?.data?.detail ||
+                    'Voice assistant could not connect to server. Ensure FastAPI is running on port 8000.';
+                setMessages((prev) => [
+                    ...prev,
+                    { id: Date.now() + 1, sender: 'bot', text: errDetail, isError: true, time: timeStr },
+                ]);
+                speakText('Sorry, I encountered an error communicating with the banking server.');
+            } finally {
+                setIsProcessing(false);
+            }
+        },
+        [query, user, bankingData.balance, bankingData.transactions, speakText, setIsMasked, onVoiceTransferConfirm, setBankingData, setTransferReceipt]
+    );
+
+    // Keep handleSendQueryRef always pointing to latest handler
+    useEffect(() => {
+        handleSendQueryRef.current = handleSendQuery;
+    });
+
+    const handleStopListening = useCallback((queryToSend = null) => {
+        if (silenceTimerRef.current) {
+            clearTimeout(silenceTimerRef.current);
+            silenceTimerRef.current = null;
+        }
+        isListeningRef.current = false;
+        setIsListening(false);
+
+        const pending = (queryToSend !== null ? queryToSend : (accumulatedTranscriptRef.current || interimTranscript)).trim();
+        setInterimTranscript('');
+        accumulatedTranscriptRef.current = '';
+
+        if (recognitionRef.current) {
+            try {
+                recognitionRef.current.onend = null;
+                recognitionRef.current.onerror = null;
+                recognitionRef.current.abort();
+            } catch {}
+            recognitionRef.current = null;
+        }
+
+        if (pending && handleSendQueryRef.current) {
+            handleSendQueryRef.current(pending);
+        }
+    }, [interimTranscript]);
+
+    const initiateRecognitionSession = useCallback(() => {
+        if (!isListeningRef.current) return;
+
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRec) {
+            setVoiceError('Speech Recognition is not supported in this browser. Please use Google Chrome or Microsoft Edge.');
+            isListeningRef.current = false;
+            setIsListening(false);
+            return;
+        }
+
+        // Clean up previous instance cleanly
+        if (recognitionRef.current) {
+            try {
+                recognitionRef.current.onend = null;
+                recognitionRef.current.onerror = null;
+                recognitionRef.current.abort();
+            } catch {}
+            recognitionRef.current = null;
+        }
+
+        try {
+            const rec = new SpeechRec();
+            rec.continuous = true;
+            rec.interimResults = true;
+            rec.maxAlternatives = 1;
+            rec.lang = voiceLangRef.current || 'en-IN';
+
+            rec.onstart = () => {
+                if (isListeningRef.current) {
+                    setIsListening(true);
+                    setVoiceError('');
+                }
+            };
+
+            rec.onresult = (e) => {
+                let newlyFinal = '';
+                let currentInterim = '';
+
+                for (let i = e.resultIndex; i < e.results.length; i++) {
+                    const transcript = e.results[i][0].transcript;
+                    if (e.results[i].isFinal) {
+                        newlyFinal += (newlyFinal ? ' ' : '') + transcript;
+                    } else {
+                        currentInterim += (currentInterim ? ' ' : '') + transcript;
+                    }
+                }
+
+                if (newlyFinal) {
+                    accumulatedTranscriptRef.current = (accumulatedTranscriptRef.current + ' ' + newlyFinal).trim();
+                }
+
+                const currentFullText = (accumulatedTranscriptRef.current + ' ' + currentInterim).trim();
+                if (currentFullText) {
+                    setInterimTranscript(currentFullText);
+                }
+
+                // Reset silence timer on every speech packet
+                if (silenceTimerRef.current) {
+                    clearTimeout(silenceTimerRef.current);
+                    silenceTimerRef.current = null;
+                }
+
+                // Auto-submit after 2.8 seconds of natural silence after speaking
+                if (currentFullText) {
+                    silenceTimerRef.current = setTimeout(() => {
+                        const finalQuery = (accumulatedTranscriptRef.current + ' ' + currentInterim).trim();
+                        if (finalQuery && isListeningRef.current) {
+                            handleStopListening(finalQuery);
+                        }
+                    }, 2800);
+                }
+            };
+
+            rec.onerror = (e) => {
+                // Non-fatal: 'no-speech' is expected when user is quiet
+                if (e.error === 'no-speech') {
+                    return;
+                }
+                if (e.error === 'aborted') {
+                    return;
+                }
+                console.warn('Speech recognition warning/error:', e.error);
+
+                if (e.error === 'not-allowed') {
+                    setVoiceError('Microphone blocked. Click the lock/tune icon 🔒 in the browser address bar to allow microphone access.');
+                    isListeningRef.current = false;
+                    setIsListening(false);
+                } else if (e.error === 'network') {
+                    setVoiceError('Speech service connection issue. Please check your internet connection or type your query below.');
+                    isListeningRef.current = false;
+                    setIsListening(false);
+                } else if (e.error === 'audio-capture') {
+                    setVoiceError('No microphone detected. Please connect a microphone or headset.');
+                    isListeningRef.current = false;
+                    setIsListening(false);
+                }
+            };
+
+            rec.onend = () => {
+                if (isListeningRef.current) {
+                    const pendingQuery = (accumulatedTranscriptRef.current || interimTranscript).trim();
+                    if (pendingQuery && !silenceTimerRef.current) {
+                        handleStopListening(pendingQuery);
+                    } else if (!pendingQuery) {
+                        // User was quiet or Chrome timed out its window; restart a fresh instance cleanly!
+                        setTimeout(() => {
+                            if (isListeningRef.current) {
+                                initiateRecognitionSession();
+                            }
+                        }, 120);
+                    }
+                } else {
+                    setIsListening(false);
+                }
+            };
+
+            recognitionRef.current = rec;
+            rec.start();
+        } catch (err) {
+            console.error('Failed to start speech recognition session:', err);
+            setVoiceError('Unable to start speech recognition. Please check your microphone or type your query.');
+            isListeningRef.current = false;
+            setIsListening(false);
+        }
+    }, [handleStopListening, interimTranscript]);
+
+    const handleStartListening = useCallback(() => {
+        setVoiceError('');
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            setIsSpeaking(false);
+        }
+        if (silenceTimerRef.current) {
+            clearTimeout(silenceTimerRef.current);
+            silenceTimerRef.current = null;
+        }
+        accumulatedTranscriptRef.current = '';
+        setInterimTranscript('');
+
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRec) {
+            setVoiceError('Speech Recognition is not supported in this browser. Please use Google Chrome or Microsoft Edge.');
+            return;
+        }
+
+        isListeningRef.current = true;
+        setIsListening(true);
+        initiateRecognitionSession();
+    }, [initiateRecognitionSession]);
+
+    const handleSpeakToggle = () => {
+        if (isListening) {
+            handleStopListening();
+        } else {
+            handleStartListening();
+        }
     };
 
-    const handleSpeak = () => {
-        setVoiceActive((v) => !v);
+    // Clean up recognition strictly on component unmount
+    useEffect(() => {
+        return () => {
+            if (silenceTimerRef.current) {
+                clearTimeout(silenceTimerRef.current);
+            }
+            if (recognitionRef.current) {
+                try {
+                    recognitionRef.current.abort();
+                } catch {}
+            }
+        };
+    }, []);
+
+    // Expose methods to parent ref
+    useEffect(() => {
+        if (voiceAssistantRef) {
+            voiceAssistantRef.current = {
+                sendQuery: handleSendQuery,
+                startListening: handleStartListening,
+                stopListening: handleStopListening,
+                toggleListening: handleSpeakToggle,
+                isListening,
+            };
+        }
+    });
+
+    const handleResetSession = async () => {
+        try {
+            const sessionId = user?.id || 'voxa_guest_session';
+            await voiceApi.resetSession(sessionId);
+        } catch {}
+        setMessages([
+            {
+                id: Date.now(),
+                sender: 'bot',
+                text: 'Dialogue state reset. How can I help you today?',
+                time: 'Just now',
+            },
+        ]);
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            setIsSpeaking(false);
+        }
     };
 
     return (
@@ -1784,22 +2519,207 @@ function AssistantPanel() {
                 <LeafLogo size={48} />
                 <h2 className="dashboard-brand">Voxa Bank AI</h2>
 
+                {/* Big Mic Button with Active Pulse Animation */}
                 <button
-                    className={`dashboard-speak-btn ${voiceActive ? 'active-pulse' : ''}`}
-                    onClick={handleSpeak}
-                    title="Voice assistant"
+                    className={`dashboard-speak-btn ${isListening ? 'active-pulse' : ''}`}
+                    onClick={handleSpeakToggle}
+                    title={isListening ? 'Click to stop listening' : 'Click to speak to VoxaBank AI'}
+                    id="dashboard-voice-mic-btn"
                 >
                     <Mic size={36} />
-                    <span>{voiceActive ? 'Listening…' : 'Speak Now'}</span>
+                    <span>{isListening ? 'Listening...' : isProcessing ? 'Thinking...' : isSpeaking ? 'Speaking...' : 'Speak Now'}</span>
                 </button>
 
+                {/* Dialect Switcher Pill */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', margin: '0.35rem 0' }}>
+                    <button
+                        type="button"
+                        className="glass-pill"
+                        style={{
+                            fontSize: '0.7rem',
+                            padding: '0.2rem 0.55rem',
+                            border: voiceLang === 'en-IN' ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.12)',
+                            background: voiceLang === 'en-IN' ? 'rgba(16, 185, 129, 0.2)' : 'transparent',
+                            color: voiceLang === 'en-IN' ? '#34d399' : 'rgba(255,255,255,0.6)',
+                            cursor: 'pointer',
+                        }}
+                        onClick={() => setVoiceLang('en-IN')}
+                        title="Indian English (optimized for INR ₹, Indian names and accent)"
+                    >
+                        🇮🇳 English (IN)
+                    </button>
+                    <button
+                        type="button"
+                        className="glass-pill"
+                        style={{
+                            fontSize: '0.7rem',
+                            padding: '0.2rem 0.55rem',
+                            border: voiceLang === 'en-US' ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.12)',
+                            background: voiceLang === 'en-US' ? 'rgba(16, 185, 129, 0.2)' : 'transparent',
+                            color: voiceLang === 'en-US' ? '#34d399' : 'rgba(255,255,255,0.6)',
+                            cursor: 'pointer',
+                        }}
+                        onClick={() => setVoiceLang('en-US')}
+                        title="US English"
+                    >
+                        🇺🇸 English (US)
+                    </button>
+                </div>
+
+                {/* Done Speaking Quick Submit Button */}
+                {isListening && (
+                    <button
+                        type="button"
+                        className="glass-pill"
+                        style={{
+                            marginTop: '0.3rem',
+                            fontSize: '0.78rem',
+                            padding: '0.35rem 0.85rem',
+                            color: 'var(--color-primary)',
+                            background: 'rgba(74, 222, 128, 0.12)',
+                            border: '1px solid rgba(74, 222, 128, 0.3)',
+                            cursor: 'pointer',
+                        }}
+                        onClick={() => handleStopListening()}
+                    >
+                        ✓ Done Speaking — Submit
+                    </button>
+                )}
+
+                {/* Listening Prompt Hint */}
+                {isListening && !interimTranscript && (
+                    <div style={{
+                        fontSize: '0.75rem',
+                        color: '#94a3b8',
+                        fontStyle: 'italic',
+                        marginTop: '0.35rem',
+                        textAlign: 'center',
+                        lineHeight: 1.3,
+                    }}>
+                        Listening... Say "Check my balance" or "Transfer 500 to Abhinav"
+                    </div>
+                )}
+
+                {/* Voice Error Notification Banner */}
+                {voiceError && (
+                    <div style={{
+                        marginTop: '0.6rem',
+                        marginBottom: '0.3rem',
+                        padding: '0.55rem 0.8rem',
+                        borderRadius: '8px',
+                        background: 'rgba(239, 68, 68, 0.15)',
+                        border: '1px solid rgba(239, 68, 68, 0.35)',
+                        color: '#fca5a5',
+                        fontSize: '0.78rem',
+                        lineHeight: 1.35,
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        justifyContent: 'space-between',
+                        gap: '6px',
+                        textAlign: 'left',
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
+                            <AlertCircle size={15} style={{ flexShrink: 0, marginTop: '2px' }} />
+                            <span>{voiceError}</span>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setVoiceError('')}
+                            style={{ background: 'none', border: 'none', color: '#fca5a5', cursor: 'pointer', padding: 0 }}
+                            title="Dismiss"
+                        >
+                            <X size={14} />
+                        </button>
+                    </div>
+                )}
+
+                {/* Soundwave Frequency Visualization */}
+                {isListening && (
+                    <div className="voice-wave-container">
+                        <div className="voice-wave-bar"></div>
+                        <div className="voice-wave-bar"></div>
+                        <div className="voice-wave-bar"></div>
+                        <div className="voice-wave-bar"></div>
+                        <div className="voice-wave-bar"></div>
+                    </div>
+                )}
+
+                {/* Live Interim Transcript Display */}
+                {interimTranscript && (
+                    <div className="voice-interim-box">
+                        "{interimTranscript}"
+                    </div>
+                )}
+
+                {/* Conversation History Feed */}
+                <div className="assistant-dialog-feed">
+                    {messages.map((m) => (
+                        <div key={m.id} className={`dialog-msg ${m.sender}`}>
+                            <div className={`dialog-bubble ${m.isError ? 'error-bubble' : ''}`}>
+                                {m.text}
+                            </div>
+                            <span className="dialog-meta">{m.time}</span>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Quick Action Suggestion Chips */}
+                <div className="assistant-suggestions">
+                    <button
+                        type="button"
+                        className="suggestion-chip"
+                        onClick={() => handleSendQuery('Transfer 100 to Pasumarthy')}
+                    >
+                        Send ₹100 to Pasumarthy
+                    </button>
+                    <button
+                        type="button"
+                        className="suggestion-chip"
+                        onClick={() => handleSendQuery('Check my balance')}
+                    >
+                        Check Balance
+                    </button>
+                    <button
+                        type="button"
+                        className="suggestion-chip"
+                        onClick={() => handleSendQuery('Toggle privacy mode')}
+                    >
+                        Privacy Mode
+                    </button>
+                    <button
+                        type="button"
+                        className="suggestion-chip"
+                        onClick={() => handleSendQuery('Freeze my debit card')}
+                    >
+                        Freeze Card
+                    </button>
+                    <button
+                        type="button"
+                        className="suggestion-chip"
+                        onClick={() => handleSendQuery('Export CSV statement')}
+                    >
+                        Export CSV
+                    </button>
+                </div>
+
+                {/* Typed Query Form Fallback */}
                 {!isTyping ? (
-                    <button className="dashboard-type-btn glass-pill" onClick={() => setIsTyping(true)}>
+                    <button
+                        className="dashboard-type-btn glass-pill"
+                        onClick={() => setIsTyping(true)}
+                        id="dashboard-type-queries-btn"
+                    >
                         <span>Type your Queries</span>
                         <ArrowRight size={18} />
                     </button>
                 ) : (
-                    <form className="query-input-form" onSubmit={handleSend}>
+                    <form
+                        className="query-input-form"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleSendQuery();
+                        }}
+                    >
                         <input
                             type="text"
                             className="query-input"
@@ -1808,17 +2728,39 @@ function AssistantPanel() {
                             onChange={(e) => setQuery(e.target.value)}
                             autoFocus
                         />
-                        <button type="submit" className="query-send-btn">
+                        <button type="submit" className="query-send-btn" id="query-submit-btn">
                             <ArrowRight size={18} />
                         </button>
                     </form>
                 )}
+
+                {/* Assistant Toolbar Controls */}
+                <div className="assistant-toolbar">
+                    <button
+                        type="button"
+                        className={`assistant-tool-btn ${ttsEnabled ? 'active' : ''}`}
+                        onClick={() => setTtsEnabled(!ttsEnabled)}
+                        title={ttsEnabled ? 'Mute Voice Responses' : 'Enable Voice Audio Responses'}
+                    >
+                        {ttsEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
+                        <span>{ttsEnabled ? 'Audio On' : 'Muted'}</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="assistant-tool-btn"
+                        onClick={handleResetSession}
+                        title="Reset assistant dialogue memory"
+                    >
+                        <RefreshCw size={14} />
+                        <span>Reset Session</span>
+                    </button>
+                </div>
             </div>
         </aside>
     );
 }
 
-// ── Main Dashboard Container ─────────────────────────────────────────────────
+
 export default function Dashboard({ onBack }) {
     const { user, logout } = useAuth();
     const [activeTab, setActiveTab] = useState('home');
@@ -1844,17 +2786,82 @@ export default function Dashboard({ onBack }) {
         } catch {}
     }, [bankingData, storageKey]);
 
+    // Privacy mask state
+    const [isMasked, setIsMasked] = useState(false);
+
     // Modals
     const [isDepositOpen, setIsDepositOpen] = useState(false);
     const [isBillPayOpen, setIsBillPayOpen] = useState(false);
     const [transferReceipt, setTransferReceipt] = useState(null);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+    const [voiceTransferModal, setVoiceTransferModal] = useState(null);
+
+    // Ref to communicate with AssistantPanel
+    const voiceAssistantRef = useRef(null);
+
+    // Refresh live account state from Supabase audit ledger
+    const refreshAccountState = useCallback(async () => {
+        if (!user) return;
+        try {
+            const res = await bankingApi.getAccount();
+            if (res.data) {
+                // If server ledger has 0 records but client localStorage has a balance, sync it seamlessly
+                if (res.data.transactions.length === 0) {
+                    try {
+                        const localRaw = localStorage.getItem(storageKey);
+                        if (localRaw) {
+                            const localParsed = JSON.parse(localRaw);
+                            if (localParsed.balance > 0) {
+                                await bankingApi.sync({ balance: localParsed.balance });
+                                const syncedRes = await bankingApi.getAccount();
+                                setBankingData((prev) => ({
+                                    ...prev,
+                                    balance: syncedRes.data.balance,
+                                    transactions: syncedRes.data.transactions,
+                                }));
+                                return;
+                            }
+                        }
+                    } catch {}
+                }
+
+                setBankingData((prev) => ({
+                    ...prev,
+                    balance: res.data.balance,
+                    transactions: res.data.transactions,
+                }));
+            }
+        } catch (err) {
+            // Keep using local state if offline
+        }
+    }, [user, storageKey]);
+
+    // Initial sync and real-time polling so peer transfers show up instantly
+    useEffect(() => {
+        refreshAccountState();
+
+        // 5s polling interval ensures recipient in any window/browser receives money in real-time
+        const interval = setInterval(refreshAccountState, 5000);
+        const onFocus = () => refreshAccountState();
+        window.addEventListener('focus', onFocus);
+
+        return () => {
+            clearInterval(interval);
+            window.removeEventListener('focus', onFocus);
+        };
+    }, [refreshAccountState]);
 
     // Handlers
-    const handleDepositSuccess = useCallback((amount, method) => {
+    const handleDepositSuccess = useCallback(async (amount, method) => {
         const now = new Date();
         const dateStr = `Today, ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
         const refId = `TXN-DEP-${Date.now().toString(36).toUpperCase()}`;
+
+        try {
+            await bankingApi.deposit({ amount, method });
+        } catch (err) {
+            console.error('Deposit backend sync error:', err);
+        }
 
         const newTx = {
             id: refId,
@@ -1871,12 +2878,20 @@ export default function Dashboard({ onBack }) {
             balance: prev.balance + amount,
             transactions: [newTx, ...prev.transactions],
         }));
-    }, []);
 
-    const handleBillPaySuccess = useCallback((amount, biller) => {
+        refreshAccountState();
+    }, [refreshAccountState]);
+
+    const handleBillPaySuccess = useCallback(async (amount, biller) => {
         const now = new Date();
         const dateStr = `Today, ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
         const refId = `TXN-BILL-${Date.now().toString(36).toUpperCase()}`;
+
+        try {
+            await bankingApi.billPay({ amount, biller });
+        } catch (err) {
+            console.error('Bill pay backend sync error:', err);
+        }
 
         const newTx = {
             id: refId,
@@ -1893,7 +2908,9 @@ export default function Dashboard({ onBack }) {
             balance: prev.balance - amount,
             transactions: [newTx, ...prev.transactions],
         }));
-    }, []);
+
+        refreshAccountState();
+    }, [refreshAccountState]);
 
     const handleConfirmLogout = async () => {
         setIsLogoutModalOpen(false);
@@ -1917,6 +2934,8 @@ export default function Dashboard({ onBack }) {
                     onOpenDeposit={() => setIsDepositOpen(true)}
                     onOpenBillPay={() => setIsBillPayOpen(true)}
                     onNavigateTab={setActiveTab}
+                    isMasked={isMasked}
+                    setIsMasked={setIsMasked}
                 />
             )}
 
@@ -1934,6 +2953,7 @@ export default function Dashboard({ onBack }) {
                     setBankingData={setBankingData}
                     onOpenDeposit={() => setIsDepositOpen(true)}
                     onTransferSuccess={(rec) => setTransferReceipt(rec)}
+                    onRefreshAccount={refreshAccountState}
                 />
             )}
 
@@ -1952,7 +2972,46 @@ export default function Dashboard({ onBack }) {
                 />
             )}
 
-            <AssistantPanel />
+            <AssistantPanel
+                user={user}
+                bankingData={bankingData}
+                setBankingData={setBankingData}
+                isMasked={isMasked}
+                setIsMasked={setIsMasked}
+                onVoiceTransferConfirm={(payload) => setVoiceTransferModal(payload)}
+                setTransferReceipt={setTransferReceipt}
+                onNavigateTab={setActiveTab}
+                voiceAssistantRef={voiceAssistantRef}
+                onRefreshAccount={refreshAccountState}
+            />
+
+            {/* Floating Voice Assistant Mic Button */}
+            <FloatingVoiceButton
+                onClick={() => {
+                    if (voiceAssistantRef.current) {
+                        voiceAssistantRef.current.toggleListening();
+                    }
+                }}
+                isListening={voiceAssistantRef.current?.isListening}
+            />
+
+            {/* Voice Action Confirmation Modal (Transfer / Bill Pay / Deposit) */}
+            <VoiceActionConfirmModal
+                actionData={voiceTransferModal}
+                onClose={() => setVoiceTransferModal(null)}
+                onConfirm={() => {
+                    setVoiceTransferModal(null);
+                    if (voiceAssistantRef.current) {
+                        voiceAssistantRef.current.sendQuery('yes');
+                    }
+                }}
+                onCancel={() => {
+                    setVoiceTransferModal(null);
+                    if (voiceAssistantRef.current) {
+                        voiceAssistantRef.current.sendQuery('no');
+                    }
+                }}
+            />
 
             {/* Modals */}
             <DepositModal
