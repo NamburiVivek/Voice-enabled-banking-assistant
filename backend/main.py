@@ -22,7 +22,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from config import get_settings
-from routers import auth, banking
+from routers import auth, banking, voice
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO)
@@ -42,7 +42,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-        response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+        response.headers["Permissions-Policy"] = "geolocation=(), camera=()"
         response.headers["Strict-Transport-Security"] = (
             "max-age=63072000; includeSubDomains; preload"
         )
@@ -133,6 +133,7 @@ async def generic_exception_handler(request: Request, exc: Exception):
 
 app.include_router(auth.router)
 app.include_router(banking.router)
+app.include_router(voice.router)
 
 
 # ── Health Check ──────────────────────────────────────────────────────────────
