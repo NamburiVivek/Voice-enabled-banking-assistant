@@ -1,0 +1,15 @@
+torch
+transformers>=4.44
+accelerate
+peft>=0.12
+datasets
+scikit-learn
+pandas
+num2words
+sentence-transformers
+pypdf
+gTTS
+gradio
+sentencepiece
+# optional, only for 4-bit loading of big models on small GPUs:
+# bitsandbytes
