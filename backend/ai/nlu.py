@@ -9,13 +9,21 @@ Combines:
 import json
 import os
 import re
+import sys
+
+_AI_DIR = os.path.dirname(os.path.abspath(__file__))
+if _AI_DIR not in sys.path:
+    sys.path.insert(0, _AI_DIR)
 
 import numpy as np
 import torch
 import torch.nn as nn
 from sentence_transformers import SentenceTransformer
 
-from common import build_prompt, extract_slots, parse_json
+try:
+    from common import build_prompt, extract_slots, parse_json
+except ImportError:
+    from ai.common import build_prompt, extract_slots, parse_json
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR = os.path.join(BASE_DIR, "models")

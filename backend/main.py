@@ -8,7 +8,16 @@ Security measures applied at the app level:
   🔒 Structured error handling (no stack traces in responses)
 """
 import logging
+import os
+import sys
 from contextlib import asynccontextmanager
+
+# ── Ensure backend and backend/ai directories are in Python path ──────────────
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+AI_DIR = os.path.join(BASE_DIR, "ai")
+for p in (AI_DIR, BASE_DIR):
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
 from fastapi import FastAPI, Request, status, HTTPException as FastAPIHTTPException
 from fastapi.exceptions import RequestValidationError

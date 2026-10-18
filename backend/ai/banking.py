@@ -13,8 +13,16 @@ import datetime
 import os
 import random
 import re
+import sys
 
-from common import BENEFICIARY_KEYS, NOT_NAMES, UPI_RE, extract_slots, find_amount_span, to_amount
+_AI_DIR = os.path.dirname(os.path.abspath(__file__))
+if _AI_DIR not in sys.path:
+    sys.path.insert(0, _AI_DIR)
+
+try:
+    from common import BENEFICIARY_KEYS, NOT_NAMES, UPI_RE, extract_slots, find_amount_span, to_amount
+except ImportError:
+    from ai.common import BENEFICIARY_KEYS, NOT_NAMES, UPI_RE, extract_slots, find_amount_span, to_amount
 
 YES = re.compile(r"\b(yes|yeah|yep|haan|han|confirm|sure|ok|okay|proceed|go ahead|do it|correct|chalo)\b", re.I)
 NO = re.compile(r"\b(no|nope|nahi|cancel|stop|don'?t|abort|wrong|ruk)\b", re.I)
