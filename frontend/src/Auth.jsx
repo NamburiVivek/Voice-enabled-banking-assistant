@@ -149,8 +149,13 @@ function LoginForm({ onSwitchToRegister }) {
       // On success, AuthContext updates user → App re-routes to dashboard
     } catch (err) {
       const msg = err?.response?.data?.detail;
-      // 🔒 Show server message (already generic) or a fallback
-      setError(msg || 'Login failed. Please check your credentials.');
+      if (msg) {
+        setError(msg);
+      } else if (!err?.response) {
+        setError('Cannot reach backend server (Network or CORS error). Please check backend URL & status.');
+      } else {
+        setError('Login failed. Please check your credentials.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -266,11 +271,14 @@ function RegisterForm({ onSwitchToLogin }) {
       await register(fullName.trim(), email.trim().toLowerCase(), password, confirmPassword);
     } catch (err) {
       const data = err?.response?.data;
-      // Pydantic validation errors come as an array
       if (Array.isArray(data?.detail)) {
         setError(data.detail.map((e) => e.msg).join(' '));
+      } else if (data?.detail) {
+        setError(data.detail);
+      } else if (!err?.response) {
+        setError('Cannot reach backend server (Network or CORS error). Please check backend URL & status.');
       } else {
-        setError(data?.detail || 'Registration failed. Please try again.');
+        setError('Registration failed. Please try again.');
       }
     } finally {
       setIsLoading(false);

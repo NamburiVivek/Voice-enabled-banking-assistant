@@ -7,7 +7,11 @@
 
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_API_URL || '/api';
+let rawUrl = (import.meta.env.VITE_API_URL || '/api').trim().replace(/\/+$/, '');
+if (rawUrl.startsWith('http') && !rawUrl.endsWith('/api')) {
+  rawUrl = `${rawUrl}/api`;
+}
+const BASE_URL = rawUrl;
 
 // ── In-memory access token store ──────────────────────────────────────────────
 // Using module-level variable so it survives React re-renders but is wiped on page refresh.

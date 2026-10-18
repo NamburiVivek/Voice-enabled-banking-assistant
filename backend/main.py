@@ -93,26 +93,28 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# ── Middlewares (order matters — outermost = first) ───────────────────────────
+# ── Middlewares (order matters — outermost = added LAST) ───────────────────────
 
-# 1. Rate limiting
+# 1. Security headers (inner)
+app.add_middleware(SecurityHeadersMiddleware)
+
+# 2. Rate limiting (middle)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SlowAPIMiddleware)
 
-# 2. CORS — 🔒 explicit origins only, no wildcard in production
+# 3. CORS — outermost (added last so CORS headers are added to ALL responses)
+# Supports localhost, custom domains from ALLOWED_ORIGINS, and ANY *.vercel.app deployment
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_origins=settings.ALLOWED_ORIGINS if settings.ALLOWED_ORIGINS else ["*"],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type", "X-Requested-With"],
-    expose_headers=["X-RateLimit-Limit", "X-RateLimit-Remaining"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
     max_age=600,
 )
-
-# 3. Security headers
-app.add_middleware(SecurityHeadersMiddleware)
 
 
 # ── Global Exception Handlers ─────────────────────────────────────────────────
