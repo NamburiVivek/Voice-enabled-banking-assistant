@@ -1,0 +1,152 @@
+{
+ "upi_issues": [
+  "link_account",
+  "payment_failed",
+  "upi_limit"
+ ],
+ "account_opening": [
+  "current_account",
+  "fd_account",
+  "rd_account",
+  "savings_account"
+ ],
+ "block_card": [
+  "credit_card_block",
+  "debit_card_block",
+  "lost_card",
+  "temporary_block"
+ ],
+ "loan_inquiry": [
+  "education_loan",
+  "gold_loan",
+  "home_loan",
+  "personal_loan",
+  "vehicle_loan"
+ ],
+ "check_balance": [
+  "current_balance",
+  "fd_balance",
+  "loan_balance",
+  "savings_balance"
+ ],
+ "fixed_deposit": [
+  "break_fd",
+  "fd_maturity",
+  "fd_renewal",
+  "open_fd"
+ ],
+ "account_overview": [
+  "overview_summary",
+  "privacy_toggle"
+ ],
+ "card_management": [
+  "channel_control",
+  "freeze_card",
+  "set_spending_limit",
+  "unfreeze_card",
+  "view_card_details"
+ ],
+ "atm_locator": [
+  "24hr_atm",
+  "nearest_atm",
+  "open_atm"
+ ],
+ "change_pin": [
+  "credit_card_pin",
+  "debit_card_pin",
+  "upi_pin"
+ ],
+ "deposit_funds": [
+  "imps_deposit",
+  "neft_deposit",
+  "netbanking_deposit",
+  "upi_deposit"
+ ],
+ "transaction_history": [
+  "last_5_transactions",
+  "monthly_statement",
+  "yearly_statement"
+ ],
+ "bill_payment": [
+  "broadband_fiber",
+  "credit_card_bill",
+  "electricity_gas",
+  "insurance_premium",
+  "mobile_postpaid",
+  "mobile_recharge",
+  "rent_property",
+  "water_bill"
+ ],
+ "banking_profile": [
+  "kyc_tier_status",
+  "security_preferences",
+  "view_ifsc_account",
+  "view_profile"
+ ],
+ "interest_rate": [
+  "fd_rate",
+  "loan_rate",
+  "rd_rate",
+  "savings_rate"
+ ],
+ "branch_locator": [
+  "branch_hours",
+  "branch_ifsc",
+  "nearest_branch"
+ ],
+ "general_banking": [
+  "bank_holidays",
+  "complaint",
+  "customer_care"
+ ],
+ "fraud_report": [
+  "card_skimming",
+  "phishing",
+  "unauthorized_transaction"
+ ],
+ "transfer_money": [
+  "beneficiary_list",
+  "imps_transfer",
+  "neft_transfer",
+  "rtgs_transfer",
+  "upi_transfer",
+  "verify_recipient"
+ ],
+ "kyc_update": [
+  "aadhaar_link",
+  "address_update",
+  "mobile_update",
+  "pan_update"
+ ],
+ "government_schemes": [
+  "atal_pension",
+  "jan_dhan",
+  "pm_mudra",
+  "sukanya_samriddhi"
+ ],
+ "statement_analytics": [
+  "export_csv",
+  "filter_transactions",
+  "inflow_outflow_kpi",
+  "print_statement",
+  "search_transactions"
+ ],
+ "insurance_inquiry": [
+  "health_insurance",
+  "life_insurance",
+  "vehicle_insurance"
+ ],
+ "credit_score": [
+  "check_cibil",
+  "improve_score",
+  "score_factors"
+ ],
+ "net_banking": [
+  "account_locked",
+  "forgot_password",
+  "registration"
+ ],
+ "out_of_scope": [
+  "none"
+ ]
+}

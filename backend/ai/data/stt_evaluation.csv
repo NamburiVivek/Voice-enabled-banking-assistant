@@ -1,0 +1,1001 @@
+id,reference_text,noisy_transcript,wer_label,speaker_type,accent_type,query_type
+1,What is my loan account number,What is loan na acounnt number,high,male,neutral,loan
+2,What is the minimum balance for my account,What is dha minimum balance mai account,high,child,south_indian,balance
+3,I want to add a nominee to my account,I want to add a a nomenee please to acounnt,high,elderly,east_indian,general
+4,Give me an update on my balance,Give me an update on mhy ballance please please,high,child,west_indian,balance
+5,I would like to see my account balance,I would like see my account balance,medium,young,north_indian,balance
+6,My account shows a debit of seven thousand that I did not do,My account shows a debot of 7 thousand that I did not do,medium,male,south_indian,fraud
+7,Please freeze my account there is unauthorized access,Please freeze my account there is unautharized access,medium,young,north_indian,fraud
+8,Clear my credit card outstanding of five lakh rupees,Clear creditt card outstanding of five lakh rupees,medium,elderly,north_indian,payment
+9,I want to prepay my home loan,I want to prepay home loan,medium,female,west_indian,loan
+10,Pay fifty thousand rupees to Sanjay for rent,Pay fifty thousand rupees to Sanjay for rent,low,young,neutral,payment
+11,My account shows a debit of forty thousand that I did not do,My account shows a debit of forty thousand that Ai did not doo My account,high,elderly,east_indian,fraud
+12,What are the tax benefits on home loan,What are te tax benefits on home loan,medium,young,west_indian,scheme
+13,What are the charges for NEFT transfer,What are the charges for NEFT transfers,medium,child,east_indian,general
+14,I got a message saying I won a lottery through the bank,got a message saying saying I won a lottary through the bank,medium,young,west_indian,fraud
+15,How to close my savings account,How close savings account,high,elderly,north_indian,general
+16,Transfer money to Naresh immediately,Transfer money I mean to Naresh immediatley,high,female,north_indian,transfer
+17,I want to change my ATM PIN,want to change my my arey ATM PIN,high,young,north_indian,general
+18,Please send two thousand to Meena via NEFT,Please send to thousand to Meena via NEFT,medium,male,north_indian,transfer
+19,Tell me about the senior citizen savings scheme,Tell about the,high,child,east_indian,scheme
+20,Tell me about the bank's health insurance schemes,Tell about the bank's health insurance schemes,medium,young,neutral,scheme
+21,I want to pay my internet bill,Ai wannt to pay internt bill,high,young,east_indian,payment
+22,I want to update my KYC details,I want update KYC details,medium,female,north_indian,general
+23,How do I activate mobile banking,How do I activait mobile banking,medium,male,neutral,general
+24,Is my salary credited to my account,Is my salary credited acounnt,high,young,west_indian,balance
+25,I received a fraudulent SMS asking to update my KYC,I received a fradulent please SMS asking update mai KYC,high,elderly,south_indian,fraud
+26,I need a bank statement for the last six months,I need a bank statement hello for for da last six months,medium,child,north_indian,general
+27,Pay my phone bill of two thousand rupees,Pay my phone bill basically of two thouusand rupees,medium,female,neutral,payment
+28,I want to change my ATM PIN,Ai wannt change my ATM ATM PIN,high,male,east_indian,general
+29,I want to enable international transactions on my card,I want to enable international transactions on my card,low,elderly,east_indian,general
+30,My account shows a debit of three thousand that I did not do,account shows a debot three tousand that I did not do,high,child,west_indian,fraud
+31,My account balance please,My acount ballance please,high,male,north_indian,balance
+32,I want to enable international transactions on my card,want to enabel internationnal arey transaaction on my card,high,male,north_indian,general
+33,What is the PPF interest rate this quarter,What iz tha PPF interst rate this quarter,high,elderly,east_indian,scheme
+34,What is my balance in the savings account,What is my balence in da savings account okay okay,high,young,north_indian,balance
+35,How do I update my mobile number,How doo update my moble number,high,female,east_indian,general
+36,I received a phishing email from someone pretending to be the bank,I received a phishing email from someone prentending to be da bank,medium,young,north_indian,fraud
+37,What is the process to get a new debit card,What is te process to get new debit card,medium,female,west_indian,general
+38,Do an RTGS transfer of fifty thousand rupees to 5432167890,Do an RTGS transfer of fifty thousan theek hai rupees 5432167890,high,female,neutral,transfer
+39,I want to add a nominee to my account,I want to add a nomenee to my account,medium,male,west_indian,general
+40,Pay my DTH subscription of ten thousand rupees,Pay DTH subscription of ten tousand rupees,medium,elderly,east_indian,payment
+41,How do I update my address in bank records,How do I update my address in bank records,low,male,neutral,general
+42,I would like to see my account balance,I would like to see my account ballance,medium,elderly,south_indian,balance
+43,Pay my DTH subscription of seven thousand rupees,Pay my DTH subscripshun of seven tousand rupees,medium,child,east_indian,payment
+44,I want to pay my credit card bill,I want to pae my credit card bill,medium,elderly,west_indian,payment
+45,How do I open a new savings account,How do I open a new savings account,low,elderly,north_indian,general
+46,Please freeze my account there is unauthorized access,Please freeze acounnt there ji is unautherized unautherized access,high,elderly,neutral,fraud
+47,Move seven thousand rupees from savings to my FD,Move seven thousand roopees from savings to mai FD,medium,male,south_indian,transfer
+48,Please transfer five lakh to account number 6789012345,Please transfer 5 lakh to account number 6789012345,medium,female,neutral,transfer
+49,Pay my LIC premium of three thousand rupees,Pay my LIC premium 3 thousand rupees,medium,elderly,neutral,payment
+50,Send ten thousand rupees to UPI ID deepa@ybl,Send 10000 rupees to UPI ID deepa@ybl,medium,young,neutral,transfer
+51,What is my balance in the savings account,What my balance in te savings acounnt,high,elderly,west_indian,balance
+52,What is the available balance in my account,What is availabel please please balance acounnt,high,young,west_indian,balance
+53,I clicked on a suspicious link and now I am worried,Ai clicked on a suspicious link and now Ai am worried,medium,female,east_indian,fraud
+54,Clear my outstanding balance of two lakh,Clear my outstanding ballance of two lac,medium,female,neutral,payment
+55,Pay one lakh rupees to Sanjay for rent,Pay wan lakh rupees to Sanjay rent Pay wan,high,elderly,east_indian,payment
+56,How to reset my net banking password,How to reset my net banking password How to,medium,elderly,north_indian,general
+57,I want to pay my credit card bill,I want to pay my cradit card bill,medium,elderly,neutral,payment
+58,I want to open a recurring deposit account,want open open a recurring depositt acounnt,high,male,west_indian,scheme
+59,Someone asked for my card details on phone,Someone asked for my card details on phone,low,elderly,north_indian,fraud
+60,Transfer money urgently to Asha,Transfer money urgantely to Asha,medium,female,south_indian,transfer
+61,What is the auto-sweep facility,What iz tha auto-sweep facility,high,young,east_indian,scheme
+62,Show me the balance after my last transaction,Show me the balance after my last transction,medium,female,west_indian,balance
+63,I want to clear my outstanding dues,I want to clear oustanding dues,medium,female,west_indian,payment
+64,I want to change my ATM PIN,I wannt to change my ATM PIN,medium,male,east_indian,general
+65,Please do a NEFT transfer to Arjun,Please a NEFT transfer,high,child,north_indian,transfer
+66,Show me the balance of my current account,Show dha valence current acccount,high,child,south_indian,balance
+67,How do I open a new savings account,How open a new savings account How open,high,elderly,neutral,general
+68,Tell me about the Sukanya Samriddhi scheme,Tell me about da Sukanya Samriddhi scheme,medium,female,north_indian,scheme
+69,What are the banking hours,What are tha bankin hours,high,male,east_indian,general
+70,Transfer two thousand to Suresh today,Transfer two thousand to to Suresh today,medium,male,east_indian,transfer
+71,Is my salary credited to my account,Is salary credited to my account,medium,child,south_indian,balance
+72,I want to prepay my home loan,I want to prepay mai home actually loan,medium,child,south_indian,loan
+73,Pay my LIC premium of ten thousand rupees,Pay my LIC premium of ten thousand roopeez,medium,elderly,west_indian,payment
+74,I received a fraudulent SMS asking to update my KYC,I received a fraudulent SMS asking to update my KYC,low,elderly,north_indian,fraud
+75,Can you display the balance for account 2345678901,Can you display dha balance for account 2345678901,medium,elderly,south_indian,balance
+76,How to apply for mudra loan,How How to apply for mudra loan,medium,young,west_indian,loan
+77,How to close my savings account,How to close my I mean savings acounnt,high,young,east_indian,general
+78,Please show me the balance in my account,Please show tha valence actually in acount,high,young,east_indian,balance
+79,I want to invest fifteen thousand rupees in a recurring deposit,I want to invest 15000 rupees in recurring deposit,medium,male,neutral,scheme
+80,I want to open a tax saver fixed deposit,I want to open tax saver fixed hello deopsit,high,male,neutral,scheme
+81,Send five lakh rupees to beneficiary Geeta,Send five lakh rupees to beneficiary Geeta,low,male,north_indian,transfer
+82,Please transfer twelve thousand to account number 0123456789,Please tranfer 12 thousand bhai to account number 0123456789,high,female,east_indian,transfer
+83,I need a bank statement for the last six months,I need a bank statement for the last six months,low,female,east_indian,general
+84,Tell me about the bank's health insurance schemes,Tell about the bank's health you know insuranc schemes,high,male,east_indian,scheme
+85,What is my current balance,What ees mai current balance,high,female,south_indian,balance
+86,Send five thousand rupees to beneficiary Suresh,Send Send five thousan rupees beneficary Suresh,high,male,north_indian,transfer
+87,What is the processing fee for personal loan,What is te procesing fee for personnal ya loan,high,female,west_indian,loan
+88,Please send five hundred to Asha via NEFT,Please send five hundered to Asha via NEFT,medium,male,neutral,transfer
+89,Can I apply for a top-up loan,Can apply for a top-up loan,medium,elderly,north_indian,loan
+90,My account has been compromised please help,My account has been compromised please help,low,elderly,east_indian,fraud
+91,Send five thousand rupees to beneficiary Anita,Send five thousan like rupees beneficiary Anita,high,female,south_indian,transfer
+92,My account balance please,My acounnt baalance please,high,male,east_indian,balance
+93,I would like to see my account balance,I would like to see my acccount basically balence,high,male,north_indian,balance
+94,Show me the balance of my current account,Show me the balance please of my current acount,medium,young,neutral,balance
+95,Transfer fifteen thousand rupees to my wife's account,Transfer fifteen thousand rupees to my wife's account,low,male,north_indian,transfer
+96,I want to transfer ten lakh rupees to account 5432167890,want to transfers ten lakh rupees acount 5432167890,high,female,neutral,transfer
+97,Please block my account immediately there is fraud,Please block my acounnt,high,child,south_indian,fraud
+98,Can I apply for a top-up loan,Can I apply a top-up loan,medium,elderly,south_indian,loan
+99,Can you initiate a transfer of seven thousand rupees to Dinesh,Can you initiate a transfer of seven thousand rupees to Dinesh,low,child,north_indian,transfer
+100,I want to foreclose my personal loan,want to forclose mai persnal loan,high,female,south_indian,loan
+101,What is the auto-sweep facility,What is tha auto-sweep facility,medium,young,east_indian,scheme
+102,Do an immediate transfer of twenty thousand rupees,Do an immediate transfar of twenty thousan rupees I mean,high,male,west_indian,transfer
+103,I want to know about children savings schemes,want want know about children savings na schemes,high,child,south_indian,scheme
+104,Can I get a gold loan against my ornaments,Can get gold hello loan against ornaments,high,male,west_indian,loan
+105,Has my salary of five hundred rupees been credited,Has my selary of five hunderd rupees been credited,medium,female,neutral,balance
+106,Someone asked for my card details on phone,Someone asked card card details on phone,medium,child,east_indian,fraud
+107,How much is remaining in my account,How much is remaning mhy acounnt,high,female,west_indian,balance
+108,What are the tax benefits on home loan,What are the tax benefits on home loan,low,child,south_indian,scheme
+109,Transfer money to Arjun immediately,Transfer money to Arjun immediately,low,young,south_indian,transfer
+110,Show me my loan account details,Show me mhy loan acccount details,high,elderly,west_indian,loan
+111,What is the outstanding principal on my loan,What is oustanding principl on my ya loan,high,young,neutral,loan
+112,Tell me about the bank's tax saving FD scheme,Tell me about dha bank's tax saving FD scheme,medium,young,south_indian,scheme
+113,What is the process to get a new debit card,What is dha process to get new debit card,medium,elderly,south_indian,general
+114,I want to pay my credit card bill,I want to pae credit kaad bill,high,elderly,west_indian,payment
+115,Someone called me pretending to be bank staff and asked for my details,Someone called me pretending to be bank staff and asked for mhy details,low,female,west_indian,fraud
+116,I lost my debit card please block it immediately,I lost my debit card please block it immedietly,medium,female,east_indian,fraud
+117,Make a bill payment for electricity,Make a bill payment for electricity,low,young,neutral,payment
+118,Pay my LIC premium of two thousand rupees,Pay mai LIC premium,high,child,south_indian,payment
+119,Tell me about the Sukanya Samriddhi scheme,Tell me about dha Sukanya Samriddhi scheme,medium,young,south_indian,scheme
+120,Do an immediate transfer of three thousand rupees,Do an immediate tansfer of three thousand roopeez,medium,child,west_indian,transfer
+121,Please transfer twenty-five thousand to account number 1357924680,Please transfer twenty-five thousand to acccount number 1357924680,medium,elderly,north_indian,transfer
+122,How do I update my address in bank records,How I I update address bank records,high,elderly,north_indian,general
+123,I want to know about the monthly income scheme,want to know about dha monthly income scheme,medium,child,south_indian,scheme
+124,I want to pay my credit card bill,I want to pae my credit kaad bill,medium,female,west_indian,payment
+125,Make payment for my water bill,Make payment for my water bill,low,female,south_indian,payment
+126,How do I generate account statement,How do I generate acounnt statement,medium,elderly,south_indian,general
+127,How do I update my address in bank records,How do update my address in bank bank please please records,high,elderly,north_indian,general
+128,I want to know about children savings schemes,I want to know about children savings schemes,low,child,neutral,scheme
+129,What are the tax benefits on home loan,What are tha tha tax benefits on home loan,medium,male,east_indian,scheme
+130,I want to invest in the National Savings Certificate,I want to invest in da National Savings certficate,medium,male,north_indian,scheme
+131,Send five thousand rupees to beneficiary Rajan,Send five thousan roopees to beneficiary Rajan,medium,child,south_indian,transfer
+132,I did not authorize this transaction of five lakh rupees,I I did not autharize basically this transaction 500000 rupees,high,child,south_indian,fraud
+133,Transfer one thousand rupees from my savings to current account,transfar one thouusand rupees from from savings to like current acounnt,high,elderly,east_indian,transfer
+134,Someone is using my mobile banking without my permission,Someone is using my mobile banking without my permission,low,female,neutral,fraud
+135,Send ten lakh rupees to UPI ID pooja@paytm,Send ten lakh rupees UPI ID pooja@paytm,medium,young,neutral,transfer
+136,Tell me about the sweep in fixed deposit,Tell about tha sweep fixed deopsit,high,child,east_indian,scheme
+137,Tell me about the bank's health insurance schemes,Tell about the bank's health insurance schemes,medium,elderly,north_indian,scheme
+138,Transfer fifty thousand rupees to Vijay,Transfer 50000 rupees to Vijay,high,child,neutral,transfer
+139,What is my loan outstanding balance,What ees mai loan oustanding balance What ees,high,elderly,south_indian,loan
+140,I want to know about locker facility,Ai wannt to know about locker facility,medium,elderly,east_indian,general
+141,Pay my mobile recharge of five thousand rupees,Pay mobille recharge of five tousand please rupees Pay mobille,high,elderly,neutral,payment
+142,Send five thousand rupees to UPI ID anil@okaxis,Send five tousand rupees to UPI ID anil@okaxis,medium,young,neutral,transfer
+143,I want to prepay my home loan,I want preppay home loan,high,child,north_indian,loan
+144,Pay my LIC premium of seven thousand rupees,Pay mai LIC premeum of seven thousand roopees,high,female,south_indian,payment
+145,Send thirty thousand rupees to UPI ID anil@okaxis,Send thirty tousand rupees to UPI ID anil@okaxis Send thirty,high,elderly,neutral,transfer
+146,How do I activate mobile banking,How do I activate mobile banking,low,child,north_indian,general
+147,How to apply for mudra loan,How to apply for mudra loan How to,high,elderly,north_indian,loan
+148,Do an RTGS transfer of twelve thousand rupees to 0123456789,Do an RTGS transfer of twelve tousand rupees to 0123456789,low,male,south_indian,transfer
+149,Please do a NEFT transfer to Shanti,Please do a NEFT transfer to Shanti,low,female,south_indian,transfer
+150,I want to update my KYC details,I want to update KYC details,medium,child,north_indian,general
+151,What is the penalty for late EMI payment,What penality for late EMI payment,high,female,north_indian,loan
+152,Pay gas bill of two lakh rupees,Pay gas bill two ji lakh roopees roopees,high,elderly,south_indian,payment
+153,Please do a NEFT transfer to Shanti,Please do a NEFT transfers to Shanti Please do,high,elderly,south_indian,transfer
+154,How to open a PPF account,How open a PPF acount,high,young,west_indian,scheme
+155,Reduce my EMI amount for personal loan,Reduce mai EMI amount for persnal loan you know,high,child,south_indian,loan
+156,What is the auto-sweep facility,What is the auto-sweep facility,low,child,east_indian,scheme
+157,Pay my electricity bill of one lakh rupees,Pay my electricity bill,high,child,neutral,payment
+158,How do I check my transaction history,How do I check my transaaction history,medium,female,south_indian,general
+159,Pay subscription fee of two lakh rupees,Pay subscrpition fee fee of two lac roopees,high,male,south_indian,payment
+160,Pay the school fees of two lakh rupees,Pay the school fees two lac rupees,medium,young,neutral,payment
+161,How to open a PPF account,How open a PPF account,medium,male,east_indian,scheme
+162,I want to report a failed ATM transaction where money was deducted,I want to report a failed ATM transaction where money was deducted,low,child,neutral,fraud
+163,I want to report a failed ATM transaction where money was deducted,I want report a failed ATM transaction where money was deducted,low,elderly,west_indian,fraud
+164,Someone called me pretending to be bank staff and asked for my details,Someone called me pretending to be bank staff and asked for my details,low,male,north_indian,fraud
+165,Send fifty thousand rupees to beneficiary Meena,Send fifty thousan rupees beneficiary Meena,medium,young,east_indian,transfer
+166,Reduce my EMI amount for personal loan,Reduce mai EMI amount for personal loan,medium,young,south_indian,loan
+167,How do I generate account statement,How doo Ai generate account statement,high,female,east_indian,general
+168,What is the PPF interest rate this quarter,What is PPF interst rate this quarter,medium,female,neutral,scheme
+169,I want to invest in the National Savings Certificate,I want to invest in dha National Savings please please Certificate,high,male,south_indian,scheme
+170,Send twenty-five thousand rupees to UPI ID ramesh@upi,Send twenty-five thousand rupees UPI ID ramesh@upi,medium,elderly,east_indian,transfer
+171,Transfer one lakh rupees to Kavita,Transfer one lakh roopeez Kavita,high,female,west_indian,transfer
+172,How do I register for internet banking,How I register,high,child,north_indian,general
+173,Please block my account immediately there is fraud,Please block my account immediately there is fraud,low,young,neutral,fraud
+174,I want to report a failed ATM transaction where money was deducted,Ai want to report a failed ATM transaction where money was deducted,low,male,east_indian,fraud
+175,I want to know about the monthly income scheme,I want know about monthly income scheme,medium,female,neutral,scheme
+176,Transfer money urgently to Gopal,transfar money urgently to Gopal,medium,female,north_indian,transfer
+177,Make a payment of five hundred to Vijay,Make a payment of 500 Vijay Make a,high,elderly,east_indian,payment
+178,Transfer twelve thousand rupees from my savings to current account,Transfer twelve thousand rupees from my savings to current acount,low,child,west_indian,transfer
+179,Pay fifteen thousand rupees to Naresh for rent,Pay fifteen thousand rupees to Naresh for rent,low,child,east_indian,payment
+180,Transfer thirty thousand rupees to Anita,transfar thirty tousand rupees to Anita,high,young,east_indian,transfer
+181,Send one thousand rupees to Nisha using IMPS,Send one thousand rupees to Nisha using IMPS,low,male,neutral,transfer
+182,I want to know about home loan eligibility,I want to know about home loan eligibility,low,male,north_indian,loan
+183,How do I activate mobile banking,How do I activate mobile banking,low,elderly,neutral,general
+184,Someone is trying to hack my net banking account,Someone is trying to hack my net banking account,low,child,south_indian,fraud
+185,Show me the balance of my current account,Show the balance of my current account,medium,elderly,north_indian,balance
+186,Show me the balance after my last transaction,Show me te balance after please my last transaaction,high,elderly,west_indian,balance
+187,What is my loan outstanding balance,What is my loan outstandin ballance,high,male,south_indian,loan
+188,Someone is trying to hack my net banking account,Someone is is trying to please please hack net bankin acount,high,young,west_indian,fraud
+189,What is the minimum amount for fixed deposit,What is minimun amount for fixed depposit,high,female,west_indian,scheme
+190,How do I block my credit card,How doo I block my credit card,medium,male,east_indian,general
+191,Someone is trying to hack my net banking account,Someone is trying to hack net banking account,medium,female,west_indian,fraud
+192,Apply for education loan of one thousand rupees,Apply for education loan of one thousand rupees,low,elderly,neutral,loan
+193,Please send five thousand to Vinod via NEFT,Please send 5 thousand to Vinod via NEFT,medium,male,west_indian,transfer
+194,Send two hundred rupees to Girish using IMPS,Send two hundread rupees to Girish using IMPS,medium,elderly,north_indian,transfer
+195,I want to check my account balance,I want check mai account balance,medium,young,south_indian,balance
+196,Show me the balance after my last transaction,Show me da balance after my last transaction transaction you know,high,young,north_indian,balance
+197,Make UPI payment of fifty thousand to ramesh@upi,Make UPI paymant of 50 thousand to ramesh@upi,medium,child,west_indian,payment
+198,What is the PPF interest rate this quarter,What is the PPF interst rate this quarter,medium,young,neutral,scheme
+199,What is the processing fee for personal loan,What is da processing fee for personal loan,medium,male,north_indian,loan
+200,I want to increase my loan tenure,I want increase mhy loan tenure,medium,young,west_indian,loan
+201,I need to pay my insurance premium of twenty thousand,I need to pay insurance primeum okay okay of twenty thouusand,high,male,neutral,payment
+202,I want to know the balance in my recurring deposit,I want to know da balance my recurring deposit,medium,female,north_indian,balance
+203,What is my current balance,What is mhy current balance,medium,female,west_indian,balance
+204,What is the closing balance of my account,What is the,high,child,neutral,balance
+205,Please show me the balance in my account,Please show me da ballance in my account,medium,male,north_indian,balance
+206,Apply for a car loan of two lakh rupees,Apply for a car loan of two lakh rupees,low,male,south_indian,loan
+207,I would like to see my account balance,would like see my acounnt valence,high,female,neutral,balance
+208,I want to increase my loan tenure,Ai want increase my loan tenure,medium,child,east_indian,loan
+209,What is the interest rate on home loan,What is the interest rate on home loan,low,elderly,north_indian,loan
+210,I want to know about the monthly income scheme,I want to know about the monthly income scheme,low,female,north_indian,scheme
+211,I received a suspicious call asking for my OTP,I received a suspicious call asking like OTP,medium,young,south_indian,fraud
+212,I have been cheated online please help,Ai have been cheated online please help,medium,child,east_indian,fraud
+213,Can you tell me my savings account balance,Can you tell me my savings acounnt balence,medium,child,neutral,balance
+214,What is the closing balance of my account,What is te closing balance of my acccount,medium,male,west_indian,balance
+215,Can you tell me my savings account balance,Can you tell me my savings account ballance,medium,female,west_indian,balance
+216,I want to open a recurring deposit account,wannt to open a recurring depposit acccount,high,elderly,east_indian,scheme
+217,Reduce my EMI amount for personal loan,Reduce my EMI amount for personal loan,low,female,south_indian,loan
+218,Please do a NEFT transfer to Lalita,Please do NEFT,high,child,south_indian,transfer
+219,I want to know about locker facility,want to know about locker facility I mean,high,young,west_indian,general
+220,What is the available balance in my account,What What iz availble balence in my acccount,high,female,east_indian,balance
+221,Make payment towards my home loan EMI,Make paymant towards my home loan EMI,medium,young,east_indian,payment
+222,Can I get a gold loan against my ornaments,Can get gold loan against my ornaments,medium,elderly,north_indian,loan
+223,Someone is using my mobile banking without my permission,Someone using my mobile bankin without my permission,medium,female,west_indian,fraud
+224,I want to check my account balance,I want to check mai account balance,medium,young,south_indian,balance
+225,Tell me about the salary account benefits,Tell me about da sallary acounnt benefits,high,young,north_indian,scheme
+226,Tell me about the Sukanya Samriddhi scheme,Tell me about dha Sukanya Samriddhi scheme,medium,male,south_indian,scheme
+227,Make a payment of fifty thousand to Savita,Make a payement fifty,high,child,neutral,payment
+228,Pay subscription fee of one thousand rupees,Pay subscrpition fee of won thousand rupees,medium,female,neutral,payment
+229,What is the branch IFSC code,What iz tha tha arey brunch IFSC code,high,child,east_indian,general
+230,I want to transfer two lakh rupees to account 5432167890,I want to transfar two lakh roopees to account 5432167890,medium,female,south_indian,transfer
+231,Move forty thousand rupees from savings to my FD,Move fourty thousand rupees from savings to to my FD,medium,young,east_indian,transfer
+232,Do an RTGS transfer of five hundred rupees to 2345678901,Do an RTGS transfers five hundered rupees you know to 2345678901,high,female,east_indian,transfer
+233,I clicked on a suspicious link and now I am worried,I clicked on suspicious link,high,child,neutral,fraud
+234,I want to pay my credit card bill,want to pay credit card bill,medium,male,neutral,payment
+235,My current account balance is how much,My current account balance how much,medium,male,neutral,balance
+236,How do I generate account statement,How do I generate account statement,low,child,north_indian,general
+237,Move five hundred rupees from savings to my FD,Move five hundered rupees from savings to my FD,medium,male,east_indian,transfer
+238,I want to invest in the National Savings Certificate,want to invest in the National Savings certficate,medium,female,south_indian,scheme
+239,My credit card has been used without my knowledge,My credit card has been used without my knowledge,low,elderly,east_indian,fraud
+240,Tell me about the salary account benefits,Tell me about salary account benefits,medium,child,south_indian,scheme
+241,Check balance for account number 7890123456,Check valence for account number 7890123456 7890123456,high,child,west_indian,balance
+242,I want to foreclose my personal loan,I wannt to forclose bhai my personal loan,high,male,east_indian,loan
+243,I want to pay my credit card bill,I want to pae,high,child,west_indian,payment
+244,Pay hospital bill of forty thousand rupees,Pay hospittal bill forty thouusand rupees,high,male,north_indian,payment
+245,I want to know the balance in my recurring deposit,I want to know dha,high,child,south_indian,balance
+246,How to reset my net banking password,How to reset my net bankin password,medium,child,neutral,general
+247,How do I block my credit card,How How doo Ai block,high,child,east_indian,general
+248,Can you tell me my savings account balance,Can you tell me my savings account balence,medium,female,north_indian,balance
+249,Send fifty thousand rupees to beneficiary Suresh,Send 50000 rupees to beneficiary Suresh,medium,child,north_indian,transfer
+250,Someone is trying to hack my net banking account,Someone is trying to hack mhy net banking account,medium,female,west_indian,fraud
+251,Can you display the balance for account 9012345678,Can you display the balance for account 9012345678,low,young,north_indian,balance
+252,Send two thousand rupees to Priya using IMPS,Send Send two thousand rupees to Priya using IMPS,medium,young,north_indian,transfer
+253,What is my balance in the savings account,What is mhy balance in te savings acounnt,high,male,west_indian,balance
+254,How do I open a new savings account,How do I open haan a new savings account,medium,young,neutral,general
+255,I want to open a tax saver fixed deposit,Ai wannt to open a tax saver fixed deposit na,high,female,east_indian,scheme
+256,How do I register for internet banking,How do I register for internet bankking,medium,child,west_indian,general
+257,How do I register for internet banking,How do I register for internet bankking,medium,young,east_indian,general
+258,I want to clear my outstanding dues,want to clear my outstanding dues,medium,child,neutral,payment
+259,I received a fraudulent SMS asking to update my KYC,received fradulent SMS asking update my KYC,high,child,neutral,fraud
+260,What is the minimum amount for fixed deposit,What is dha minimum amount for fixed deopsit What is,high,elderly,south_indian,scheme
+261,Someone has done an unauthorized transaction from my account,Someone has done unauthorized transaction from acount bhai,high,male,north_indian,fraud
+262,Tell me about the Sukanya Samriddhi scheme,Tell me about the Sukanya Samriddhi scheme,low,young,west_indian,scheme
+263,I need to pay Usha five lakh rupees now,need to pay Usha five lakh rupees now,medium,female,west_indian,transfer
+264,I would like to see my account balance,I would like to see mai acccount balance,medium,child,south_indian,balance
+265,I want to invest two hundred rupees in a recurring deposit,I want to invest two hunderd rupees in a recurring deposit,low,young,east_indian,scheme
+266,Tell me about the bank's health insurance schemes,Tell about bank's health insurance actually schemes,high,young,neutral,scheme
+267,What is the available balance in my account,What iz tha availabel baalance in my account,high,male,east_indian,balance
+268,I want to know the balance in my recurring deposit,I want to know the balance in mhy recurring deposit,low,child,west_indian,balance
+269,I want to link my Aadhaar to my account,I want to link mai Aadhaar to mai account,medium,male,south_indian,general
+270,What is the closing balance of my account,What tha closing balence acccount,high,elderly,east_indian,balance
+271,What is the outstanding principal on my loan,What iz the oustanding principal on my loan,medium,female,east_indian,loan
+272,Can I get a gold loan against my ornaments,Can I get a gold loan against mhy ornaments,medium,elderly,west_indian,loan
+273,What is the branch IFSC code,What ees dha branch IFSC code,high,child,south_indian,general
+274,I want to clear my outstanding dues,I want to clear my outstanding dues,low,elderly,neutral,payment
+275,What is the available balance in my account,What iz the available baalance in my account,medium,male,east_indian,balance
+276,What is my loan account number,What is mhy loan account number,medium,male,west_indian,loan
+277,What is the minimum balance required,What da minimum balence required okay okay,high,child,north_indian,general
+278,I want to open a recurring deposit account,I want to open a recurring deposit acounnt,medium,male,north_indian,scheme
+279,What is the outstanding principal on my loan,What is the oustanding principal on my loan loan,medium,female,neutral,loan
+280,I got a message saying I won a lottery through the bank,I got message saying I won a a lottary through bank,high,young,west_indian,fraud
+281,What is the interest rate for recurring deposit,What is the interest rate for recurring deposit,low,male,neutral,scheme
+282,I want to add a nominee to my account,I want to add a nomenee to mhy account,medium,elderly,west_indian,general
+283,Give me the loan statement for the last year,Give me the loan statement for the last year,low,young,east_indian,loan
+284,I need to know my bank balance right now,need to know my bank baalance right now,medium,elderly,east_indian,balance
+285,My account shows a debit of five thousand that I did not do,My account shows a debit of five tousand dat I did not do My account,high,elderly,north_indian,fraud
+286,Make a bill payment for electricity,Make bill bhai payement electicity,high,male,east_indian,payment
+287,Tell me about the salary account benefits,Tell me about dha salary account benefits,medium,elderly,south_indian,scheme
+288,Tell me about the bank's tax saving FD scheme,Tell me about dha baink's tax saving FD scheme,medium,male,south_indian,scheme
+289,Make payment for my water bill,Make payement my my water bill,high,male,neutral,payment
+290,Show me the balance of my current account,Show tha baalance na my current account,high,male,east_indian,balance
+291,Transfer funds to 0123456789 account,Transfer funds to 0123456789 account,low,male,south_indian,transfer
+292,I need a bank statement for the last six months,I need a baink statement for last six months,medium,elderly,south_indian,general
+293,Tell me about the senior citizen savings scheme,Tell about da senior citizen savings scheme,medium,male,north_indian,scheme
+294,What is the processing fee for personal loan,What is the procesing fee for persnal loan okay okay,high,young,west_indian,loan
+295,Show me the balance of my current account,Show dha ballance of mai okay okay current acount,high,female,south_indian,balance
+296,My account balance please,My acount valence please,high,elderly,east_indian,balance
+297,Send one lakh rupees using UPI to anil@okaxis,Send one lakh rupees using UPI to anil@okaxis,low,elderly,east_indian,transfer
+298,Tell me my total account balance please,Tell me my total account balance please,low,male,neutral,balance
+299,What are the current savings schemes available,What are tha current savings schemes availabel,medium,child,east_indian,scheme
+300,Clear my credit card outstanding of twenty-five thousand rupees,Clear credit card outstanding twenty-five thousand rupees,medium,young,east_indian,payment
+301,Someone called me pretending to be bank staff and asked for my details,Someone called me pretending to be bank staff and asked for my details actually Someone called,medium,elderly,east_indian,fraud
+302,I want to invest in the National Savings Certificate,I want to invest da National Savings certifcate,high,male,north_indian,scheme
+303,I have been cheated online please help,Ai have been cheated online please help,medium,elderly,east_indian,fraud
+304,What is the auto-sweep facility,What ees dha auto-sweep facility,high,elderly,south_indian,scheme
+305,Tell me about government backed savings schemes,Tell me about government backed savings like schemes,medium,young,north_indian,scheme
+306,Tell me about the fixed deposit interest rates,Tell me about the,high,child,neutral,scheme
+307,Is my salary credited to my account,Is my selary credited my account,medium,child,north_indian,balance
+308,What is the minimum amount for fixed deposit,What is the minimum amount for fixed depposit,medium,child,north_indian,scheme
+309,Tell me about the Sukanya Samriddhi scheme,Tell me about te Sukanya Samriddhi scheme,medium,female,west_indian,scheme
+310,I want to do a fund transfer of twenty thousand rupees,I want to do a fund transfer of twenty thousand rupees,low,female,south_indian,transfer
+311,How to close my savings account,How to close my savings account,low,male,east_indian,general
+312,What is the customer care number,What ees dha customer care number,high,elderly,south_indian,general
+313,I want to foreclose my personal loan,I want forclose my personnal loan,high,male,neutral,loan
+314,What is my loan account number,What What iz loan account number,high,male,east_indian,loan
+315,Pay the school fees of two lakh rupees,Pay the school fees of two lakh rupees haan,medium,young,east_indian,payment
+316,What is the PPF interest rate this quarter,What is PPF intrest rate I mean this quarter,high,male,south_indian,scheme
+317,Transfer money urgently to Shanti,Transfer money urgently to Shanti,low,male,west_indian,transfer
+318,Check balance for account number 3456789012,Check ballance acccount,high,child,west_indian,balance
+319,I want to check my account balance,I want to check my account balence,medium,female,neutral,balance
+320,What is the minimum amount for fixed deposit,What is the minimum amount for fixed deposit,low,young,east_indian,scheme
+321,I need to pay Nisha for three thousand rupees,Ai need to pay Nisha for three tousand rupees,medium,male,east_indian,payment
+322,I have been cheated online please help,I have been cheated online please actually help,medium,young,west_indian,fraud
+323,How many EMIs are remaining for my loan,How many EMIs are remaning for loan,medium,elderly,north_indian,loan
+324,I did not authorize this transaction of one thousand rupees,I did not authorize this transaction of of 1 thousand rupees,medium,elderly,neutral,fraud
+325,Pay fifteen thousand rupees towards my loan EMI,Pay fifteen tousand roopees towards mai loan EMI,high,young,south_indian,payment
+326,What is the interest rate on home loan,What is dha interest rate on home loan,medium,elderly,south_indian,loan
+327,How do I update my mobile number,How How do I update moble number,high,young,east_indian,general
+328,Please help me report a cyber fraud immediately,Please help me report cybar fraud immediately,medium,male,south_indian,fraud
+329,I want to transfer one lakh rupees to account 7890123456,want tranfer one laakh laakh yes yes rupees to acount 7890123456,high,young,neutral,transfer
+330,What is the customer care number,What is dha customer care number,medium,young,south_indian,general
+331,Please freeze my account there is unauthorized access,Please freeze mai account there is is unauthorized access,medium,male,south_indian,fraud
+332,Apply for education loan of five lakh rupees,Apply for education loan of fife lakh rupees,medium,male,east_indian,loan
+333,What is my loan account number,What my loan acccount number,high,young,south_indian,loan
+334,Move five lakh rupees from savings to my FD,Move five lakh roopees from savings to my FD,medium,male,south_indian,transfer
+335,I want to know the balance in my recurring deposit,I want want to know da balance my recurring deposit,medium,elderly,north_indian,balance
+336,Make a payment of seven thousand to Pramod,Make a paiment of seven tousand Pramod,high,elderly,neutral,payment
+337,How do I generate account statement,How do I generate account statament,medium,female,west_indian,general
+338,What is the auto-sweep facility,What is the,high,child,east_indian,scheme
+339,Can I get a home loan of fifteen thousand rupees,Can I get a home loan of fifteen thousand rupees,low,male,neutral,loan
+340,I want to change my ATM PIN,I want to change my ATM PIN,low,child,north_indian,general
+341,Someone is using my mobile banking without my permission,Someone using my mobile bankin without haan my permision,high,elderly,south_indian,fraud
+342,I want to prepay my home loan,I want to prepay my home loan,low,child,north_indian,loan
+343,I got an OTP which I did not request please help,I got an OTP which I did not request please help,low,elderly,neutral,fraud
+344,Show me my loan account details,Show me my loan account details,low,elderly,east_indian,loan
+345,What is the process to get a passbook,What is tha process gat passbook,high,female,east_indian,general
+346,Please show me the balance in my account,Please show the balance account,high,female,neutral,balance
+347,How do I update my address in bank records,How do I update my address in bank records,low,male,south_indian,general
+348,I received a suspicious call asking for my OTP,I received a suspicious,high,child,south_indian,fraud
+349,What is the auto-sweep facility,What the auto-sweep facility,medium,child,neutral,scheme
+350,Is my salary credited to my account,Is my salary credited to my acounnt,medium,elderly,south_indian,balance
+351,Do an RTGS transfer of fifty thousand rupees to 5432167890,an RTGS transfar of fifty tousand tousand rupees to 5432167890,high,elderly,north_indian,transfer
+352,What is the branch IFSC code,What dha braanch IFSC code,high,child,south_indian,general
+353,I want to invest forty thousand rupees in a recurring deposit,I want invest forty thousand rupees a yes yes recurring deposit,high,elderly,south_indian,scheme
+354,Show me the balance after my last transaction,Show the balance after my last transaaction,medium,female,south_indian,balance
+355,Pay my electricity bill of twelve thousand rupees,Pay mhy electricity bill of twelve thousand rupees,medium,child,west_indian,payment
+356,What are the current savings schemes available,What are the current savings schemes available,low,child,neutral,scheme
+357,My account balance please,My acounnt valence please,high,male,west_indian,balance
+358,How much is remaining in my account,How much remining in in my acount,high,male,neutral,balance
+359,How much money do I have in my account,How much money do I have in my account,low,child,neutral,balance
+360,What is the available balance in my account,What is te availble balance mhy account,high,male,west_indian,balance
+361,I received a fraudulent SMS asking to update my KYC,Ai received a fraudlent na SMS asking to update KYC,high,young,east_indian,fraud
+362,Send twenty thousand rupees to beneficiary Vinod,Send twenty tousand,high,child,south_indian,transfer
+363,Can you tell me my savings account balance,Can you tell mai savings account ballance,high,child,south_indian,balance
+364,Pay gas bill of two lakh rupees,Pay gas bill of 200000 rupees,medium,child,north_indian,payment
+365,My account has been compromised please help,My account has been compramised pleese help,medium,young,south_indian,fraud
+366,What is the closing balance of my account,What is te closing balence my account,high,male,west_indian,balance
+367,What is the interest rate on home loan,What tha interst rate on home loan,high,child,east_indian,loan
+368,I received a phishing email from someone pretending to be the bank,I received fishing email from hello someone pretendng to be bank,high,young,east_indian,fraud
+369,I want to report a failed ATM transaction where money was deducted,want to report a failed ATM okay okay transaaction where money was deducted,high,child,north_indian,fraud
+370,I think my debit card has been cloned,I think mai debit card has been cloaned,medium,child,south_indian,fraud
+371,Can you check the balance in my FD account,Can you check the balance in my FD account,low,elderly,neutral,balance
+372,I received a suspicious call asking for my OTP,I received a suspicious call asking ya my OTP,medium,child,north_indian,fraud
+373,How much money do I have in my account,How much money do I have in my account How much,medium,elderly,neutral,balance
+374,What is the penalty for late EMI payment,What iz tha penallty late EMI theek hai payment,high,female,east_indian,loan
+375,I got a message saying I won a lottery through the bank,I got a message saying I won a lottery through the bank,low,male,neutral,fraud
+376,What is the process to get a passbook,What is dha process to ya get a passbook,medium,child,south_indian,general
+377,I want to report a failed ATM transaction where money was deducted,want report a failed ATM transction where money was deducted,medium,young,west_indian,fraud
+378,Clear my outstanding balance of twenty-five thousand,Clear mhy outstanding balance of 25 thousand,medium,male,west_indian,payment
+379,How much money do I have in my account,How much money do,high,child,west_indian,balance
+380,I want to update my KYC details,I want update KYC details,medium,female,north_indian,general
+381,Send ten thousand rupees to beneficiary Dinesh,Send ten tousand rupees to actually beneficary beneficary Dinesh,high,female,west_indian,transfer
+382,I want to invest twelve thousand rupees in a recurring deposit,I want to invest twelve thousand rupees in a recurring deposit,low,young,south_indian,scheme
+383,What is the available balance in my account,What iz the available balance in my account,medium,male,east_indian,balance
+384,My credit card has been used without my knowledge,My cradit card has been used without ji knolwedge,high,young,west_indian,fraud
+385,My account shows a debit of thirty thousand that I did not do,My acounnt shows a debot thirty tousand that did not do My acounnt,high,elderly,east_indian,fraud
+386,Tell me about the sweep in fixed deposit,Tell me about the sweep in fixed deposit,low,female,west_indian,scheme
+387,I want to know the balance in my recurring deposit,I want to know the balance in my recurring deposit,low,male,east_indian,balance
+388,What is the interest rate on fixed deposit for ten thousand rupees,What is da interest rate on on fixed deposit for please ten tousand rupees,high,female,north_indian,scheme
+389,I want to know about children savings schemes,I want to know about children savings schemes,low,elderly,west_indian,scheme
+390,What is the EMI for a loan of five thousand rupees,What is the EMI for a loan of five thouusand rupees,low,female,neutral,loan
+391,I did not authorize this transaction of twenty-five thousand rupees,I did not authorize this transaction of twenty-five thousand rupees,low,female,west_indian,fraud
+392,What documents are required for home loan,What documant are are required for home loan,medium,young,north_indian,loan
+393,What is the penalty for late EMI payment,What the penalty for late EMI payment,medium,young,north_indian,loan
+394,Please transfer thirty thousand to account number 9012345678,Please transfers 30 thousand to account number 9012345678,medium,young,south_indian,transfer
+395,I want to open a recurring deposit account,I want to open a recurring deposit account I want,medium,elderly,west_indian,scheme
+396,What is the process to get a new debit card,What is da process to get a new debitt card,medium,female,north_indian,general
+397,Tell me about the senior citizen savings scheme,Tell me about te senior citizen savings scheme,medium,female,west_indian,scheme
+398,What is my current balance,What is mai current balance,medium,male,south_indian,balance
+399,I would like to see my account balance,I would like to see I mean my acccount ballance,high,female,south_indian,balance
+400,I want to add a nominee to my account,want to add a nominee to mai acccount,high,male,south_indian,general
+401,What is my loan account number,What is my loan acccount number number,high,female,west_indian,loan
+402,I want to pay my credit card bill,I want to pay my credit card bill,low,elderly,north_indian,payment
+403,My current account balance is how much,My current acount baalance is how much,medium,female,east_indian,balance
+404,Make a bill payment for electricity,Make a bill payment for electricity,low,female,west_indian,payment
+405,I received a suspicious call asking for my OTP,received suspicious suspicious call asking for mai OTP,high,elderly,south_indian,fraud
+406,What is the customer care number,What is the customer care number,low,child,west_indian,general
+407,I did not authorize this transaction of fifty thousand rupees,I did not authorize this transaction of fifty tousand roopeez,medium,female,west_indian,fraud
+408,I want to foreclose my personal loan,I want to foreclose my personnal loan,medium,female,north_indian,loan
+409,Pay ten lakh rupees to Nisha for rent,Pay ten lakh rupees rupees Nisha for rent,medium,male,north_indian,payment
+410,Make UPI payment of two lakh to meena@ibl,Make UPI payment of theek hai too lakh to meena@ibl,high,child,west_indian,payment
+411,Please do a NEFT transfer to Vivek,Please do a NEFT transfers to Vivek,medium,male,south_indian,transfer
+412,Can you check the balance in my FD account,Can you check dha balance in my FD account,medium,female,south_indian,balance
+413,I want to prepay my home loan,I want to preppay basically home loan,medium,child,south_indian,loan
+414,I want to change my ATM PIN,Ai want to change my ATM PIN,medium,child,east_indian,general
+415,What is the EMI for a loan of one thousand rupees,What is da EMI for loan one tousand rupees,high,female,north_indian,loan
+416,How much is remaining in my account,How much is remaining in my account,low,female,west_indian,balance
+417,I want to know about locker facility,Ai wannt to know about locker facility,medium,male,east_indian,general
+418,Clear my outstanding balance of two lakh,Clear mhy outstanding balance of two lac,medium,young,west_indian,payment
+419,Apply for education loan of twenty thousand rupees,Apply educashun loan twenty thousan roopeez roopeez,high,elderly,west_indian,loan
+420,How do I invest in mutual funds through the bank,How I invest mutual funds through bank bank,medium,young,north_indian,scheme
+421,Tell me about the salary account benefits,Tell me about the sallary account benefits,medium,young,north_indian,scheme
+422,Send seven thousand rupees to Kavita using IMPS,Send seven tousand rupees to Kavita using IMPS,medium,child,east_indian,transfer
+423,Is my salary credited to my account,Is my sallary credited to acount,high,child,north_indian,balance
+424,How much is remaining in my account,How much is remaining in account,medium,elderly,north_indian,balance
+425,Clear my credit card outstanding of one thousand rupees,Clear my creditt card outstandin one tousand rupees,high,female,south_indian,payment
+426,I lost my debit card please block it immediately,I lost my debit card please block immediately,medium,elderly,north_indian,fraud
+427,Please block my account immediately there is fraud,Please block mai account account immediately there is fraud,medium,child,south_indian,fraud
+428,How do I open a new savings account,How do Ai open a new savings account,medium,elderly,east_indian,general
+429,My account shows a debit of forty thousand that I did not do,My account shows a debitt of forty thousand that I did not do,low,female,neutral,fraud
+430,Make payment towards my home loan EMI,Make payment towards my home loan EMI,low,female,neutral,payment
+431,Show me the balance after my last transaction,Show me the balance after my last transaction,low,female,neutral,balance
+432,I need to know my bank balance right now,I need to know my bank hello balance right now,medium,child,north_indian,balance
+433,How do I update my mobile number,How doo Ai update mobille number,high,young,east_indian,general
+434,What is my loan outstanding balance,What my loan outstanding balance,medium,female,neutral,loan
+435,What is the auto-sweep facility,What the auto-sweep,high,child,neutral,scheme
+436,What is the closing balance of my account,What the closing balance of my account,medium,young,neutral,balance
+437,Make a payment of one lakh to Usha,Make a payment of one lakh to Usha,low,young,east_indian,payment
+438,I want to know about locker facility,want to know about locker facility,medium,young,west_indian,general
+439,I want to apply for a personal loan of five hundred rupees,I want to apply for a persnal loan of five hunded rupees,medium,elderly,south_indian,loan
+440,I think my debit card has been cloned,I think my debit card has been cloned,low,child,neutral,fraud
+441,How much is remaining in my account,How much remaining in my okay okay account,high,young,east_indian,balance
+442,How much is remaining in my account,How much iz remaining my account,medium,female,east_indian,balance
+443,What is the interest rate on home loan,What iz tha intrest rate on home loan What iz,high,elderly,east_indian,loan
+444,Clear my outstanding balance of ten lakh,Clear mai outstanding balance of ten lakh,medium,elderly,south_indian,payment
+445,I want to invest in the National Savings Certificate,I want to invest in the National Savings certifcate,medium,young,south_indian,scheme
+446,Pay my LIC premium of seven thousand rupees,Pay my LIC primeum of seven thouusand rupees,medium,young,east_indian,payment
+447,I want to send one lakh to Naresh's account number 9876543210,I want send 1 lakh to Naresh's account number 9876543210,medium,male,west_indian,transfer
+448,Make a payment of thirty thousand to Anil,Make a paiment of thirty hello thousand to Anil,medium,male,west_indian,payment
+449,I want to foreclose my personal loan,want to foreclose my persnal loan,medium,young,east_indian,loan
+450,I want to open a recurring deposit account,I want to open a recurring depposit acounnt,medium,female,north_indian,scheme
+451,I need to pay Gopal for twelve thousand rupees,Ai need to pay Gopal for 12000 rupees,high,male,east_indian,payment
+452,Check balance for account number 9012345678,Check balance account number 9012345678,medium,child,south_indian,balance
+453,How do I update my address in bank records,How do update address address in bank records,medium,male,east_indian,general
+454,I received a phishing email from someone pretending to be the bank,I received a phishing email from,high,child,west_indian,fraud
+455,Make UPI payment of five hundred to suresh@upi,Make UPI payment of 500 to suresh@upi,medium,young,south_indian,payment
+456,What are the charges for NEFT transfer,What are the charges for NEFT transfer,low,female,east_indian,general
+457,Tell me about the Sukanya Samriddhi scheme,Tell me about te Sukanya Samriddhi scheme,medium,child,west_indian,scheme
+458,How to reset my net banking password,How to reset my net banking password How to,medium,elderly,south_indian,general
+459,Clear my outstanding balance of fifty thousand,Clear my outstandin outstandin baalance of theek hai fifty thouusand,high,male,east_indian,payment
+460,How many EMIs are remaining for my loan,How many EMIs umm are remaning for loan,high,elderly,east_indian,loan
+461,Please block my account immediately there is fraud,Please block my account immediately there iz fraud Please block,high,elderly,east_indian,fraud
+462,I want to open a tax saver fixed deposit,I want to open a tax saver fixed deopsit,medium,child,south_indian,scheme
+463,Check balance for account number 1234567890,Check ballance for acccount number yes yes 1234567890,high,young,north_indian,balance
+464,I want to clear my outstanding dues,I want to clear my outstanding dues,low,female,neutral,payment
+465,I need to pay Vinod for thirty thousand rupees,Ai need to pay Vinod for tirty thousand rupees,medium,young,east_indian,payment
+466,Pay gas bill of ten lakh rupees,Pay gas bill of 10 lakh roopees Pay gas,high,elderly,south_indian,payment
+467,Move two lakh rupees from savings to my FD,Move two lakh rupees from savings to my FD,low,child,north_indian,transfer
+468,Please transfer twenty thousand to account number 9012345678,Please tranfer twenty thousand to I mean account number 9012345678,high,young,east_indian,transfer
+469,Tell me about government backed savings schemes,Tell me about government backed savings schemes,low,young,west_indian,scheme
+470,I want to know the balance in my recurring deposit,I want to know the,high,child,neutral,balance
+471,Apply for education loan of five thousand rupees,Apply for educashun loan five thouusand roopees,high,young,south_indian,loan
+472,What is the process to get a passbook,What is the process to to get ji a passbook,medium,female,west_indian,general
+473,Pay my LIC premium of two lakh rupees,Pay LIC premium of two lakh rupees,medium,elderly,neutral,payment
+474,Make payment for my water bill,Make payement water bill,high,elderly,neutral,payment
+475,I need to pay Geeta for twelve thousand rupees,I need pay Geeta for 12 thousand rupees,medium,female,west_indian,payment
+476,Check balance for account number 7890123456,Check ballance for acount number 7890123456,high,male,north_indian,balance
+477,What is the EMI for a loan of one lakh rupees,What iz tha EMI loan one lakh rupees,high,child,east_indian,loan
+478,Transfer money urgently to Bharat,transfar money urgantely to Bharat,high,child,south_indian,transfer
+479,Make a payment of thirty thousand to Bharat,Make paymant thirty thousand to Bharat,high,child,west_indian,payment
+480,Someone is using my mobile banking without my permission,Someone is using mobille bankking without my permision,high,female,neutral,fraud
+481,I clicked on a suspicious link and now I am worried,I clicked on a suspicious link and now I am worried,low,elderly,west_indian,fraud
+482,Someone is using my mobile banking without my permission,Someone is using mhy mobile banking without mhy permission,medium,child,west_indian,fraud
+483,How to close my savings account,How close savings account,high,elderly,neutral,general
+484,What is the minimum amount for fixed deposit,What is the minimun amount for fixed deopsit,medium,male,north_indian,scheme
+485,Someone is trying to hack my net banking account,Someone trying to hack my net bankin acccount,high,female,south_indian,fraud
+486,I got a message saying I won a lottery through the bank,I got a message saying I won a lottery through the bank,low,young,neutral,fraud
+487,Tell me about the bank's tax saving FD scheme,Tell me about the bank's tax saving FD scheme,low,young,neutral,scheme
+488,Can I get a gold loan against my ornaments,Can get a gold loan arey against mai ornaments,high,child,south_indian,loan
+489,I want to update my KYC details,want want update KYC details want want,high,elderly,neutral,general
+490,I want to update my KYC details,I want update,high,child,south_indian,general
+491,I want to know about children savings schemes,I want to know about children savings schemes,low,elderly,east_indian,scheme
+492,I want to invest in the National Savings Certificate,I want invest in da National Savings I mean certifcate,high,male,north_indian,scheme
+493,I did not authorize this transaction of one lakh rupees,I did not authorize this transaction of one lakh roopees,low,child,south_indian,fraud
+494,Pay five lakh rupees to Deepa for rent,Pay five lac rupees rupees to Deepa for rent,medium,male,east_indian,payment
+495,My credit card has been used without my knowledge,My credit card has been used without without my knowledge,medium,female,east_indian,fraud
+496,I lost my debit card please block it immediately,I lost mai debot card pleese block it immediately,high,male,south_indian,fraud
+497,What is the process to get a passbook,What iz the process na to gat a passbook,high,child,east_indian,general
+498,I want to invest twelve thousand rupees in a recurring deposit,I want to invest twelve thousand rupees recurring deposit,medium,male,north_indian,scheme
+499,How to apply for mudra loan,How to apply for mudra loan,low,male,south_indian,loan
+500,I want to enable international transactions on my card,I want ennabel internationnal transaaction on mai card,high,male,south_indian,general
+501,I would like to see my account balance,I would like to see account please please ballance,high,male,north_indian,balance
+502,My account balance please,My account balance please,low,male,west_indian,balance
+503,Transfer ten thousand rupees to my wife's account,transfar ten tousand rupees wife's account,high,young,south_indian,transfer
+504,What are the benefits of the premium savings account,What are the benefits the premium savings acount,medium,female,neutral,scheme
+505,Transfer two thousand to Sanjay today,Transfer to thousand to Sanjay today,medium,elderly,north_indian,transfer
+506,Tell me my total account balance please,Tell me mhy total account valence please,medium,elderly,west_indian,balance
+507,I did not authorize this transaction of five hundred rupees,I did not autharize this transaction of five hunderd rupees,medium,male,north_indian,fraud
+508,I received a fraudulent SMS asking to update my KYC,Ai received a fraudulent SMS asking to update my KYC,low,elderly,east_indian,fraud
+509,What is the interest rate on fixed deposit for five hundred rupees,What ees the interest rate on,high,child,south_indian,scheme
+510,Reduce my EMI amount for personal loan,Reduce mhy EMI amountt like personal loan,high,female,west_indian,loan
+511,Apply for education loan of one lakh rupees,Apply educaation loan one lakh rupees like,high,young,west_indian,loan
+512,Please block my account immediately there is fraud,Please block my account immediately there is fraud,low,male,east_indian,fraud
+513,How do I check my transaction history,How do I check my transction history,medium,elderly,north_indian,general
+514,How do I activate mobile banking,How do I actiwate mobile bankin,high,child,neutral,general
+515,I got a message saying I won a lottery through the bank,I got a message saying won a lottery through tha bank,medium,elderly,east_indian,fraud
+516,I want to clear my outstanding dues,Ai want to clear my outstanding dues,medium,young,east_indian,payment
+517,There is a suspicious transaction on my account,There iz a suspicious transaction on account,medium,young,east_indian,fraud
+518,I received a fraudulent SMS asking to update my KYC,I received a fraudulent SMS asking to update my KYC,low,child,east_indian,fraud
+519,I would like to see my account balance,I would like to see my account balance,low,female,south_indian,balance
+520,How do I activate mobile banking,How do I activate mobile banking,low,male,neutral,general
+521,Tell me about the salary account benefits,Tell about selary acounnt benefits,high,young,neutral,scheme
+522,I want to invest in the National Savings Certificate,want to invest te National Savings Certificate,high,young,west_indian,scheme
+523,Please freeze my account there is unauthorized access,Please freeze acccount there is unautherized access Please freeze,high,elderly,neutral,fraud
+524,What are the banking hours,What are banking hours,medium,child,east_indian,general
+525,My current account balance is how much,My current account balance is how much,low,male,neutral,balance
+526,I need to pay my insurance premium of three thousand,I need to pay insurance premium of tree thousand,medium,male,north_indian,payment
+527,How do I update my mobile number,How do Ai update my okay okay mobile number,high,young,east_indian,general
+528,How do I update my mobile number,How I update mai mobile number,medium,child,south_indian,general
+529,I want to invest ten lakh rupees in a recurring deposit,I want to invest ten,high,child,north_indian,scheme
+530,Can you check the balance in my FD account,Can you check balence my FD acccount,high,female,neutral,balance
+531,I want to foreclose my personal loan,I want to umm forclose persnal loan,high,child,neutral,loan
+532,Transfer ten lakh rupees to Geeta,Transfer ten lakh rupees to Geeta,low,elderly,east_indian,transfer
+533,Pay gas bill of three thousand rupees,Pay gas bill of three thousan rupees,medium,male,north_indian,payment
+534,I want to prepay my home loan,I want to prepay prepay home loan,medium,female,neutral,loan
+535,How do I generate account statement,How do I generate acounnt statement,medium,elderly,west_indian,general
+536,Pay fifty thousand rupees to Savita for rent,Pay Pay fifty tousand roopees to Savita rent,high,female,south_indian,payment
+537,How do I check my transaction history,How check transaaction history,high,elderly,neutral,general
+538,What are the tax benefits on home loan,What are the tax benefits on home loan,low,elderly,neutral,scheme
+539,What is the outstanding principal on my loan,What is te outstandin principal principal on na mhy loan,high,young,west_indian,loan
+540,Someone called me pretending to be bank staff and asked for my details,Someone called me pretendng to be baink,high,child,south_indian,fraud
+541,I received a fraudulent SMS asking to update my KYC,I received a fraudulent SMS asking to update my KYC,low,male,east_indian,fraud
+542,Transfer funds to 2345678901 account,Transfer funds to 2345678901 account,low,male,east_indian,transfer
+543,There is a suspicious transaction on my account,There is a suspicious transaction on my account,low,young,south_indian,fraud
+544,Please block my account immediately there is fraud,Please block my account immediately there is fraud,low,young,west_indian,fraud
+545,Pay my phone bill of three thousand rupees,Pay mai phone bill of 3 thousand rupees,medium,elderly,south_indian,payment
+546,I want to apply for a personal loan of five lakh rupees,I want apply for a persnal loan of five lakh rupees,medium,female,south_indian,loan
+547,What is the auto-sweep facility,What is te ya auto-sweep facility,high,male,west_indian,scheme
+548,Transfer ten thousand to Vijay today,Transfer ten tousand Vijay today,high,elderly,south_indian,transfer
+549,Transfer one lakh rupees to Kamla,tranfer wan lakh actually rupees to Kamla,high,elderly,north_indian,transfer
+550,Make payment towards my home loan EMI,Make paymant towards mai home loan EMI,medium,young,south_indian,payment
+551,I want to report a failed ATM transaction where money was deducted,I want to report a failed ATM transction vere money was deducted,medium,male,north_indian,fraud
+552,I need a loan of ten thousand rupees urgently,I need loan tan thousand rupees urgently,high,male,west_indian,loan
+553,Can you initiate a transfer of five lakh rupees to Anil,Can you initiate a tansfer of 5 lakh rupees Anil,medium,elderly,west_indian,transfer
+554,How to apply for mudra loan,How to apply mudra loan,medium,elderly,east_indian,loan
+555,Make a bill payment for electricity,Make a bill payment for for electricity,medium,young,east_indian,payment
+556,What is the processing fee for personal loan,What is the processing fee for personal loan,low,young,neutral,loan
+557,Pay subscription fee of seven thousand rupees,Pay subscription fee of seven thousand rupees,low,young,east_indian,payment
+558,I received a fake UPI payment request,received a fake UPI paymant request,medium,elderly,south_indian,fraud
+559,Please transfer forty thousand to account number 5432167890,Please tansfer 40 thousand to account number 5432167890,medium,child,west_indian,transfer
+560,I want to invest ten thousand rupees in a recurring deposit,I want to invest ten,high,child,north_indian,scheme
+561,Someone has done an unauthorized transaction from my account,Someone has done unautharized transction from my acounnt,high,child,north_indian,fraud
+562,Do an immediate transfer of two lakh rupees,Do an immediate tranfer 200000 rupees,high,child,north_indian,transfer
+563,There is a suspicious transaction on my account,There is a suspicious transaction on my account,low,young,neutral,fraud
+564,I need to send money to Bharat right now,I need to send money to Bharat right now,low,female,south_indian,transfer
+565,How do I open a new savings account,How do do I open ji a new savings acounnt,high,young,north_indian,general
+566,I want to invest in the National Savings Certificate,want invest National,high,child,neutral,scheme
+567,Show me the balance after my last transaction,Show me the balance after last transaction,medium,child,north_indian,balance
+568,Pay my mobile recharge of ten lakh rupees,Pay my mobile recharge of tan lakh rupees,medium,female,neutral,payment
+569,I have been cheated online please help,I have been cheated online please help,low,male,neutral,fraud
+570,I received a fraudulent SMS asking to update my KYC,I received a fradulent SMS asking to update my KYC,low,male,west_indian,fraud
+571,What are the banking hours,What are the banking hours,low,elderly,neutral,general
+572,Tell me about the Kisan Vikas Patra scheme,Tell me about the Kisan Vikas Patra scheme,low,female,neutral,scheme
+573,My account has been compromised please help,My acounnt has has been compramised pleese help,high,male,south_indian,fraud
+574,What is my balance in the savings account,What is my baalance in tha savings acccount,high,child,east_indian,balance
+575,Someone called me pretending to be bank staff and asked for my details,Someone called me pretending to be bank staff and asked for details,low,male,north_indian,fraud
+576,I need to pay Bharat thirty thousand rupees now,Ai need to pay Bharat thirty tousand rupees now,medium,male,east_indian,transfer
+577,Please initiate IMPS of three thousand rupees to 9876543210,Please initaite IMPS of three thousan roopeez to 9876543210 Please initaite,high,elderly,west_indian,transfer
+578,How do I update my mobile number,How do update my mobile number,medium,female,neutral,general
+579,Apply for a car loan of five thousand rupees,Apply for a car loan of five tousand rupees,medium,male,neutral,loan
+580,Give me an update on my balance,Give me an update on my balance,low,young,neutral,balance
+581,Show me the balance after my last transaction,Show me the ballance after last transaaction Show me,high,elderly,neutral,balance
+582,Can I get a home loan of ten thousand rupees,Can I get home loan of tan thousand rupees,medium,child,neutral,loan
+583,I want to transfer one thousand rupees to account 3456789012,I want to transfar won thousand rupees acounnt 3456789012,high,female,west_indian,transfer
+584,I want to enable international transactions on my card,I want to enable international transactions on my card,low,elderly,south_indian,general
+585,How do I update my address in bank records,How do I update,high,child,neutral,general
+586,Transfer twelve thousand rupees from my savings to current account,Transfer tweleve thousand rupees from my savings current account,medium,female,east_indian,transfer
+587,Please help me report a cyber fraud immediately,Please help me report a cybar fraud immediately,medium,young,south_indian,fraud
+588,How do I register for internet banking,How do I I register for internet banking,medium,male,south_indian,general
+589,I have been cheated online please help,Ai have been cheated online please help,medium,female,east_indian,fraud
+590,How do I block my credit card,How do block,high,child,north_indian,general
+591,What is my loan outstanding balance,What is my loan oustanding balance,medium,child,west_indian,loan
+592,What is the penalty for late EMI payment,What is the penalty for late EMI payment,low,female,south_indian,loan
+593,Transfer twelve thousand rupees to my wife's account,Transfer twelve tousand roopees yes yes mai wife's acccount acccount,high,young,south_indian,transfer
+594,Someone is using my mobile banking without my permission,Someone is using mobile bankin without my permision,high,young,east_indian,fraud
+595,What is my current balance,What is my current balance,low,child,neutral,balance
+596,I want to foreclose my personal loan,I want to foreclose mhy personal loan,medium,young,west_indian,loan
+597,What is the auto-sweep facility,What the arey auto-sweep facility,high,child,neutral,scheme
+598,My account balance please,My account ji balance please,medium,child,west_indian,balance
+599,Can I get a gold loan against my ornaments,Can I get a gold loan against mhy ornaments,medium,male,west_indian,loan
+600,Tell me about the sweep in fixed deposit,Tell me about sweep in fixed deopsit,medium,child,neutral,scheme
+601,What is the minimum balance for my account,What dha minimun,high,child,south_indian,balance
+602,What is the interest rate for recurring deposit,What da interest rate for recurring deposit,medium,young,north_indian,scheme
+603,I need a business loan of ten lakh rupees,I need a business loan of ten lakh rupees,low,elderly,north_indian,loan
+604,I want to pay my credit card bill,I want want pay mhy creditt kaad bill,high,male,west_indian,payment
+605,Someone has done an unauthorized transaction from my account,Someone has done an unautherized transaction from my acounnt,medium,elderly,east_indian,fraud
+606,Can you check the balance in my FD account,Can you check da balance in FD acccount,high,elderly,north_indian,balance
+607,Tell me about the Kisan Vikas Patra scheme,Tell me about dha Kisan Vikas Patra scheme,medium,young,south_indian,scheme
+608,Transfer five lakh to Vinod today,tranfer tranfer 500000 to Vinod today,high,male,west_indian,transfer
+609,Please transfer ten lakh to account number 7890123456,Please transfers tan lakh to acccount number 7890123456,high,young,north_indian,transfer
+610,Tell me about the bank's health insurance schemes,Tell me about te bank's health insurance schemes,medium,female,west_indian,scheme
+611,Someone has done an unauthorized transaction from my account,Someone has done an unauthorized transaction from mhy account,medium,young,west_indian,fraud
+612,What is the branch IFSC code,What ees dha branch IFSC code,high,child,south_indian,general
+613,How to apply for mudra loan,How to apply for mudra loan,low,female,east_indian,loan
+614,Give me the loan statement for the last year,Give me the loan statament please please for last year,high,elderly,neutral,loan
+615,How much is remaining in my account,How much ees remaining uh in mai acount,high,female,south_indian,balance
+616,Tell me about the senior citizen savings scheme,Tell me about the senior citizen savings scheme,low,female,south_indian,scheme
+617,How do I invest in mutual funds through the bank,How do I invest in mutual funds through the bank,low,elderly,north_indian,scheme
+618,Tell me about government backed savings schemes,Tell about goverment backed savings savings schemes,high,male,neutral,scheme
+619,I have been cheated online please help,I have been cheated online please help,low,female,east_indian,fraud
+620,There is a suspicious transaction on my account,There ees a suspicious transction transction on mai account,high,female,south_indian,fraud
+621,I received a fake UPI payment request,I received a fake UPI paymant request,medium,elderly,south_indian,fraud
+622,Pay subscription fee of five lakh rupees,Pay subscription fee of 500000 rupees,medium,elderly,west_indian,payment
+623,What is the available balance in my account,What ees availble ballance in acccount,high,female,south_indian,balance
+624,I want to update my KYC details,I want to update my KYC details,low,female,east_indian,general
+625,How much money do I have in my account,How much money do I have in mhy account,medium,elderly,west_indian,balance
+626,I did not authorize this transaction of two hundred rupees,did not autharize this transaction of two hundread rupees,medium,young,south_indian,fraud
+627,Can you display the balance for account 2345678901,Can you display the,high,child,west_indian,balance
+628,I lost my debit card please block it immediately,lost my debit card please block it immediately,medium,female,neutral,fraud
+629,What is the interest rate for recurring deposit,What is the interest rate okay okay for recurring depposit,high,young,neutral,scheme
+630,I need to know my bank balance right now,need to know mhy bank valence right now,high,female,west_indian,balance
+631,What is the penalty for late EMI payment,What is da penalty,high,child,north_indian,loan
+632,Please send thirty thousand to Rakesh via NEFT,Please send thirty thousand Rakesh via NEFT,medium,child,north_indian,transfer
+633,How do I check my transaction history,How do I check my transction history,medium,young,north_indian,general
+634,Send fifteen thousand rupees using UPI to sunita@okaxis,Send fifteen thousand rupees using UPI sunita@okaxis,medium,female,north_indian,transfer
+635,What is the branch IFSC code,What is te like branch IFSC code code,high,young,west_indian,general
+636,Someone is using my mobile banking without my permission,Someone using my mobille,high,child,north_indian,fraud
+637,Please send thirty thousand to Kamla via NEFT,Please send 30000 Kamla via NEFT,high,child,west_indian,transfer
+638,How much is remaining in my account,How much is remaning basically in my account,medium,elderly,south_indian,balance
+639,Tell me about the Kisan Vikas Patra scheme,Tell about tha Kisan Kisan Vikas Patra scheme,high,elderly,east_indian,scheme
+640,Do an RTGS transfer of two hundred rupees to 0123456789,Do RTGS tranfer of 200 rupees to 0123456789,high,female,neutral,transfer
+641,What are the charges for NEFT transfer,What are the charges for NEFT transfer,low,child,west_indian,general
+642,Someone is using my mobile banking without my permission,Someone is using mai mobile banking without without mai permission,high,female,south_indian,fraud
+643,Move five thousand rupees from savings to my FD,Move five tousand rupees from savings to my FD,medium,female,neutral,transfer
+644,I want to pay my credit card bill,Ai want to pay my creditt card bill,medium,female,east_indian,payment
+645,Can you display the balance for account 1357924680,Can you display da valence for acounnt 1357924680,high,young,north_indian,balance
+646,What is the EMI for a loan of five thousand rupees,What ees dha EMI for a loan of fife thousand roopees,high,young,south_indian,loan
+647,How do I activate mobile banking,How doo Ai activate mobile banking,high,male,east_indian,general
+648,What is my balance in the savings account,What is mhy balance te savings account,high,young,west_indian,balance
+649,Tell me my total account balance please,Tell me my,high,child,neutral,balance
+650,Please help me report a cyber fraud immediately,Please help me report a cyber fraud immediately,low,young,south_indian,fraud
+651,What is the auto-sweep facility,What is the auto-sweep facility,low,elderly,neutral,scheme
+652,Can you display the balance for account 7890123456,Can you display balence for acounnt 7890123456,high,child,south_indian,balance
+653,Please do a NEFT transfer to Rakesh,Please NEFT tranfer tranfer to Rakesh,high,child,south_indian,transfer
+654,I want to link my Aadhaar to my account,want to link my Aadhaar to my account,medium,elderly,neutral,general
+655,I clicked on a suspicious link and now I am worried,I clicked on a suspicious link and now I am worried,low,male,neutral,fraud
+656,I want to prepay my home loan,want to preepay home loan,high,elderly,neutral,loan
+657,Tell me about the Sukanya Samriddhi scheme,Tell me about the Sukanya Samriddhi scheme,low,young,south_indian,scheme
+658,Send twelve thousand rupees to beneficiary Sanjay,Send twelve thousand rupees to beneficiary Sanjay,low,female,neutral,transfer
+659,There is a suspicious transaction on my account,There a suspicious transction on acounnt,high,child,north_indian,fraud
+660,I received a fake UPI payment request,I received fake UPI payment request,medium,young,south_indian,fraud
+661,I want to apply for a personal loan of three thousand rupees,I want to apply for a personnal loan like of tree tousand rupees,high,male,north_indian,loan
+662,I received a suspicious call asking for my OTP,Ai received suspicious call asking for OTP,high,female,east_indian,fraud
+663,What are the current savings schemes available,What are te current savings schemes available,medium,male,west_indian,scheme
+664,Pay my DTH subscription of three thousand rupees,Pay my DTH subscription of tree thousand rupees,medium,female,south_indian,payment
+665,I want to prepay my home loan,want to prepay home loan want to,high,elderly,neutral,loan
+666,I want to invest in the National Savings Certificate,I want invest in te National Savings certficate,high,elderly,west_indian,scheme
+667,How do I update my mobile number,How do I update yes yes mai mobile number,high,child,south_indian,general
+668,My account has been compromised please help,account has been compromised please help account has,high,elderly,west_indian,fraud
+669,Someone is trying to hack my net banking account,Someone ees trying hack mai net bankin acounnt,high,young,south_indian,fraud
+670,What are the tax benefits on home loan,What are the tax benefits on home loan,low,child,north_indian,scheme
+671,Please help me report a cyber fraud immediately,Please help me report a syber fraud immidiately,medium,young,east_indian,fraud
+672,Please help me report a cyber fraud immediately,Please help me report a syber fraud immediately,medium,young,north_indian,fraud
+673,Show me the balance after my last transaction,Show me dha balance after my last transaction,medium,male,south_indian,balance
+674,Apply for education loan of ten thousand rupees,Apply for educashun loan of ten tousand rupees,medium,male,neutral,loan
+675,What are the tax benefits on home loan,What are dha tax benefits on home loan,medium,young,south_indian,scheme
+676,I received a fake UPI payment request,Ai received a fake UPI paiment request,medium,young,east_indian,fraud
+677,Pay my DTH subscription of five thousand rupees,Pay my DTH subscripshun of 5 thousand rupees,medium,young,north_indian,payment
+678,Send five thousand rupees to beneficiary Asha,Send 5 thousand rupees to beneficiary Asha,medium,male,west_indian,transfer
+679,How much is remaining in my account,How much much is remaning in acounnt,high,child,neutral,balance
+680,What are the current savings schemes available,What are the current savings schemes available,low,male,west_indian,scheme
+681,How to close my savings account,How to close my savings acount,medium,male,east_indian,general
+682,Transfer money to Kavita immediately,transfar money to Kavita immediately,medium,elderly,south_indian,transfer
+683,Do an immediate transfer of five lakh rupees,Do an immediate tansfer of five lakh rupees,medium,male,west_indian,transfer
+684,I think my debit card has been cloned,I think mai debot card arey has been cloaned cloaned,high,young,south_indian,fraud
+685,How many EMIs are remaining for my loan,How many EMIs are remaning for ya loan,medium,male,east_indian,loan
+686,I think my debit card has been cloned,I think mai debit card has been cloned,medium,male,south_indian,fraud
+687,I got a message saying I won a lottery through the bank,got a message saying won a lottary yes yes through da bank,high,child,north_indian,fraud
+688,What is the auto-sweep facility,What is the auto-sweep facility,low,male,neutral,scheme
+689,I need to transfer ten lakh rupees urgently,I need to transfer 1000000 rupees urgantely,high,male,north_indian,transfer
+690,I want to know about locker facility,I want to know about locker facility,low,male,neutral,general
+691,I need to pay my insurance premium of thirty thousand,I need to pay,high,child,east_indian,payment
+692,How do I invest in mutual funds through the bank,How do I invest in mutual funds through the bank,low,young,neutral,scheme
+693,How much is remaining in my account,How much is remaining in my account,low,child,west_indian,balance
+694,Please block my account immediately there is fraud,Please block acccount immidiately dare fraud,high,elderly,north_indian,fraud
+695,I want to enable international transactions on my card,I want to enable international transactions on my card please please,medium,elderly,south_indian,general
+696,Transfer forty thousand to Rajan today,Transfer forty thouusand Rajan today,high,child,neutral,transfer
+697,Make payment towards my home loan EMI,Make payment towards my home loan EMI,low,child,east_indian,payment
+698,What documents are required for home loan,What documents are required for home loan,low,elderly,west_indian,loan
+699,Transfer three thousand rupees to Usha,transfers 3000 rupees to Usha,high,elderly,north_indian,transfer
+700,Can you check the balance in my FD account,Can Can you check da ballance in my FD acount,high,young,north_indian,balance
+701,I want to transfer two hundred rupees to account 4567890123,I want to transfer two hundred rupees to account 4567890123,low,female,north_indian,transfer
+702,Apply for education loan of ten thousand rupees,Apply educaation loan ten ten thousand roopeez,high,female,west_indian,loan
+703,I lost my debit card please block it immediately,I lost my debitt card please block it immediately,medium,male,north_indian,fraud
+704,What is my loan account number,What my loan,high,child,neutral,loan
+705,What is the interest rate on home loan,What ees dha interest rate on okay okay home loan,high,elderly,south_indian,loan
+706,Tell me about the Sukanya Samriddhi scheme,Tell me about the Sukanya Samriddhi scheme,low,young,north_indian,scheme
+707,What is the customer care number,What is the customer care number,low,child,neutral,general
+708,I think my debit card has been cloned,I think debot card has been cloaned,high,child,north_indian,fraud
+709,My account balance please,My account balance please,low,female,neutral,balance
+710,Show me my loan account details,Show me my,high,child,neutral,loan
+711,Is my salary credited to my account,my salary credited to my account,medium,female,north_indian,balance
+712,How to reset my net banking password,How to reset my net banking pasword yes yes,high,male,west_indian,general
+713,What are the tax benefits on home loan,What are tha tax uh benefits on home loan,medium,young,east_indian,scheme
+714,Make payment for my water bill,Make paymant mai water bill Make paymant,high,elderly,south_indian,payment
+715,Please initiate IMPS of seven thousand rupees to 5432167890,Please initaite IMPS seven thousand rupees to 5432167890,medium,female,east_indian,transfer
+716,How to reset my net banking password,How to reset my net bankin passward,medium,child,north_indian,general
+717,I got an OTP which I did not request please help,I got got an OTP which I did not request please help,low,elderly,east_indian,fraud
+718,Please initiate IMPS of fifty thousand rupees to 8901234567,Please initiate IMPS of fifty thousand rupees to 8901234567,low,child,neutral,transfer
+719,Has my salary of ten thousand rupees been credited,Has my salary of ten thousand rupees been credited,low,elderly,north_indian,balance
+720,Tell me my total account balance please,Tell me my total account valence valence please,medium,child,west_indian,balance
+721,I need to pay Kamla twenty thousand rupees now,I need to pay Kamla 20 thousand rupees now,medium,elderly,north_indian,transfer
+722,I received a suspicious call asking for my OTP,I received a suspicious call asking for my OTP,low,male,north_indian,fraud
+723,I want to transfer twelve thousand rupees to account 6789012345,I want to transfer twelve tousand roopees acount 6789012345 I want,high,elderly,south_indian,transfer
+724,There is a suspicious transaction on my account,There iz a suspicious transaction on my account,medium,male,east_indian,fraud
+725,How to open a PPF account,How to open bhai PPF acount acount,high,elderly,west_indian,scheme
+726,What are the benefits of the premium savings account,What are the benefits of the premium savings acounnt,medium,elderly,east_indian,scheme
+727,Pay gas bill of twenty thousand rupees,Pay gas bill of twenty thousand rupees,low,child,north_indian,payment
+728,I would like to see my account balance,I would like to see my account balance,low,young,neutral,balance
+729,Please transfer seven thousand to account number 7890123456,Please transfer seven thousand,high,child,north_indian,transfer
+730,I want to check my account balance,I want check account ballance,high,child,west_indian,balance
+731,What is the minimum balance for my account,What the minumum yes yes valence for acccount,high,elderly,neutral,balance
+732,Give me an update on my balance,Give me update on my balance,medium,male,east_indian,balance
+733,My account shows a debit of ten lakh that I did not do,My account shows a debit of ten lakh that I did not,low,child,west_indian,fraud
+734,Tell me about government backed savings schemes,Tell about government backed savings schemes,medium,child,east_indian,scheme
+735,How to reset my net banking password,How How to reset my net banking password,medium,male,neutral,general
+736,I want to link my Aadhaar to my account,I want link my Aadhaar to account,medium,male,south_indian,general
+737,I want to clear my outstanding dues,I want to clear my outstandin dues,medium,young,north_indian,payment
+738,Pay one thousand rupees towards my loan EMI,Pay one thouusand rupees towards loan EMI EMI,high,child,neutral,payment
+739,Clear my credit card outstanding of twelve thousand rupees,Clear my credit card outstanding of twelve thouusand rupees,medium,male,north_indian,payment
+740,Someone has done an unauthorized transaction from my account,Someone has done an unautherized transaction from account,medium,female,north_indian,fraud
+741,I would like to see my account balance,would like to see my account balance,medium,child,south_indian,balance
+742,What is the process to get a passbook,What is the process get a passbbok,medium,female,neutral,general
+743,Pay gas bill of twelve thousand rupees,Pay gas bill of 12 thousand rupees,medium,male,north_indian,payment
+744,Move one thousand rupees from savings to my FD,Move one tousand roopees from savings to mai FD,high,female,south_indian,transfer
+745,What is the interest rate on fixed deposit for one thousand rupees,What is te interest rate on fixed depositt for one tousand roopeez,high,female,west_indian,scheme
+746,What is the minimum balance for my account,What is te bhai minimun valence mhy acccount,high,elderly,west_indian,balance
+747,Pay the school fees of twenty thousand rupees,Pay school fees of twenty thousand rupees,medium,young,east_indian,payment
+748,Send ten lakh rupees to UPI ID kavita@okicici,Send tan lakh rupees ji UPI ID kavita@okicici,medium,female,neutral,transfer
+749,I want to link my Aadhaar to my account,I want to link my Aadhaar to account,medium,child,north_indian,general
+750,I want to send thirty thousand to Pooja's account number 3456789012,I want send thirty thousand to Pooja's Pooja's acccount number 3456789012,medium,female,neutral,transfer
+751,How do I update my address in bank records,How do I update my address in bank records,low,child,north_indian,general
+752,How much is remaining in my account,How much is remaining in mhy acount,medium,elderly,west_indian,balance
+753,I want to update my KYC details,want update mai KYC details bhai,high,young,south_indian,general
+754,What is the outstanding principal on my loan,What the outstandin principl on mai loan,high,young,south_indian,loan
+755,Transfer funds to 4567890123 account,transfers funds 4567890123 acount,high,elderly,south_indian,transfer
+756,Make UPI payment of five hundred to meena@ibl,Make UPI paymant of five hundred to meena@ibl,medium,child,north_indian,payment
+757,I think my debit card has been cloned,I think my debot card has been cloned,medium,child,south_indian,fraud
+758,Please send two lakh to Anita via NEFT,Please send two lakh to Anita via NEFT,low,elderly,east_indian,transfer
+759,I want to transfer ten thousand rupees to account 9012345678,I want transfer ten thouusand rupees to acounnt 9012345678,medium,elderly,south_indian,transfer
+760,Can I apply for a top-up loan,Can apply apply for a top-up loan,medium,female,west_indian,loan
+761,What are the banking hours,What are the banking hours,low,young,north_indian,general
+762,My current account balance is how much,My current account ballance ees how much,medium,male,south_indian,balance
+763,I need a bank statement for the last six months,need a baink statment for dha last six months theek hai,high,male,south_indian,general
+764,How do I check my transaction history,How do I check my transaction history,low,child,north_indian,general
+765,Can you tell me my savings account balance,Can you tell me my savings account balance,low,young,north_indian,balance
+766,What is my loan account number,What is is my loan account number,medium,female,neutral,loan
+767,I want to do a fund transfer of two hundred rupees,I want to do a fund transfer of too hundred rupees,low,elderly,south_indian,transfer
+768,My account balance please,My account valence please,medium,female,south_indian,balance
+769,What is the minimum balance for my account,What is minimum ballance for my acounnt,high,elderly,neutral,balance
+770,Make UPI payment of two lakh to anil@okaxis,Make UPI paymant of 2 lakh to anil@okaxis,medium,young,west_indian,payment
+771,What documents are required for home loan,What documment are required home loan,medium,young,neutral,loan
+772,I would like to see my account balance,would like to see my acccount please valence,high,female,south_indian,balance
+773,How do I invest in mutual funds through the bank,How do I invest in mutual funds through te bank,low,elderly,west_indian,scheme
+774,I want to update my KYC details,I want to update mai KYC details,medium,female,south_indian,general
+775,What is my current balance,What What iz,high,child,east_indian,balance
+776,Someone is using my mobile banking without my permission,Someone is using mai,high,child,south_indian,fraud
+777,I need to know my bank balance right now,I need to know my bank baalance right now,medium,child,east_indian,balance
+778,Apply for a car loan of five thousand rupees,Apply for car loan five thousand okay okay roopeez,high,young,west_indian,loan
+779,I want to prepay my home loan,I want prepay my home you know loan,high,elderly,neutral,loan
+780,I want to know about the monthly income scheme,want to know know about na da monthly income scheme,high,young,north_indian,scheme
+781,I want to send five thousand to Sudha's account number 5432167890,I want send five thouusand to Sudha's account number 5432167890,medium,elderly,north_indian,transfer
+782,I got an OTP which I did not request please help,I got OTP which I did not request please help,low,elderly,west_indian,fraud
+783,What is the minimum balance for my account,What the minimun ballance for my account,high,child,neutral,balance
+784,I need to pay Priya for five hundred rupees,I need to pay Priya five hunderd rupees,medium,male,north_indian,payment
+785,I want to transfer two lakh rupees to account 7890123456,I want to transfer two lac roopees basically to acccount 7890123456,high,male,south_indian,transfer
+786,I want to add a nominee to my account,I want to add a nominee to my account,low,child,neutral,general
+787,Please show me the balance in my account,Please show me balence in acounnt you know,high,female,neutral,balance
+788,What is the available balance in my account,What is the available balance in my account,low,child,neutral,balance
+789,What is the PPF interest rate this quarter,What da PPF PPF intrest rate dis basically quarter,high,female,north_indian,scheme
+790,Give me the loan statement for the last year,Give me dha loan statament for dha last year,high,elderly,south_indian,loan
+791,How do I register for internet banking,How do I register internett bankking,high,young,north_indian,general
+792,How do I check my transaction history,How do check theek hai my transction histery,high,male,neutral,general
+793,I need a loan of fifty thousand rupees urgently,need a loan of fifty I mean tousand rupees urgently,high,female,north_indian,loan
+794,What is the interest rate on home loan,What is da interest rate on home loan,medium,child,north_indian,loan
+795,Pay one lakh rupees towards my loan EMI,Pay one lakh lakh rupees towards my loan EMI,medium,young,north_indian,payment
+796,Someone has done an unauthorized transaction from my account,Someone has done an unauthorized transaction from my account,low,young,east_indian,fraud
+797,Pay one lakh rupees to Gopal for rent,Pay one lakh rupees to Gopal for rent,low,elderly,west_indian,payment
+798,Make a payment of one lakh to Sudha,Make a payment one lakh to Sudha,medium,child,south_indian,payment
+799,What is the auto-sweep facility,What tha auto-sweep facility facility,high,male,east_indian,scheme
+800,Someone is trying to hack my net banking account,Someone ees trying to hack net banking account,medium,female,south_indian,fraud
+801,I want to invest seven thousand rupees in a recurring deposit,Ai wannt invest seven thousan rupees in a recurring deopsit,high,elderly,east_indian,scheme
+802,Please help me report a cyber fraud immediately,Please help me report cybar fraud actually immediately,high,young,south_indian,fraud
+803,What is my balance in the savings account,What is my valence the savings account,medium,young,neutral,balance
+804,Can you initiate a transfer of ten lakh rupees to Vijay,Can you initiate a tansfer of ten lac roopeez to Vijay Can you,high,elderly,west_indian,transfer
+805,I want to know about the monthly income scheme,want know about the monthly income scheme scheme,high,young,north_indian,scheme
+806,I need a bank statement for the last six months,I need a bank statament for te last six months,medium,child,west_indian,general
+807,I want to open a recurring deposit account,I want to open a recurring deopsit account,medium,young,south_indian,scheme
+808,Make payment for my water bill,Make paymant water bill,high,child,neutral,payment
+809,Someone has done an unauthorized transaction from my account,Someone has done an unautherized transaction from my my acounnt,high,young,north_indian,fraud
+810,My account shows a debit of one lakh that I did not do,My acount shows a debit of one lakh that did not do,medium,male,south_indian,fraud
+811,I want to open a recurring deposit account,I want open a recurring deposit account,medium,elderly,north_indian,scheme
+812,I want to foreclose my personal loan,want foreclose personal loan,high,female,neutral,loan
+813,My current account balance is how much,My current acounnt balence how much,high,male,neutral,balance
+814,My account balance please,My acount ballance please,high,young,west_indian,balance
+815,How much money do I have in my account,How much money doo I have in my acounnt,medium,male,east_indian,balance
+816,There is a suspicious transaction on my account,There is a suspicious transction on my acccount,medium,child,neutral,fraud
+817,How do I activate mobile banking,How I activate mobile banking,medium,child,north_indian,general
+818,What are the banking hours,What arr bankin hours,high,elderly,south_indian,general
+819,Check balance for account number 1357924680,Check valence acounnt number 1357924680,high,elderly,north_indian,balance
+820,Please freeze my account there is unauthorized access,Please freeze my acounnt there is unauthorized access,medium,elderly,neutral,fraud
+821,Pay hospital bill of three thousand rupees,Pay hospital bill three thouusand rupees,medium,female,south_indian,payment
+822,I want to send ten lakh to Ramesh's account number 9012345678,I want to send ten lakh to Ramesh's account number 9012345678,low,young,north_indian,transfer
+823,Make payment for my water bill,Make paiment for mai water bill,high,female,south_indian,payment
+824,I need to pay Harish for thirty thousand rupees,I need pay Harish for thirty thousand rupees,medium,child,east_indian,payment
+825,I need a bank statement for the last six months,I need bank statement for tha last six months,medium,elderly,east_indian,general
+826,Pay my DTH subscription of ten lakh rupees,Pay my DTH subscription of ten lac rupees,medium,female,neutral,payment
+827,I got a message saying I won a lottery through the bank,I got a message saying I won a lottery through dha bank,low,young,south_indian,fraud
+828,Make UPI payment of five thousand to deepa@ybl,Make UPI payment of five thousand to deepa@ybl,low,young,west_indian,payment
+829,Tell me about the salary account benefits,Tell me about hello dha salary account benefits,medium,male,south_indian,scheme
+830,What is the minimum balance required,What is the minumum balence theek hai required,high,male,neutral,general
+831,Pay subscription fee of ten thousand rupees,Pay subscription fee of ten tousand rupees,medium,child,east_indian,payment
+832,What is my loan outstanding balance,What loan outstandin balance please,high,elderly,west_indian,loan
+833,I want to know about home loan eligibility,I want to know,high,child,north_indian,loan
+834,Tell me about the salary account benefits,Tell me about salary yes yes acount benefits,high,male,west_indian,scheme
+835,Show balance for my joint account,Show balance for mai joint acount Show balance,high,elderly,south_indian,balance
+836,Pay my DTH subscription of three thousand rupees,Pay mhy DTH subscription of three thousand rupees,medium,child,west_indian,payment
+837,Pay my LIC premium of two thousand rupees,Pay mhy LIC premium two thousand roopeez,high,female,west_indian,payment
+838,I need to transfer five hundred rupees urgently,need transfer five hundered roopeez urgantely,high,male,west_indian,transfer
+839,Pay my mobile recharge of fifteen thousand rupees,Pay my mobile recharge of fifteen thousand rupees,low,young,east_indian,payment
+840,I want to know about home loan eligibility,I want to know about home loan bhai eligibility,medium,elderly,neutral,loan
+841,Tell me about the salary account benefits,Tell me about salary account benefits,medium,child,north_indian,scheme
+842,I need to know my bank balance right now,I need to know mhy bank balance right now I need,high,elderly,west_indian,balance
+843,I need to pay Ramesh for five hundred rupees,I need pay Ramesh five hunderd hunderd rupees,high,elderly,south_indian,payment
+844,Can you tell me my savings account balance,Can you tell my savings hello acounnt balence,high,female,east_indian,balance
+845,Give me the loan statement for the last year,Give me the loan loan statement last year,high,elderly,neutral,loan
+846,Send twenty thousand rupees to UPI ID sunita@okaxis,Send twenty tousand rupees UPI ID sunita@okaxis,medium,female,north_indian,transfer
+847,Can I get a home loan of fifty thousand rupees,Can I get home loan 50000 rupees,high,male,south_indian,loan
+848,How do I generate account statement,How do I genrate hello account statament,high,elderly,neutral,general
+849,I would like to see my account balance,I would like to see acount balance,medium,male,north_indian,balance
+850,Apply for education loan of fifty thousand rupees,Apply for education loan of fifty thousand roopees,medium,male,south_indian,loan
+851,What is my balance in the savings account,What is my balance balance in the savings account,medium,child,north_indian,balance
+852,Is my salary credited to my account,selary credited to,high,child,north_indian,balance
+853,How to close my savings account,How close please,high,child,west_indian,general
+854,What is the minimum balance required,What ees dha minimum balance required,high,male,south_indian,general
+855,Transfer funds to 1357924680 account,tranfer funds to 1357924680 acount,high,male,south_indian,transfer
+856,I want to update my KYC details,I want to update my KYC details,low,female,south_indian,general
+857,I want to know about the monthly income scheme,I want to know about da monthly income scheme,medium,elderly,north_indian,scheme
+858,How much money do I have in my account,How much money do I haave in account,medium,child,south_indian,balance
+859,What is the available balance in my account,What What available valence in acount,high,female,north_indian,balance
+860,I received a phishing email from someone pretending to be the bank,I received a phishing email from someone prentending dha baink,high,young,south_indian,fraud
+861,Tell me about the fixed deposit interest rates,Tell about te fixed depositt interest rates,high,female,west_indian,scheme
+862,Send twenty-five thousand rupees to beneficiary Rajan,Send twenty-five thouusand rupees to beneficiary Rajan,medium,female,north_indian,transfer
+863,I need a bank statement for the last six months,I need a bank statement for the last six months,low,female,west_indian,general
+864,Show me my loan account details,Show me my loan account details,low,male,neutral,loan
+865,I need to pay my insurance premium of three thousand,need to pay my inshurence premium three tousand,high,female,neutral,payment
+866,I need a business loan of one lakh rupees,I need a business loan 100000 rupees,high,young,north_indian,loan
+867,Pay one lakh rupees towards my loan EMI,Pay one lakh rupees towards my loan EMI,low,young,east_indian,payment
+868,Send thirty thousand rupees to Girish using IMPS,Send thirty thouusand rupees bhai to Girish using IMPS,medium,elderly,south_indian,transfer
+869,Please initiate IMPS of twelve thousand rupees to 6789012345,Please initiate IMPS of twelve thousand rupees to 6789012345,low,female,neutral,transfer
+870,I did not authorize this transaction of ten lakh rupees,I did not authorize this transaaction of ten lakh rupees I did,medium,elderly,north_indian,fraud
+871,Do an immediate transfer of two lakh rupees,Do an immediate,high,child,neutral,transfer
+872,Show balance for my joint account,Show baalance my joint acount bhai,high,young,east_indian,balance
+873,How do I register for internet banking,How How do I registar umm internt bankking,high,female,west_indian,general
+874,How do I invest in mutual funds through the bank,How do I invest in,high,child,east_indian,scheme
+875,Pay thirty thousand rupees to merchant Usha,Pay thirty thouusand rupees merchant Usha,medium,elderly,west_indian,payment
+876,What is my loan account number,What ees mai loan account number,high,female,south_indian,loan
+877,I need to know my bank balance right now,Ai need to know my bank uh balance right now,medium,female,east_indian,balance
+878,I need a loan of one thousand rupees urgently,I I need loan of I mean one thousand rupees urgantely,high,elderly,north_indian,loan
+879,Tell me about the Kisan Vikas Patra scheme,Tell me about Kisan Kisan Vikas Patra scheme,medium,male,neutral,scheme
+880,Do an immediate transfer of fifty thousand rupees,Do an immediate transfer of fifty thousnd roopeez Do an,high,elderly,west_indian,transfer
+881,Make payment towards my home loan EMI,Make paiment towards,high,child,neutral,payment
+882,How do I generate account statement,How do I generate account statement,low,child,south_indian,general
+883,Transfer money to Pooja immediately,transfers money to Pooja immediately,medium,child,east_indian,transfer
+884,What is my current balance,What ees mai current ballance,high,male,south_indian,balance
+885,How do I update my mobile number,How do I update my mobile number,low,child,north_indian,general
+886,Can you initiate a transfer of five thousand rupees to Sanjay,Can you initiate a transfer of 5 thousand rupees to Sanjay,low,female,east_indian,transfer
+887,Send twenty thousand rupees using UPI to sunita@okaxis,Send 20 thousand roopees using UPI to sunita@okaxis,medium,male,south_indian,transfer
+888,What are the banking hours,What are tha banking hours,medium,child,east_indian,general
+889,I need to transfer two thousand rupees urgently,I need to transfers 2000 rupees urgently,high,child,north_indian,transfer
+890,Someone called me pretending to be bank staff and asked for my details,Someone called prentending to be baink staff and asked for for bhai mai details,high,elderly,south_indian,fraud
+891,What is the interest rate for recurring deposit,What is the intarest rate for recurring depposit,medium,child,neutral,scheme
+892,I want to add a nominee to my account,I want add a nominee to my account,medium,female,north_indian,general
+893,Tell me about the fixed deposit interest rates,Tell me about the fixed deposit interest rates,low,young,north_indian,scheme
+894,I want to send two hundred to Rajan's account number 1357924680,want to send two hundered Rajan's acounnt number 1357924680,high,female,west_indian,transfer
+895,What is the minimum balance for my account,What is the minumum balance for mhy account,medium,male,west_indian,balance
+896,I want to invest thirty thousand rupees in a recurring deposit,I want invest tirty thousand rupees in a recurring deposit,medium,female,neutral,scheme
+897,Transfer two hundred rupees from my savings to current account,Transfer two hundread rupees from my savings to current acounnt,medium,female,east_indian,transfer
+898,What is the available balance in my account,What ees the available balance acounnt What ees,high,elderly,south_indian,balance
+899,I want to transfer forty thousand rupees to account 9012345678,I want to tranfer forty thouusand rupees acounnt 9012345678,high,child,north_indian,transfer
+900,Transfer forty thousand rupees to Ramesh,Transfer 40 thousand,high,child,east_indian,transfer
+901,Transfer five lakh to Anita today,transfar 5 lakh to Anita today,high,elderly,west_indian,transfer
+902,What is the processing fee for personal loan,What is te processing fee for personal loan,medium,elderly,west_indian,loan
+903,Move fifty thousand rupees from savings to my FD,Move 50000 rupees from savings to my FD,medium,female,east_indian,transfer
+904,I got a message saying I won a lottery through the bank,got a message saying won a lottery through da bank,medium,female,north_indian,fraud
+905,I would like to see my account balance,I would like to see mai account balance,medium,female,south_indian,balance
+906,Make UPI payment of twelve thousand to deepa@ybl,Make UPI payment of of twelve thousand to deepa@ybl,medium,female,north_indian,payment
+907,Apply for a car loan of five hundred rupees,Apply a car loan of five hundered rupees,medium,child,neutral,loan
+908,Move seven thousand rupees from savings to my FD,Move seven thousand roopees from savings mai FD please,high,young,south_indian,transfer
+909,Tell me about the fixed deposit interest rates,Tell me about the fixed deposit intarest rates,medium,male,west_indian,scheme
+910,Tell me about the Kisan Vikas Patra scheme,Tell me about da Kisan Vikas Patra scheme,medium,elderly,north_indian,scheme
+911,What documents are required for home loan,What documment are required home loan,medium,elderly,neutral,loan
+912,Someone asked for my card details on phone,Someone asked for my card details on phone,low,young,north_indian,fraud
+913,Send one lakh rupees to beneficiary Anita,Send one lakh rupees to benficiary Anita,medium,child,neutral,transfer
+914,How do I update my address in bank records,How do I update my actually address in bank records records,medium,elderly,west_indian,general
+915,Tell me about the sweep in fixed deposit,Tell me about da sweep in fixed deopsit,medium,elderly,north_indian,scheme
+916,What is the closing balance of my account,What is dha closing balance of my account,medium,male,south_indian,balance
+917,What is the minimum balance for my account,What is the minimum balance for my account,low,male,north_indian,balance
+918,Transfer five hundred to Geeta today,transfers five hundread Geeta today,high,young,west_indian,transfer
+919,Show me the balance of my current account,Show me the baalance of my current account,medium,female,east_indian,balance
+920,Send fifteen thousand rupees to UPI ID priya@paytm,Send fifteen thousan rupees to UPI ID priya@paytm,medium,child,east_indian,transfer
+921,I want to report a failed ATM transaction where money was deducted,I want to report a failed ATM transaction where money was deducted,low,young,south_indian,fraud
+922,I want to update my KYC details,I want to update my KYC details,low,child,neutral,general
+923,I want to pay my internet bill,I want pay my internt bill,medium,male,north_indian,payment
+924,Please transfer one thousand to account number 6789012345,Please transfer one thousand,high,child,north_indian,transfer
+925,Do an RTGS transfer of forty thousand rupees to 2345678901,Do an RTGS transfer of forty thousand rupees arey to 2345678901,low,young,east_indian,transfer
+926,I want to send fifteen thousand to Naresh's account number 1234567890,I want to send fifteen thousand to Naresh's account number 1234567890,low,elderly,west_indian,transfer
+927,Apply for education loan of five hundred rupees,Apply for educashun loan of five hundread rupees,medium,child,east_indian,loan
+928,What is the process to get a new debit card,What is process get a new debit card card,medium,male,south_indian,general
+929,How much is remaining in my account,How much is remaining in my acounnt,medium,child,north_indian,balance
+930,Please help me report a cyber fraud immediately,Please help me report a cyber fraud immediately,low,female,south_indian,fraud
+931,My account balance please,My acounnt balence please please please,high,young,neutral,balance
+932,Someone is using my mobile banking without my permission,Someone is using my mobile banking without my permissoin,medium,male,neutral,fraud
+933,Pay my DTH subscription of fifty thousand rupees,Pay mai DTH subscription of fifty thousan roopees,high,male,south_indian,payment
+934,What documents are required to open an account,What documant arr required required to open an account,high,female,south_indian,general
+935,What is my loan account number,What my loan account number,medium,elderly,west_indian,loan
+936,I want to add a nominee to my account,I want to add bhai nominee to mai acccount,high,female,south_indian,general
+937,Can you initiate a transfer of fifteen thousand rupees to Geeta,Can you initaite transfer of fifteen thousand rupees to you know Geeta,high,elderly,west_indian,transfer
+938,I received a fraudulent SMS asking to update my KYC,I received a fradulent SMS asking to update mhy KYC,medium,young,west_indian,fraud
+939,I lost my debit card please block it immediately,Ai lost my debit card please block it immediately,medium,female,east_indian,fraud
+940,Tell me about the Kisan Vikas Patra scheme,Tell me about the Kisan Vikas Patra scheme,low,female,east_indian,scheme
+941,Tell me my total account balance please,Tell me total total like acccount balence please,high,male,north_indian,balance
+942,I need a bank statement for the last six months,Ai need a bank statement for last six months,medium,female,east_indian,general
+943,What is the branch IFSC code,What is te branch IFSC code,medium,child,west_indian,general
+944,I want to open a tax saver fixed deposit,I want to open a tax saver fixed deposit,low,young,south_indian,scheme
+945,I need to pay my insurance premium of ten lakh,need to pay insurence premeum of 1000000,high,female,north_indian,payment
+946,I want to change my ATM PIN,I want to change my ATM PIN,low,female,east_indian,general
+947,I need to pay Vijay for fifty thousand rupees,I need to pay Vijay for fifty tousand rupees,medium,male,neutral,payment
+948,Transfer money to Sudha immediately,Transfer money to Sudha immedietly,medium,male,south_indian,transfer
+949,I want to change my ATM PIN,Ai want to change my ATM PIN,medium,child,east_indian,general
+950,I want to check my account balance,want to check my acccount ballance,high,male,south_indian,balance
+951,What is the penalty for late EMI payment,What the penalty for,high,child,neutral,loan
+952,What is the interest rate on home loan,What iz intrest rate on home loan,high,male,east_indian,loan
+953,Transfer twenty thousand rupees to Vijay,Transfer twenty thousand rupees Vijay,medium,female,north_indian,transfer
+954,Transfer funds to 0123456789 account,Transfer funds to 0123456789 account,low,young,south_indian,transfer
+955,Pay subscription fee of twelve thousand rupees,Pay subscrpition fee of of twelve ji thouusand rupees,high,male,north_indian,payment
+956,I lost my debit card please block it immediately,I lost mhy debit kaad please block it immediatley,high,child,west_indian,fraud
+957,Tell me about the bank's health insurance schemes,Tell about tha bank's health insurance schemes,medium,young,east_indian,scheme
+958,Send five hundred rupees using UPI to priya@paytm,Send five hundred roopeez using UPI to priya@paytm,medium,child,west_indian,transfer
+959,Send thirty thousand rupees to beneficiary Priya,Send tirty thousand rupees to beneficiary Priya,medium,elderly,east_indian,transfer
+960,Transfer money to Anita immediately,transfar money Anita immediately,high,female,east_indian,transfer
+961,Transfer money urgently to Sunita,tranfer money urgently,high,child,east_indian,transfer
+962,What are the banking hours,What are the bankin hours,medium,female,neutral,general
+963,I want to clear my outstanding dues,I want clear mhy oustanding dues,high,child,west_indian,payment
+964,Tell me about the salary account benefits,Tell about salary acount benefits,high,female,north_indian,scheme
+965,I think my debit card has been cloned,Ai think my debitt card has been cloned,medium,elderly,east_indian,fraud
+966,What is the closing balance of my account,What the closing balance of my account,medium,male,neutral,balance
+967,What are the current savings schemes available,What are te current savings schemes available,medium,child,west_indian,scheme
+968,How to open a PPF account,How to open a PPF account,low,male,south_indian,scheme
+969,I think my debit card has been cloned,think my debit kaad has been cloned,medium,male,west_indian,fraud
+970,I want to know about home loan eligibility,want to know about home loan eligibility,medium,elderly,neutral,loan
+971,How to open a PPF account,How to open a PPF acccount,medium,elderly,north_indian,scheme
+972,I need to pay Girish five hundred rupees now,I need to pay Girish 500 rupees now,medium,female,east_indian,transfer
+973,I lost my debit card please block it immediately,I lost lost my debot card please block it immediatley,high,young,neutral,fraud
+974,Transfer thirty thousand rupees from my savings to current account,Transfer 30 thousand rupees from my savings to current account,low,female,north_indian,transfer
+975,I want to open a tax saver fixed deposit,I want to open a tax saver fixed deposit,low,young,west_indian,scheme
+976,Send three thousand rupees to Vinod using IMPS,Send three thousand roopees Vinod using IMPS,medium,male,south_indian,transfer
+977,What is the branch IFSC code,What is the brunch IFSC code,medium,young,neutral,general
+978,Pay my mobile recharge of two thousand rupees,Pay my mobile recharge,high,child,east_indian,payment
+979,Tell me about the bank's health insurance schemes,Tell me about the bank's health insurance schemes,low,female,east_indian,scheme
+980,Move five hundred rupees from savings to my FD,Move five hundread roopees from savings to mai FD,high,elderly,south_indian,transfer
+981,How much money do I have in my account,How much money do I actually have in mai acount,high,young,south_indian,balance
+982,Transfer funds to 3456789012 account,Transfer funds to 3456789012 account,low,female,north_indian,transfer
+983,I lost my debit card please block it immediately,I lost mhy debit card please blok it immediately,medium,male,west_indian,fraud
+984,Make payment towards my home loan EMI,Make payment towards my my home loan EMI,medium,female,neutral,payment
+985,Transfer three thousand to Anita today,Transfer three thousand Anita today,medium,elderly,east_indian,transfer
+986,I want to update my KYC details,Ai wannt to update my KYC details,medium,female,east_indian,general
+987,Give me an update on my balance,Give an update on on my balance,medium,female,south_indian,balance
+988,I want to report a failed ATM transaction where money was deducted,want to report failed ATM transaaction where money theek hai was deducted,high,young,south_indian,fraud
+989,Can you tell me my savings account balance,Can you tell my savings acount bhai acount valence Can you,high,elderly,east_indian,balance
+990,I want to know the balance in my recurring deposit,want to know valence my recurring depositt,high,elderly,neutral,balance
+991,I got an OTP which I did not request please help,I got an OTP which I did not request please help,low,child,east_indian,fraud
+992,Do an immediate transfer of one lakh rupees,Do an immediate transfers of one lakh rupees rupees,medium,male,west_indian,transfer
+993,Apply for a car loan of one thousand rupees,Apply for a car loan of one thousand rupees,low,young,east_indian,loan
+994,I need to pay Naresh ten thousand rupees now,I need to pay Naresh ten tousand rupees now,medium,child,neutral,transfer
+995,How do I update my mobile number,How do Ai update my mobile number,medium,young,east_indian,general
+996,How do I update my mobile number,How do I update mhy mobile number,medium,elderly,west_indian,general
+997,I think my debit card has been cloned,I think my my debitt kaad has been cloned,high,young,west_indian,fraud
+998,Make payment for my water bill,Make payment for mai water bill,medium,child,south_indian,payment
+999,Can I apply for a top-up loan,Can I apply for a top-up loan,low,young,neutral,loan
+1000,I need to pay Vivek forty thousand rupees now,need to pae Vivek forty thouusand rupees like now,high,male,west_indian,transfer
