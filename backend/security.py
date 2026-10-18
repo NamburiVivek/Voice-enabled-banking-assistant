@@ -5,24 +5,30 @@ All crypto operations are centralised here — do not inline them elsewhere.
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
+import bcrypt
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 
 from config import get_settings
 
-# ── Password hashing ──────────────────────────────────────────────────────────
-# bcrypt with 12 rounds — strong enough without being too slow
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__rounds=12)
+# ─── Password hashing ──────────────────────────────────────────────────────────
+# Direct bcrypt implementation (immune to passlib 72-byte wrap bug in modern Python/bcrypt)
 
 
 def hash_password(plain: str) -> str:
     """🔒 Hash a plaintext password using bcrypt."""
-    return pwd_context.hash(plain)
+    plain_bytes = plain.encode("utf-8")[:72]
+    salt = bcrypt.gensalt(rounds=12)
+    return bcrypt.hashpw(plain_bytes, salt).decode("utf-8")
 
 
 def verify_password(plain: str, hashed: str) -> bool:
     """🔒 Verify a plaintext password against its bcrypt hash."""
-    return pwd_context.verify(plain, hashed)
+    try:
+        plain_bytes = plain.encode("utf-8")[:72]
+        hashed_bytes = hashed.encode("utf-8")
+        return bcrypt.checkpw(plain_bytes, hashed_bytes)
+    except Exception:
+        return False
 
 
 # ── JWT helpers ───────────────────────────────────────────────────────────────
