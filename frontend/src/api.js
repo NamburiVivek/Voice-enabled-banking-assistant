@@ -116,6 +116,28 @@ export const authApi = {
 export const bankingApi = {
   getVoxaUsers: () => api.get('/banking/users'),
   verifyRecipient: (identifier) => api.post('/banking/verify-recipient', { identifier }),
+  getAccount: () => api.get('/banking/account'),
+  transfer: (data) => api.post('/banking/transfer', data),
+  deposit: (data) => api.post('/banking/deposit', data),
+  billPay: (data) => api.post('/banking/bill-pay', data),
+  sync: (data) => api.post('/banking/sync', data),
+};
+
+
+// ─── Voice AI API helpers ───────────────────────────────────────────────────
+export const voiceApi = {
+  chat: (queryOrPayload, sessionId, currentBalance = null) => {
+    if (typeof queryOrPayload === 'object' && queryOrPayload !== null) {
+      return api.post('/voice/chat', queryOrPayload);
+    }
+    return api.post('/voice/chat', {
+      query: queryOrPayload,
+      session_id: sessionId,
+      current_balance: currentBalance,
+    });
+  },
+  resetSession: (sessionId) =>
+    api.post(`/voice/reset-session?session_id=${encodeURIComponent(sessionId)}`),
 };
 
 export default api;
