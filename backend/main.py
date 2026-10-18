@@ -145,7 +145,22 @@ app.include_router(banking.router)
 app.include_router(voice.router)
 
 
-# ── Health Check ──────────────────────────────────────────────────────────────
+# ── Root & Health Check ───────────────────────────────────────────────────────
+
+@app.get("/", tags=["root"])
+async def root():
+    return {
+        "status": "ok",
+        "service": settings.APP_NAME,
+        "version": settings.APP_VERSION,
+        "endpoints": {
+            "health": "/api/health",
+            "voice": "/api/voice/chat",
+            "auth": "/api/auth",
+            "banking": "/api/banking",
+        },
+    }
+
 
 @app.get("/api/health", tags=["health"])
 async def health():
