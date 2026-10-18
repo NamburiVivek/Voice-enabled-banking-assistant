@@ -9,7 +9,7 @@ num2words
 sentence-transformers
 pypdf
 gTTS
-gradio
+# gradio (optional, only for standalone assistant.py UI)
 sentencepiece
 # optional, only for 4-bit loading of big models on small GPUs:
 # bitsandbytes

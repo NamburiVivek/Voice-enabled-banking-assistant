@@ -9,7 +9,6 @@ from typing import Optional, Dict, Any, List
 from pydantic import BaseModel, Field
 from fastapi import APIRouter, HTTPException, status
 
-from ai.assistant import Assistant
 from ai.banking import MockBank
 
 logger = logging.getLogger(__name__)
@@ -17,14 +16,15 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/voice", tags=["voice"])
 
 # Global singleton Assistant instance loaded on first startup
-_assistant_instance: Optional[Assistant] = None
+_assistant_instance: Optional[Any] = None
 
 
-def get_assistant() -> Assistant:
+def get_assistant():
     global _assistant_instance
     if _assistant_instance is None:
         logger.info("[VoiceAPI] Initializing Assistant pipeline...")
         # STT is handled natively in the browser via Web Speech API or sent as text
+        from ai.assistant import Assistant
         _assistant_instance = Assistant(load_stt=False)
         logger.info("[VoiceAPI] Assistant pipeline ready.")
     return _assistant_instance

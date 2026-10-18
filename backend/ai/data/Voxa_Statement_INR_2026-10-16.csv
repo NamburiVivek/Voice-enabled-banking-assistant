@@ -1,0 +1,8 @@
+date,ref,desc,cat,type,amount
+02 Jan,TXN-DEP-1001,Salary credit - Tech Corp,Income,credit,45000
+03 Jan,TXN-BILL-1002,Electricity & Gas - BESCOM,Electricity & Gas,debit,-1850
+05 Jan,TXN-1003,UPI to Ravi - Dining & Food,Dining & Food,debit,-500
+07 Jan,TXN-1004,ATM cash withdrawal,Cash,debit,-2000
+09 Jan,TXN-BILL-1005,Broadband Fiber - Airtel,Broadband Fiber,debit,-999
+10 Jan,TXN-BILL-1006,Mobile Postpaid - Jio,Mobile Postpaid,debit,-499
+12 Jan,TXN-1007,UPI to Priya - Peer Transfer,Peer Transfer,debit,-1500
