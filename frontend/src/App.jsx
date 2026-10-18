@@ -332,7 +332,7 @@ function ConfirmLogoutModal({ isOpen, onClose, onConfirm }) {
 }
 
 function App() {
-  const { isAuthenticated, isLoading, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
   const [view, setView] = useState('home'); // 'home' | 'auth' | 'dashboard'
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -389,7 +389,7 @@ function App() {
   }
 
   if (view === 'dashboard' && isAuthenticated) {
-    return <Dashboard onBack={() => setView('home')} />;
+    return <Dashboard key={user?.id || 'dashboard'} onBack={() => setView('home')} />;
   }
 
   return (
