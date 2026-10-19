@@ -1,23 +1,55 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,500;1,600;1,700&display=swap');
 
 :root {
   color-scheme: dark;
-  --font-primary: 'Outfit', sans-serif;
   
-  --color-bg: #090e0b;
-  --color-text: #e0e9e4;
-  --color-text-muted: #8ca396;
+  /* Modern High-End Typography */
+  --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-mono: 'SFMono-Regular', 'Roboto Mono', 'Cascadia Code', monospace;
+
+  /* Strict Monochrome / Vivid Motion Inspired Theme */
+  --color-bg: #000000;
+  --color-surface-base: #050505;
+  --color-surface: #0a0a0a;
+  --color-surface-elevated: #111111;
+  --color-surface-hover: #18181b;
+  --color-surface-active: #222225;
   
-  --color-primary: #a8d5ba;
-  --color-primary-dark: #2c4c3b;
-  --color-accent: #65a782;
+  --color-border: #222224;
+  --color-border-subtle: #171719;
+  --color-border-strong: #333338;
+  --color-border-glow: rgba(255, 255, 255, 0.18);
+
+  --color-text: #ffffff;
+  --color-text-secondary: #d4d4d8;
+  --color-text-muted: #71717a;
+  --color-text-faint: #3f3f46;
+
+  /* Primary Accent: Crisp Silver White */
+  --color-primary: #ffffff;
+  --color-primary-dark: #121214;
+  --color-primary-inverse: #000000;
+  --color-accent: #e4e4e7;
   
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  
+  /* Status Colors (Sophisticated / Muted) */
+  --color-success: #e4e4e7;
+  --color-error: #ef4444;
+  --color-error-bg: rgba(239, 68, 68, 0.12);
+  --color-error-border: rgba(239, 68, 68, 0.3);
+
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(18, 18, 20, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-hover: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.65);
+
   --border-radius-pill: 9999px;
-  --border-radius-card: 24px;
+  --border-radius-sm: 8px;
+  --border-radius-md: 14px;
+  --border-radius-card: 20px;
+  --border-radius-lg: 28px;
 }
 
 * {
@@ -28,6 +60,7 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--color-bg);
 }
 
 body {
@@ -37,6 +70,24 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
 }
 
 #root {
@@ -57,81 +108,106 @@ button {
   cursor: pointer;
 }
 
-/* Typography */
+/* Typography Hierarchy */
 h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  color: #ffffff;
 }
 
 .title-massive {
-  font-size: clamp(4rem, 10vw, 8.5rem);
-  letter-spacing: -0.04em;
-  color: #f1f8f4;
+  font-size: clamp(3.5rem, 9vw, 8rem);
+  letter-spacing: -0.05em;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
 }
 
 .subtitle {
-  font-size: clamp(1.2rem, 3vw, 2rem);
-  font-weight: 300;
-  color: var(--color-text);
-  margin-top: 1rem;
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
 }
 
-/* Layout Utilities */
+/* Container */
 .container {
   width: 100%;
-  max-width: 1600px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 2rem;
 }
 
-/* Glassmorphism Classes */
+@media (max-width: 640px) {
+  .container {
+    padding: 0 1.25rem;
+  }
+}
+
+/* Modern Glass & Surface Cards */
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-card {
+  border-radius: var(--border-radius-card);
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--glass-border-hover);
 }
 
 .glass-pill {
   border-radius: var(--border-radius-pill);
 }
 
-.glass-card {
-  border-radius: var(--border-radius-card);
+/* Technical Status & Accent Badges */
+.badge-tech {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #d4d4d8;
+  width: fit-content;
 }
 
-/* --- Global Modern Dark Scrollbar --- */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+.badge-tech .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+  animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-::-webkit-scrollbar-track {
-  background: rgba(9, 14, 11, 0.7);
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(168, 213, 186, 0.25);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(168, 213, 186, 0.45);
-}
-
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(168, 213, 186, 0.25) rgba(9, 14, 11, 0.7);
-}
-
-/* --- Global Form Dropdown & Option Elements --- */
-select {
-  color-scheme: dark;
-  background-color: #0f1c16;
-  color: #f1f8f4;
-}
-
-option {
-  background-color: #0f1c16 !important;
-  color: #f1f8f4 !important;
+/* Ambient Grain Texture */
+.ambient-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(circle at 50% 30%, black 30%, transparent 80%);
+  pointer-events: none;
+  z-index: 0;
 }

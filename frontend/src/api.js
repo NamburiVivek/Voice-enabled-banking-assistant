@@ -1,7 +1,7 @@
 /**
  * api.js - Axios instance with JWT interceptors.
- * 🔒 Access tokens stored in memory (not localStorage) to mitigate XSS.
- * 🔒 Refresh tokens stored in localStorage — acceptable trade-off; httpOnly
+ * [Security] Access tokens stored in memory (not localStorage) to mitigate XSS.
+ * [Security] Refresh tokens stored in localStorage — acceptable trade-off; httpOnly
  *    cookies would be ideal but require same-origin or proxy setup.
  */
 
@@ -30,7 +30,7 @@ const api = axios.create({
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest',  // 🔒 Helps CSRF detection
+    'X-Requested-With': 'XMLHttpRequest',  // Helps CSRF detection
   },
   withCredentials: false,
 });
@@ -142,6 +142,13 @@ export const voiceApi = {
   },
   resetSession: (sessionId) =>
     api.post(`/voice/reset-session?session_id=${encodeURIComponent(sessionId)}`),
+  biometrics: {
+    enroll: (data) => api.post('/voice/biometrics/enroll', data),
+    verify: (data) => api.post('/voice/biometrics/verify', data),
+    getStatus: (userId) => api.get(`/voice/biometrics/status?user_id=${encodeURIComponent(userId)}`),
+    toggleLock: (userId, enabled) => api.post('/voice/biometrics/toggle-lock', { user_id: userId, enabled }),
+    deleteVoiceprint: (userId) => api.delete(`/voice/biometrics/voiceprint?user_id=${encodeURIComponent(userId)}`),
+  },
 };
 
 export default api;

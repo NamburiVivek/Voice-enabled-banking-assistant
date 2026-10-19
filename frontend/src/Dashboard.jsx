@@ -12,11 +12,9 @@ import {
     ArrowUpRight,
     ArrowDownLeft,
     Mic,
+    MicOff,
     Eye,
     EyeOff,
-    ShoppingBag,
-    Coffee,
-    Smartphone,
     LogOut,
     CheckCircle,
     Copy,
@@ -38,39 +36,39 @@ import {
     VolumeX,
     Sparkles,
     RefreshCw,
+    Menu,
+    ChevronLeft,
+    ChevronRight,
+    Sliders,
+    Activity,
+    Layers,
+    TrendingUp,
+    TrendingDown,
+    ShieldCheck,
+    Award,
+    Receipt,
 } from 'lucide-react';
 import { useAuth } from './AuthContext.jsx';
 import { authApi, bankingApi, voiceApi } from './api.js';
+import VoxaLogo from './components/VoxaLogo.jsx';
+import { WavAudioRecorder, playWakeChime, playSuccessChime, playDeniedChime } from './utils/wavRecorder.js';
 import './Dashboard.css';
 
-// ── Leaf Logo ────────────────────────────────────────────────────────────────
-function LeafLogo({ size = 40 }) {
-    return (
-        <svg
-            width={size}
-            height={size}
-            viewBox="0 0 100 100"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="leaf-logo"
-        >
-            <defs>
-                <linearGradient id="leafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="var(--color-primary)" />
-                    <stop offset="100%" stopColor="var(--color-accent)" />
-                </linearGradient>
-            </defs>
-            <path d="M50 92 L50 22" stroke="url(#leafGradient)" strokeWidth="3" strokeLinecap="round" />
-            <path d="M50 34 C30 34 14 18 12 4 C34 4 50 16 50 34 Z" fill="url(#leafGradient)" />
-            <path d="M50 50 C72 50 88 34 90 20 C68 20 50 32 50 50 Z" fill="url(#leafGradient)" />
-            <path d="M50 62 C34 62 22 50 19 38 C39 38 50 46 50 62 Z" fill="url(#leafGradient)" />
-        </svg>
-    );
+// ── Luxury Monochrome Voxa Logo ──────────────────────────────────────────────
+function LeafLogo({ size = 36, className = '' }) {
+    return <VoxaLogo size={size} className={className} />;
 }
 
 // ── Currency Formatter (INR ₹) ───────────────────────────────────────────────
+function formatINR(val) {
+    const num = Number(val) || 0;
+    return `₹${num.toLocaleString('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    })}`;
+}
 
-// ─── CSV Statement Export Helper ──────────────────────────────────────────────
+// ── CSV Statement Export Helper ──────────────────────────────────────────────
 export function exportCsvToUser(transactions) {
     if (!transactions || transactions.length === 0) {
         alert('No transactions to export.');
@@ -98,14 +96,6 @@ export function exportCsvToUser(transactions) {
     document.body.removeChild(link);
 }
 
-function formatINR(val) {
-    const num = Number(val) || 0;
-    return `₹${num.toLocaleString('en-IN', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-    })}`;
-}
-
 // ── Helper: Deterministic generation per user ────────────────────────────────
 function getUserSeed(user) {
     const str = user?.id || user?.email || 'default_user';
@@ -128,7 +118,7 @@ function getInitialBankingData(user) {
     return {
         accountNumber: accountNum,
         ifscCode: 'VOXA0001824',
-        balance: 0.0, // Initial balance starts at ₹0.00
+        balance: 0.0,
         card: {
             cardNumber: fullCard,
             last4: last4,
@@ -143,7 +133,7 @@ function getInitialBankingData(user) {
             atm: true,
             frozen: false,
         },
-        transactions: [], // Initial transactions start empty
+        transactions: [],
         preferences: {
             emailAlerts: true,
             twoFactor: true,
@@ -151,8 +141,6 @@ function getInitialBankingData(user) {
         },
     };
 }
-
-// ── Confirmation Logout Modal ────────────────────────────────────────────────
 
 // ─── Voice Action Authorization Modal ───────────────────────────────────────
 function VoiceActionConfirmModal({ actionData, onClose, onConfirm, onCancel }) {
@@ -169,9 +157,9 @@ function VoiceActionConfirmModal({ actionData, onClose, onConfirm, onCancel }) {
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-card voice-confirm-modal-card glass-card" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-card voice-confirm-modal-card" onClick={(e) => e.stopPropagation()}>
                 <div className="voice-modal-header">
-                    <div className="voice-modal-icon pulse-glow">
+                    <div className="voice-modal-icon">
                         {isBill ? <Zap size={26} /> : isDeposit ? <ArrowDownLeft size={26} /> : <Send size={26} />}
                     </div>
                     <div>
@@ -238,6 +226,7 @@ function FloatingVoiceButton({ onClick, isListening }) {
     );
 }
 
+// ── Confirmation Logout Modal ────────────────────────────────────────────────
 function ConfirmLogoutModal({ isOpen, onClose, onConfirm }) {
     if (!isOpen) return null;
 
@@ -271,16 +260,27 @@ function ConfirmLogoutModal({ isOpen, onClose, onConfirm }) {
     );
 }
 
-// ── Sidebar Component ────────────────────────────────────────────────────────
+// ── Navigation Items ─────────────────────────────────────────────────────────
 const navItems = [
-    { id: 'home', icon: Home, label: 'Home' },
-    { id: 'cards', icon: CreditCard, label: 'Cards' },
-    { id: 'transfers', icon: ArrowLeftRight, label: 'Transfers' },
-    { id: 'statements', icon: FileText, label: 'Statements' },
-    { id: 'settings', icon: Settings, label: 'Settings' },
+    { id: 'home', icon: Home, label: 'Overview', badge: null },
+    { id: 'transfers', icon: ArrowLeftRight, label: 'Transfers & P2P', badge: 'UPI' },
+    { id: 'cards', icon: CreditCard, label: 'Cards & Security', badge: 'EMV' },
+    { id: 'statements', icon: FileText, label: 'Audit Ledger', badge: null },
+    { id: 'settings', icon: Settings, label: 'Settings', badge: null },
 ];
 
-function Sidebar({ activeTab, setActiveTab, onBack, onRequestLogout }) {
+// ── Modern Collapsible Sidebar Component ─────────────────────────────────────
+function ModernSidebar({
+    activeTab,
+    setActiveTab,
+    onBack,
+    onRequestLogout,
+    isCollapsed,
+    setIsCollapsed,
+    isMobileOpen,
+    setIsMobileOpen,
+    onOpenTransfer,
+}) {
     const { user } = useAuth();
 
     const initials = user?.full_name
@@ -291,57 +291,137 @@ function Sidebar({ activeTab, setActiveTab, onBack, onRequestLogout }) {
               .join('')
               .toUpperCase()
               .slice(0, 2)
-        : 'U';
+        : 'VU';
 
     return (
-        <aside className="dashboard-sidebar">
-            <div className="sidebar-top">
-                <LeafLogo size={36} />
-                <span className="sidebar-brand">Voxa</span>
+        <aside className={`dashboard-sidebar-v2 ${isCollapsed ? 'collapsed' : ''} ${isMobileOpen ? 'mobile-open' : ''}`}>
+            {/* Header / Brand */}
+            <div className="sidebar-header-v2">
+                <div
+                    className="sidebar-brand-group"
+                    onClick={() => {
+                        if (isCollapsed) {
+                            setIsCollapsed(false);
+                        } else {
+                            setActiveTab('home');
+                        }
+                    }}
+                    title={isCollapsed ? 'Click to expand sidebar' : 'VoxaBank Home'}
+                >
+                    <LeafLogo size={32} />
+                    {!isCollapsed && (
+                        <div className="sidebar-brand-text">
+                            <span className="sidebar-brand-name">VoxaBank</span>
+                            <span className="sidebar-brand-badge">AI Core v2.4</span>
+                        </div>
+                    )}
+                </div>
+                {!isCollapsed && (
+                    <button
+                        className="sidebar-collapse-btn"
+                        onClick={() => {
+                            if (window.innerWidth <= 900) {
+                                setIsMobileOpen(false);
+                            } else {
+                                setIsCollapsed(true);
+                            }
+                        }}
+                        title="Collapse Sidebar"
+                    >
+                        <ChevronLeft size={18} />
+                    </button>
+                )}
             </div>
 
-            <nav className="sidebar-nav">
-                {navItems.map(({ id, icon: Icon, label }) => (
+            {/* Quick Action Button */}
+            {!isCollapsed ? (
+                <div className="sidebar-quick-action">
+                    <button
+                        className="btn-sidebar-transfer"
+                        onClick={() => {
+                            setActiveTab('transfers');
+                            if (window.innerWidth <= 900) setIsMobileOpen(false);
+                        }}
+                        id="sidebar-new-transfer-btn"
+                    >
+                        <Send size={15} />
+                        <span>Send Money (P2P)</span>
+                    </button>
+                </div>
+            ) : (
+                <div className="sidebar-quick-action">
+                    <button
+                        className="btn-sidebar-transfer"
+                        onClick={() => setActiveTab('transfers')}
+                        title="Send Money (P2P)"
+                    >
+                        <Send size={16} />
+                    </button>
+                </div>
+            )}
+
+            {/* Navigation Menu */}
+            <nav className="sidebar-nav-v2">
+                {navItems.map(({ id, icon: Icon, label, badge }) => (
                     <button
                         key={id}
-                        className={`sidebar-nav-item ${activeTab === id ? 'active' : ''}`}
-                        onClick={() => setActiveTab(id)}
+                        className={`sidebar-nav-btn ${activeTab === id ? 'active' : ''}`}
+                        onClick={() => {
+                            setActiveTab(id);
+                            if (window.innerWidth <= 900) setIsMobileOpen(false);
+                        }}
+                        title={isCollapsed ? label : undefined}
                         id={`nav-${id}-btn`}
                     >
-                        <Icon size={20} />
-                        <span>{label}</span>
+                        <span className="sidebar-nav-icon"><Icon size={20} /></span>
+                        {!isCollapsed && <span className="sidebar-nav-label">{label}</span>}
+                        {!isCollapsed && badge && <span className="sidebar-nav-badge">{badge}</span>}
                     </button>
                 ))}
             </nav>
 
-            <div className="sidebar-bottom">
+            {/* User Profile Card & Sign Out */}
+            <div className="sidebar-footer-v2">
                 {user && (
-                    <div className="sidebar-user-card glass">
-                        <div className="sidebar-user-avatar">{initials}</div>
-                        <div className="sidebar-user-info">
-                            <span className="sidebar-user-name" title={user.full_name}>
-                                {user.full_name}
-                            </span>
-                            <span className="sidebar-user-email" title={user.email}>
-                                {user.email}
-                            </span>
-                        </div>
+                    <div className="sidebar-user-card-v2" title={user.email}>
+                        <div className="sidebar-avatar">{initials}</div>
+                        {!isCollapsed && (
+                            <div className="sidebar-user-details">
+                                <span className="sidebar-user-name">{user.full_name}</span>
+                                <span className="sidebar-user-sub">Obsidian Premier Tier</span>
+                            </div>
+                        )}
                     </div>
                 )}
 
-                <div className="sidebar-actions">
-                    <button className="dashboard-back" onClick={onBack} title="Back to Home">
-                        <ArrowLeft size={18} />
-                        <span>Home</span>
+                <div className="sidebar-footer-actions">
+                    {isCollapsed && (
+                        <button
+                            className="sidebar-action-btn expand"
+                            onClick={() => setIsCollapsed(false)}
+                            title="Expand Sidebar"
+                            id="sidebar-expand-btn"
+                        >
+                            <ChevronRight size={16} />
+                        </button>
+                    )}
+                    <button
+                        className="sidebar-action-btn"
+                        onClick={onBack}
+                        title="Back to Landing Page"
+                        id="sidebar-home-portal-btn"
+                    >
+                        <ArrowLeft size={16} />
+                        {!isCollapsed && <span>Landing</span>}
                     </button>
                     <button
-                        className="dashboard-logout-btn"
+                        className="sidebar-action-btn logout"
                         onClick={onRequestLogout}
                         title="Sign out of your account"
-                        id="dashboard-logout-btn"
+                        id="sidebar-logout-btn"
                     >
-                        <LogOut size={18} />
-                        <span>Log Out</span>
+                        <LogOut size={16} />
+                        {!isCollapsed && <span>Log Out</span>}
                     </button>
                 </div>
             </div>
@@ -349,189 +429,491 @@ function Sidebar({ activeTab, setActiveTab, onBack, onRequestLogout }) {
     );
 }
 
-// ── Home View ────────────────────────────────────────────────────────────────
+// ── Top Financial Command Bar ────────────────────────────────────────────────
+function TopFinancialCommandBar({
+    activeTab,
+    isMasked,
+    setIsMasked,
+    isAssistantOpen,
+    setIsAssistantOpen,
+    onOpenDeposit,
+    onOpenBillPay,
+    onOpenTransfer,
+    onTriggerVoiceMic,
+    isVoiceListening,
+    onToggleMobileSidebar,
+    wakeWordEnabled,
+    onToggleWakeWord,
+}) {
+    const [currentTime, setCurrentTime] = useState(new Date());
+
+    useEffect(() => {
+        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const timeStr = currentTime.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+    });
+
+    const activeLabel = navItems.find((n) => n.id === activeTab)?.label || 'Overview';
+
+    return (
+        <header className="dashboard-topbar-v2">
+            {/* Left: Mobile Toggle & Breadcrumbs */}
+            <div className="topbar-left-group">
+                <button
+                    className="sidebar-collapse-btn mobile-menu-btn"
+                    onClick={onToggleMobileSidebar}
+                    aria-label="Open sidebar menu"
+                    style={{ display: 'none' }}
+                >
+                    <Menu size={18} />
+                </button>
+                <div className="topbar-view-title">
+                    <span>VOXABANK</span>
+                    <span className="slash">/</span>
+                    <span className="section">{activeLabel}</span>
+                </div>
+                <div className="topbar-network-badge">
+                    <span className="topbar-network-dot" />
+                    <span>RBI UPI 2.0 • 100% Active</span>
+                </div>
+            </div>
+
+            {/* Center: Command Launcher / Quick Mic */}
+            <div className="topbar-search-launcher">
+                <Search size={16} className="topbar-search-icon" />
+                <input
+                    type="text"
+                    className="topbar-search-input"
+                    placeholder='Ask Voxa AI ("Transfer ₹500")...'
+                    onClick={() => {
+                        if (!isAssistantOpen) setIsAssistantOpen(true);
+                    }}
+                    readOnly
+                />
+                <button
+                    className="topbar-search-mic-btn"
+                    onClick={onTriggerVoiceMic}
+                    title="Click to speak to Voice Assistant"
+                >
+                    <Mic size={14} />
+                </button>
+            </div>
+
+            {/* Right: "Hey Voxa" Wake Pill, Clock, Privacy, Deposit, & AI Copilot */}
+            <div className="topbar-right-group">
+                {/* Hands-Free "Hey Voxa" Radar Status */}
+                <button
+                    type="button"
+                    className={`topbar-hey-voxa-pill ${wakeWordEnabled ? 'active' : ''}`}
+                    onClick={onToggleWakeWord}
+                    title={wakeWordEnabled ? "Hey Voxa is listening — say 'Hey Voxa' anytime hands-free" : "Hey Voxa paused — click to activate hands-free"}
+                    id="topbar-hey-voxa-toggle-btn"
+                >
+                    <span className={`wake-radar-ping ${wakeWordEnabled ? 'pulsing' : ''}`} />
+                    <Radio size={13} />
+                    <span>"Hey Voxa"</span>
+                </button>
+
+                <div className="topbar-clock">
+                    {timeStr} IST
+                </div>
+
+                <button
+                    className={`topbar-tool-btn ${isMasked ? 'active' : ''}`}
+                    onClick={() => setIsMasked(!isMasked)}
+                    title={isMasked ? 'Privacy Mode Active (Balances Hidden)' : 'Hide Sensitive Balances'}
+                >
+                    {isMasked ? <EyeOff size={16} /> : <Eye size={16} />}
+                    <span>{isMasked ? 'Private' : 'Reveal'}</span>
+                </button>
+
+                <button
+                    className="welcome-action-pill primary"
+                    onClick={onOpenDeposit}
+                    id="topbar-deposit-btn"
+                >
+                    <PlusCircle size={15} />
+                    <span>Deposit</span>
+                </button>
+
+                <button
+                    className={`topbar-copilot-toggle ${isAssistantOpen ? 'open' : ''}`}
+                    onClick={() => setIsAssistantOpen(!isAssistantOpen)}
+                    id="topbar-copilot-btn"
+                >
+                    <Sparkles size={16} className="copilot-sparkle-icon" />
+                    <span>{isAssistantOpen ? 'Dock AI' : 'Open AI Copilot'}</span>
+                </button>
+            </div>
+        </header>
+    );
+}
+
+// ── Redesigned Home View: 4-KPI Command Deck & Bento Grid ────────────────────
 function HomeView({
     user,
     bankingData,
+    setBankingData,
     onOpenDeposit,
     onOpenBillPay,
     onNavigateTab,
     isMasked,
     setIsMasked,
+    onSelectBeneficiaryTransfer,
 }) {
-    const balanceVisible = !isMasked;
-    const toggleBalanceVisible = () => setIsMasked((prev) => !prev);
-
     const hour = new Date().getHours();
     const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-    const displayName = user?.full_name || 'Customer';
+    const displayName = user?.full_name || 'Member';
 
     const totalIncome = useMemo(() => {
-        return bankingData.transactions
+        return (bankingData.transactions || [])
             .filter((tx) => tx.type === 'credit')
             .reduce((sum, tx) => sum + tx.amount, 0);
     }, [bankingData.transactions]);
 
     const totalExpenses = useMemo(() => {
-        return bankingData.transactions
+        return (bankingData.transactions || [])
             .filter((tx) => tx.type === 'debit')
             .reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
     }, [bankingData.transactions]);
 
+    // Live Registered Voxa Users from Supabase
+    const [registeredUsers, setRegisteredUsers] = useState([]);
+    useEffect(() => {
+        let mounted = true;
+        bankingApi.getVoxaUsers().then((res) => {
+            if (mounted) setRegisteredUsers(res.data || []);
+        }).catch(() => {});
+        return () => { mounted = false; };
+    }, []);
+
+    const recentList = (bankingData.transactions || []).slice(0, 5);
     const formattedBalance = formatINR(bankingData.balance);
-    const recentList = bankingData.transactions.slice(0, 4);
+
+    const toggleFreeze = () => {
+        setBankingData((prev) => ({
+            ...prev,
+            card: { ...prev.card, frozen: !prev.card.frozen },
+        }));
+    };
 
     return (
-        <div className="dashboard-main-content">
-            <div className="dashboard-greeting">
-                <h1>{greeting}, {displayName} 👋</h1>
-                <p>Here's what's happening with your account today.</p>
-            </div>
-
-            {/* Balance Card */}
-            <div className="balance-card glass glass-card">
-                <div className="balance-card-header">
-                    <span className="balance-label">Total Balance</span>
-                    <button
-                        className="balance-toggle"
-                        onClick={toggleBalanceVisible}
-                        aria-label={balanceVisible ? 'Hide balance' : 'Show balance'}
-                    >
-                        {balanceVisible ? <Eye size={18} /> : <EyeOff size={18} />}
-                    </button>
+        <div className="dashboard-scroll-canvas">
+            {/* Top Greeting & Action Pills */}
+            <div className="home-welcome-header">
+                <div className="welcome-text-group">
+                    <h1>{greeting}, {displayName}</h1>
+                    <p>Institutional spoken banking terminal. All ledgers synced in real time.</p>
                 </div>
-                <div className="balance-amount">{balanceVisible ? formattedBalance : '••••••••'}</div>
-                <div className="balance-sub">
-                    <span>Voxa Savings •••• {bankingData.card?.last4 || '4821'}</span>
-                </div>
-
-                <div className="balance-card-actions">
-                    <button
-                        className="btn-deposit-primary"
-                        onClick={onOpenDeposit}
-                        id="balance-deposit-btn"
-                    >
-                        <PlusCircle size={17} />
-                        <span>Deposit Funds</span>
+                <div className="welcome-quick-pills">
+                    <button className="welcome-action-pill primary" onClick={onOpenDeposit}>
+                        <PlusCircle size={16} />
+                        <span>Add Money</span>
                     </button>
-                    <button
-                        className="btn-balance-secondary"
-                        onClick={() => onNavigateTab('transfers')}
-                        id="balance-transfer-btn"
-                    >
+                    <button className="welcome-action-pill secondary" onClick={() => onNavigateTab('transfers')}>
                         <Send size={16} />
-                        <span>Send Money</span>
+                        <span>Send (P2P)</span>
+                    </button>
+                    <button className="welcome-action-pill secondary" onClick={onOpenBillPay}>
+                        <Receipt size={16} />
+                        <span>Pay Bills</span>
                     </button>
                 </div>
             </div>
 
-            {/* Spending Summary */}
-            <div className="spending-summary">
-                <div className="summary-card glass glass-card">
-                    <span className="summary-label">Monthly Inflow</span>
-                    <span className="summary-amount credit">
-                        +{formatINR(totalIncome)}
-                    </span>
-                </div>
-                <div className="summary-card glass glass-card">
-                    <span className="summary-label">Monthly Outflow</span>
-                    <span className="summary-amount debit">
-                        -{formatINR(totalExpenses)}
-                    </span>
-                </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="quick-actions">
-                <button
-                    className="quick-action-btn glass"
-                    onClick={() => onNavigateTab('transfers')}
-                    id="qa-send-money-btn"
-                >
-                    <span className="quick-action-icon"><Send size={22} /></span>
-                    <span>Send Money</span>
-                </button>
-                <button
-                    className="quick-action-btn glass"
-                    onClick={onOpenDeposit}
-                    id="qa-add-money-btn"
-                >
-                    <span className="quick-action-icon"><PlusCircle size={22} /></span>
-                    <span>Add Money</span>
-                </button>
-                <button
-                    className="quick-action-btn glass"
-                    onClick={onOpenBillPay}
-                    id="qa-pay-bills-btn"
-                >
-                    <span className="quick-action-icon"><FileText size={22} /></span>
-                    <span>Pay Bills</span>
-                </button>
-                <button
-                    className="quick-action-btn glass"
-                    onClick={() => onNavigateTab('cards')}
-                    id="qa-cards-btn"
-                >
-                    <span className="quick-action-icon"><CreditCard size={22} /></span>
-                    <span>Cards</span>
-                </button>
-            </div>
-
-            {/* Recent Transactions */}
-            <div className="transactions-card glass glass-card">
-                <div className="transactions-header">
-                    <h3>Recent Transactions</h3>
-                    {bankingData.transactions.length > 0 && (
-                        <button
-                            className="view-all-link"
-                            style={{ background: 'none', border: 'none', cursor: 'pointer', font: 'inherit' }}
-                            onClick={() => onNavigateTab('statements')}
-                            id="view-all-transactions-btn"
-                        >
-                            View all
-                        </button>
-                    )}
-                </div>
-
-                {recentList.length === 0 ? (
-                    <div className="empty-state-card">
-                        <div className="empty-state-icon">
-                            <Clock size={28} />
+            {/* 4-KPI Command Deck */}
+            <div className="home-kpi-grid">
+                {/* 1. Net Balance Featured */}
+                <div className="home-kpi-card balance-featured">
+                    <div className="kpi-card-header">
+                        <div className="kpi-label-group">
+                            <span className="kpi-title">Total Account Balance</span>
                         </div>
-                        <h4>No transactions yet</h4>
-                        <p>Deposit funds or make your first transfer to see activity recorded here.</p>
                         <button
-                            className="btn-deposit-primary"
-                            style={{ marginTop: '0.5rem' }}
-                            onClick={onOpenDeposit}
+                            onClick={() => setIsMasked(!isMasked)}
+                            style={{ background: 'none', border: 'none', color: '#a1a1aa', cursor: 'pointer' }}
+                            title={isMasked ? 'Reveal balance' : 'Hide balance'}
                         >
-                            <PlusCircle size={16} /> Make a Deposit
+                            {isMasked ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
                     </div>
-                ) : (
-                    <div className="transactions-list">
-                        {recentList.map((tx) => (
-                            <div className="transaction-row" key={tx.id}>
-                                <div className={`transaction-icon ${tx.type}`}>
-                                    {tx.type === 'credit' ? <ArrowDownLeft size={18} /> : <ArrowUpRight size={18} />}
+                    <div className="kpi-main-metric">
+                        <span className="kpi-value">{isMasked ? '••••••••' : formattedBalance}</span>
+                    </div>
+                    <div className="kpi-card-footer">
+                        <span>Voxa Savings •••• {bankingData.card?.last4 || '4821'}</span>
+                        <span style={{ color: '#f97316', fontWeight: 600 }}>0.00% Surcharge</span>
+                    </div>
+                </div>
+
+                {/* 2. Monthly Inflow */}
+                <div className="home-kpi-card">
+                    <div className="kpi-card-header">
+                        <span className="kpi-title">Total Inflow</span>
+                        <div className="kpi-icon-pill">
+                            <TrendingUp size={18} />
+                        </div>
+                    </div>
+                    <div className="kpi-main-metric">
+                        <span className="kpi-value">+{formatINR(totalIncome)}</span>
+                    </div>
+                    <div className="kpi-card-footer">
+                        <span>Deposits & incoming wires</span>
+                        <span className="kpi-trend-pill">Verified</span>
+                    </div>
+                </div>
+
+                {/* 3. Monthly Outflow */}
+                <div className="home-kpi-card">
+                    <div className="kpi-card-header">
+                        <span className="kpi-title">Total Outflow</span>
+                        <div className="kpi-icon-pill">
+                            <TrendingDown size={18} />
+                        </div>
+                    </div>
+                    <div className="kpi-main-metric">
+                        <span className="kpi-value">-{formatINR(totalExpenses)}</span>
+                    </div>
+                    <div className="kpi-card-footer">
+                        <span>Invoices, bills & P2P</span>
+                        <span className="kpi-trend-pill">Settled</span>
+                    </div>
+                </div>
+
+                {/* 4. Card Status & Spending Cap */}
+                <div className="home-kpi-card">
+                    <div className="kpi-card-header">
+                        <span className="kpi-title">Obsidian Platinum</span>
+                        <div className="kpi-icon-pill white">
+                            <CreditCard size={18} />
+                        </div>
+                    </div>
+                    <div className="kpi-main-metric">
+                        <span className="kpi-value" style={{ fontSize: '1.4rem' }}>
+                            {bankingData.card?.frozen ? 'CARD FROZEN' : 'ACTIVE • EMV'}
+                        </span>
+                    </div>
+                    <div className="kpi-card-footer">
+                        <span>Daily Limit: {formatINR(bankingData.card?.dailyLimit || 50000)}</span>
+                        <span
+                            onClick={() => onNavigateTab('cards')}
+                            style={{ color: '#f97316', textDecoration: 'none', cursor: 'pointer', fontWeight: 600 }}
+                        >
+                            Limits →
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Quick Services Dock */}
+            <div className="quick-services-dock">
+                <div className="service-dock-item" onClick={() => onNavigateTab('transfers')}>
+                    <div className="service-dock-icon"><Send size={22} /></div>
+                    <span className="service-dock-name">Send Money</span>
+                    <span className="service-dock-desc">Instant P2P Ledger</span>
+                </div>
+                <div className="service-dock-item" onClick={onOpenDeposit}>
+                    <div className="service-dock-icon"><PlusCircle size={22} /></div>
+                    <span className="service-dock-name">Deposit Funds</span>
+                    <span className="service-dock-desc">UPI & NetBanking</span>
+                </div>
+                <div className="service-dock-item" onClick={onOpenBillPay}>
+                    <div className="service-dock-icon"><Zap size={22} /></div>
+                    <span className="service-dock-name">Pay Utilities</span>
+                    <span className="service-dock-desc">BESCOM, Gas, Rent</span>
+                </div>
+            </div>
+
+            {/* Bento Grid (2 Columns: Left 65%, Right 35%) */}
+            <div className="home-bento-grid">
+                {/* Left Column: Recent Activity & Frequent Contacts */}
+                <div className="bento-column-left">
+                    {/* Frequent Beneficiaries Carousel */}
+                    <div className="bento-card">
+                        <div className="bento-card-header">
+                            <div className="bento-title-group">
+                                <h3>Registered Voxa Contacts</h3>
+                                <p>Tap any verified recipient to start an instant zero-fee wire transfer.</p>
+                            </div>
+                            <button className="bento-header-link" onClick={() => onNavigateTab('transfers')}>
+                                View Directory →
+                            </button>
+                        </div>
+
+                        {registeredUsers.length === 0 ? (
+                            <p style={{ fontSize: '0.85rem', color: '#71717a' }}>
+                                Loading registered users from database…
+                            </p>
+                        ) : (
+                            <div className="frequent-contacts-row">
+                                {registeredUsers.map((u) => {
+                                    const init = u.full_name
+                                        ? u.full_name.trim().split(/\s+/).map((n) => n[0]).join('').toUpperCase().slice(0, 2)
+                                        : 'VU';
+                                    return (
+                                        <button
+                                            key={u.id}
+                                            type="button"
+                                            className="contact-quick-chip"
+                                            onClick={() => onSelectBeneficiaryTransfer(u)}
+                                        >
+                                            <span className="contact-chip-avatar">{init}</span>
+                                            <span>{u.full_name}</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Recent Transactions Ledger */}
+                    <div className="bento-card">
+                        <div className="bento-card-header">
+                            <div className="bento-title-group">
+                                <h3>Recent Transactions</h3>
+                                <p>Real-time audit records for your primary savings ledger.</p>
+                            </div>
+                            {bankingData.transactions.length > 0 && (
+                                <button className="bento-header-link" onClick={() => onNavigateTab('statements')}>
+                                    Full Statement →
+                                </button>
+                            )}
+                        </div>
+
+                        {recentList.length === 0 ? (
+                            <div className="empty-state-card">
+                                <div className="empty-state-icon">
+                                    <Clock size={28} />
                                 </div>
-                                <div className="transaction-info">
-                                    <span className="transaction-name">{tx.name}</span>
-                                    <span className="transaction-date">{tx.date}</span>
+                                <h4 style={{ color: '#ffffff', fontWeight: 600 }}>No transactions yet</h4>
+                                <p style={{ fontSize: '0.85rem', color: '#a1a1aa' }}>Deposit funds or make your first transfer to see activity recorded here.</p>
+                                <button className="welcome-action-pill primary" onClick={onOpenDeposit} style={{ marginTop: '0.5rem' }}>
+                                    <PlusCircle size={15} /> Make First Deposit
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="recent-transactions-ledger">
+                                {recentList.map((tx) => (
+                                    <div className="ledger-item-row" key={tx.id}>
+                                        <div className="ledger-item-left">
+                                            <div className={`ledger-item-icon ${tx.type}`}>
+                                                {tx.type === 'credit' ? <ArrowDownLeft size={18} /> : <ArrowUpRight size={18} />}
+                                            </div>
+                                            <div className="ledger-item-info">
+                                                <span className="ledger-item-name">{tx.name}</span>
+                                                <div className="ledger-item-meta">
+                                                    <span>{tx.date}</span>
+                                                    <span>•</span>
+                                                    <span className="ledger-item-ref">{tx.id?.slice(0, 14)}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="ledger-item-right">
+                                            <span className={`ledger-item-amount ${tx.type}`}>
+                                                {tx.amount > 0 ? '+' : '-'}{formatINR(Math.abs(tx.amount))}
+                                            </span>
+                                            <span className="ledger-status-pill">Completed</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Right Column: Virtual Card Snapshot & Security Health */}
+                <div className="bento-column-right">
+                    {/* Live Virtual Card Preview */}
+                    <div className="bento-card">
+                        <div className="bento-card-header">
+                            <div className="bento-title-group">
+                                <h3>Obsidian Card Snapshot</h3>
+                                <p>Holographic EMV virtual debit card.</p>
+                            </div>
+                            <button className="bento-header-link" onClick={() => onNavigateTab('cards')}>
+                                Manage →
+                            </button>
+                        </div>
+
+                        <div className="mini-virtual-card-widget">
+                            <div className="mini-card-top-row">
+                                <div className="mini-card-brand">
+                                    <LeafLogo size={20} />
+                                    <span>VOXA BANK</span>
                                 </div>
-                                <div className={`transaction-amount ${tx.type}`}>
-                                    {tx.amount > 0 ? '+' : '-'}{formatINR(Math.abs(tx.amount))}
+                                <span className="mini-card-tier-pill">Platinum Debit</span>
+                            </div>
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <div style={{ width: 34, height: 24, borderRadius: 4, background: 'linear-gradient(135deg, #d4d4d8, #52525b)', border: '1px solid rgba(255,255,255,0.2)' }} />
+                                <Radio size={16} color="rgba(255,255,255,0.7)" style={{ transform: 'rotate(90deg)' }} />
+                            </div>
+
+                            <div className="mini-card-number">
+                                {isMasked ? '•••• •••• •••• ' + (bankingData.card?.last4 || '4821') : `4532 •••• •••• ${bankingData.card?.last4 || '4821'}`}
+                            </div>
+
+                            <div className="mini-card-bottom-row">
+                                <div>
+                                    <div style={{ fontSize: '0.62rem', color: '#71717a', textTransform: 'uppercase' }}>Cardholder</div>
+                                    <div className="mini-card-holder-name">{bankingData.card?.cardholder || 'VOXA MEMBER'}</div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '0.62rem', color: '#71717a', textTransform: 'uppercase' }}>Expires</div>
+                                    <div className="mini-card-expiry">{bankingData.card?.expiry || '08/29'}</div>
                                 </div>
                             </div>
-                        ))}
+                        </div>
+
+                        <button
+                            className={`btn-mini-freeze ${bankingData.card?.frozen ? 'frozen' : ''}`}
+                            onClick={toggleFreeze}
+                            id="home-toggle-freeze-card-btn"
+                        >
+                            {bankingData.card?.frozen ? <Unlock size={16} /> : <Lock size={16} />}
+                            <span>{bankingData.card?.frozen ? 'Unfreeze Obsidian Card' : 'Freeze Card Immediately'}</span>
+                        </button>
                     </div>
-                )}
+
+                    {/* Security & System Compliance Health */}
+                    <div className="security-health-card">
+                        <div className="bento-title-group">
+                            <h3>Security & Compliance</h3>
+                            <p>Hardware-enforced banking security metrics.</p>
+                        </div>
+
+                        <div className="security-checklist">
+                            <div className="security-check-item">
+                                <span className="security-check-label"><ShieldCheck size={16} /> RBI Digital Banking Norms</span>
+                                <span className="security-check-status">Compliant</span>
+                            </div>
+                            <div className="security-check-item">
+                                <span className="security-check-label"><Lock size={16} /> AES-256 GCM Cryptographic Vault</span>
+                                <span className="security-check-status">Armed</span>
+                            </div>
+                            <div className="security-check-item">
+                                <span className="security-check-label"><Zap size={16} /> NPCI UPI 2.0 Settlement Latency</span>
+                                <span className="security-check-status">&lt;11ms</span>
+                            </div>
+                            <div className="security-check-item">
+                                <span className="security-check-label"><CheckCircle size={16} /> KYC Verification Level</span>
+                                <span className="security-check-status">Tier 1 Verified</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
 }
 
-// ── Cards View ───────────────────────────────────────────────────────────────
+// ── Redesigned Cards View ───────────────────────────────────────────────────
 function CardsView({ bankingData, setBankingData }) {
     const card = bankingData.card;
     const [revealNumber, setRevealNumber] = useState(false);
@@ -576,18 +958,18 @@ function CardsView({ bankingData, setBankingData }) {
         : `4532 •••• •••• ${card.last4}`;
 
     return (
-        <div className="dashboard-main-content">
+        <div className="dashboard-scroll-canvas">
             <div className="tab-header">
-                <h1>Cards & Security</h1>
-                <p>Manage your virtual RuPay / Visa platinum debit card, real-time limits, and security channels.</p>
+                <h1 style={{ fontSize: '1.85rem', fontWeight: 800 }}>Cards & Security Controls</h1>
+                <p style={{ color: '#a1a1aa' }}>Programmatic card controls, real-time POS channels, and daily spending caps.</p>
             </div>
 
-            <div className="cards-layout">
+            <div className="cards-layout-v2">
                 {/* Physical Card Representation */}
                 <div className="card-showcase-container">
                     <div className={`virtual-card ${card.frozen ? 'frozen' : ''}`}>
                         <div className="virtual-card-glare" />
-                        {card.frozen && <div className="frozen-badge">Card Frozen 🔒</div>}
+                        {card.frozen && <div className="frozen-badge">Card Frozen</div>}
 
                         <div className="card-top-row">
                             <div className="card-bank-name">
@@ -639,7 +1021,6 @@ function CardsView({ bankingData, setBankingData }) {
                         </div>
                     </div>
 
-                    {/* Quick Card Action Buttons */}
                     <div className="card-actions-strip">
                         <button
                             className={`card-action-btn ${card.frozen ? '' : 'freeze'}`}
@@ -651,17 +1032,16 @@ function CardsView({ bankingData, setBankingData }) {
                         </button>
 
                         <button className="card-action-btn" onClick={handleCopyNumber}>
-                            {copySuccess ? <Check size={16} color="#4ade80" /> : <Copy size={16} />}
+                            {copySuccess ? <Check size={16} color="#ffffff" /> : <Copy size={16} />}
                             <span>{copySuccess ? 'Copied!' : 'Copy Card #'}</span>
                         </button>
                     </div>
                 </div>
 
                 {/* Card Controls & Limits */}
-                <div className="card-settings-card glass glass-card">
+                <div className="card-settings-card">
                     <h3>Card Limits & Security Channels</h3>
 
-                    {/* Daily Spending Limit Slider */}
                     <div className="slider-group">
                         <div className="slider-header">
                             <span>Daily Spending Limit</span>
@@ -678,7 +1058,6 @@ function CardsView({ bankingData, setBankingData }) {
                         />
                     </div>
 
-                    {/* Per-Transaction Limit Slider */}
                     <div className="slider-group">
                         <div className="slider-header">
                             <span>Per-Transaction Limit</span>
@@ -695,7 +1074,6 @@ function CardsView({ bankingData, setBankingData }) {
                         />
                     </div>
 
-                    {/* Channel Toggles */}
                     <div className="toggles-list">
                         <div className="toggle-row">
                             <div className="toggle-info">
@@ -758,13 +1136,13 @@ function CardsView({ bankingData, setBankingData }) {
                         </div>
                     </div>
 
-                    <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div style={{ marginTop: '1.75rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                         <button className="btn-save-settings" onClick={handleSaveSettings}>
                             Save Card Settings
                         </button>
                         {savedToast && (
-                            <span style={{ color: '#4ade80', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                <CheckCircle size={16} /> Preferences updated!
+                            <span style={{ color: '#ffffff', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <CheckCircle size={16} color="#f97316" /> Preferences updated!
                             </span>
                         )}
                     </div>
@@ -774,7 +1152,7 @@ function CardsView({ bankingData, setBankingData }) {
     );
 }
 
-// ── Transfers View (Strict Database Verification) ────────────────────────────
+// ── Redesigned Transfers View ───────────────────────────────────────────────
 function TransfersView({
     user,
     bankingData,
@@ -782,33 +1160,30 @@ function TransfersView({
     onOpenDeposit,
     onTransferSuccess,
     onRefreshAccount,
+    prefilledRecipient,
+    biometrics,
 }) {
-    const [recipient, setRecipient] = useState('');
+    const [recipient, setRecipient] = useState(prefilledRecipient || '');
     const [amount, setAmount] = useState('');
     const [category, setCategory] = useState('Peer Transfer');
     const [note, setNote] = useState('');
     const [error, setError] = useState('');
 
-    // Verification state
     const [verifying, setVerifying] = useState(false);
-    const [verifiedUser, setVerifiedUser] = useState(null); // { id, full_name, email }
+    const [verifiedUser, setVerifiedUser] = useState(null);
     const [verifyError, setVerifyError] = useState('');
 
-    // Registered Voxa users fetched from live Supabase database
     const [registeredUsers, setRegisteredUsers] = useState([]);
     const [loadingUsers, setLoadingUsers] = useState(true);
 
     const currentBalance = bankingData.balance;
 
-    // Fetch other registered Voxa users from Supabase on mount
     useEffect(() => {
         let mounted = true;
         const fetchUsers = async () => {
             try {
                 const res = await bankingApi.getVoxaUsers();
-                if (mounted) {
-                    setRegisteredUsers(res.data || []);
-                }
+                if (mounted) setRegisteredUsers(res.data || []);
             } catch {
                 if (mounted) setRegisteredUsers([]);
             } finally {
@@ -816,12 +1191,15 @@ function TransfersView({
             }
         };
         fetchUsers();
-        return () => {
-            mounted = false;
-        };
+        return () => { mounted = false; };
     }, []);
 
-    // Live verification debounced
+    useEffect(() => {
+        if (prefilledRecipient) {
+            setRecipient(prefilledRecipient);
+        }
+    }, [prefilledRecipient]);
+
     useEffect(() => {
         const trimmed = recipient.trim();
         if (!trimmed) {
@@ -881,7 +1259,6 @@ function TransfersView({
             return;
         }
 
-        // Verify with backend before submitting
         setVerifying(true);
         let targetUser = verifiedUser;
         try {
@@ -900,7 +1277,6 @@ function TransfersView({
 
         if (!targetUser) {
             setError('Recipient must be a registered Voxa user in the database.');
-            setVerifying(false);
             return;
         }
 
@@ -914,30 +1290,6 @@ function TransfersView({
 
             const dateStr = transferRes.data.date;
             const refId = transferRes.data.ref_id;
-
-            // Also keep recipient localStorage updated for immediate local fallback if on same device
-            try {
-                const recipientStorageKey = `voxa_banking_${targetUser.id}`;
-                const existingRecipientDataRaw = localStorage.getItem(recipientStorageKey);
-                const recipientData = existingRecipientDataRaw
-                    ? JSON.parse(existingRecipientDataRaw)
-                    : getInitialBankingData(targetUser);
-
-                const creditTx = {
-                    id: refId,
-                    name: `Received from ${user?.full_name || 'Voxa User'} (${user?.email || ''})`,
-                    date: dateStr,
-                    amount: numericAmount,
-                    type: 'credit',
-                    category: category,
-                    status: 'Completed',
-                    ref: refId,
-                };
-
-                recipientData.balance = (recipientData.balance || 0) + numericAmount;
-                recipientData.transactions = [creditTx, ...(recipientData.transactions || [])];
-                localStorage.setItem(recipientStorageKey, JSON.stringify(recipientData));
-            } catch {}
 
             if (onRefreshAccount) {
                 await onRefreshAccount();
@@ -982,67 +1334,67 @@ function TransfersView({
     };
 
     return (
-        <div className="dashboard-main-content">
+        <div className="dashboard-scroll-canvas">
             <div className="tab-header">
-                <h1>Money Transfer</h1>
-                <p>Send funds securely to verified Voxa users registered in our database.</p>
+                <h1 style={{ fontSize: '1.85rem', fontWeight: 800 }}>P2P Wire & Transfer Engine</h1>
+                <p style={{ color: '#a1a1aa' }}>Execute instant peer-to-peer transfers with live Supabase recipient ledger validation.</p>
             </div>
 
-            <div className="transfers-container">
-                {/* Source account overview */}
-                <div className="transfer-source-box">
-                    <div>
-                        <div className="source-account-title">Debit From Account</div>
-                        <div className="source-account-name">Voxa Savings •••• {bankingData.card?.last4 || '4821'}</div>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                        <div className="source-account-title">Available Balance</div>
-                        <div className="source-balance-val">{formatINR(currentBalance)}</div>
-                    </div>
-                </div>
-
-                {/* Registered Voxa Beneficiaries (From Database) */}
-                <div className="beneficiaries-card glass glass-card">
-                    <h4>Registered Voxa Users in Database (Click to Select)</h4>
-                    {loadingUsers ? (
-                        <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Loading registered users from database…</p>
-                    ) : registeredUsers.length === 0 ? (
-                        <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
-                            No other users registered yet. Register a second account to test transfers!
-                        </p>
-                    ) : (
-                        <div className="beneficiaries-row">
-                            {registeredUsers.map((u) => {
-                                const initials = u.full_name
-                                    ? u.full_name.trim().split(/\s+/).map((n) => n[0]).join('').toUpperCase().slice(0, 2)
-                                    : 'VU';
-                                return (
-                                    <button
-                                        key={u.id}
-                                        type="button"
-                                        className="beneficiary-chip"
-                                        onClick={() => handleSelectBeneficiary(u)}
-                                        title={u.email}
-                                    >
-                                        <span className="beneficiary-avatar-dot">{initials}</span>
-                                        <span>{u.full_name}</span>
-                                        <span style={{ fontSize: '0.72rem', opacity: 0.65 }}>({u.email})</span>
-                                    </button>
-                                );
-                            })}
+            <div className="transfers-layout-v2">
+                {/* Left: Source Account & Verified Contacts */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    <div className="transfer-source-box">
+                        <div>
+                            <div className="source-account-title">Debit From Account</div>
+                            <div className="source-account-name">Voxa Savings •••• {bankingData.card?.last4 || '4821'}</div>
                         </div>
-                    )}
+                        <div style={{ textAlign: 'right' }}>
+                            <div className="source-account-title">Available Balance</div>
+                            <div className="source-balance-val">{formatINR(currentBalance)}</div>
+                        </div>
+                    </div>
+
+                    <div className="beneficiaries-card">
+                        <h4>Registered Database Contacts (Click to Select)</h4>
+                        {loadingUsers ? (
+                            <p style={{ fontSize: '0.85rem', color: '#a1a1aa' }}>Loading contacts…</p>
+                        ) : registeredUsers.length === 0 ? (
+                            <p style={{ fontSize: '0.85rem', color: '#a1a1aa' }}>
+                                No other users registered yet. Register a second account to test transfers!
+                            </p>
+                        ) : (
+                            <div className="beneficiaries-row">
+                                {registeredUsers.map((u) => {
+                                    const inits = u.full_name
+                                        ? u.full_name.trim().split(/\s+/).map((n) => n[0]).join('').toUpperCase().slice(0, 2)
+                                        : 'VU';
+                                    return (
+                                        <button
+                                            key={u.id}
+                                            type="button"
+                                            className="beneficiary-chip"
+                                            onClick={() => handleSelectBeneficiary(u)}
+                                            title={u.email}
+                                        >
+                                            <span className="beneficiary-avatar-dot">{inits}</span>
+                                            <span>{u.full_name}</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
                 </div>
 
-                {/* Transfer Form */}
-                <div className="transfer-form-card glass glass-card">
+                {/* Right: Transfer Execution Form */}
+                <div className="transfer-form-card">
                     {error && (
                         <div className="password-alert error" style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <span>{error}</span>
                             {currentBalance <= 0 && (
                                 <button
                                     onClick={onOpenDeposit}
-                                    style={{ background: 'none', border: 'none', color: '#4ade80', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}
+                                    style={{ background: 'none', border: 'none', color: '#f97316', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}
                                 >
                                     Deposit Now
                                 </button>
@@ -1050,9 +1402,16 @@ function TransfersView({
                         </div>
                     )}
 
+                    {biometrics?.voice_locked_transfers && biometrics?.has_voiceprint && (
+                        <div className="voice-lock-security-badge">
+                            <ShieldCheck size={16} />
+                            <span>Voice Biometrics Enforced: Only your enrolled acoustic voiceprint can authorize transfers.</span>
+                        </div>
+                    )}
+
                     <form onSubmit={handleSubmitTransfer}>
                         <div className="form-field-group">
-                            <label className="form-field-label">Recipient Voxa Email or ID (Must exist in Database)</label>
+                            <label className="form-field-label">Recipient Voxa Email or ID</label>
                             <input
                                 type="text"
                                 className="form-field-input"
@@ -1062,9 +1421,8 @@ function TransfersView({
                                 required
                             />
 
-                            {/* Verification Feedback */}
                             {verifying && (
-                                <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginTop: '0.35rem' }}>
+                                <p style={{ fontSize: '0.82rem', color: '#a1a1aa', marginTop: '0.35rem' }}>
                                     Checking database records…
                                 </p>
                             )}
@@ -1072,7 +1430,7 @@ function TransfersView({
                             {verifiedUser && (
                                 <div className="recipient-verified-box">
                                     <CheckCircle size={16} />
-                                    <span>Verified Voxa User: <strong>{verifiedUser.full_name}</strong> ({verifiedUser.email}) ✓</span>
+                                    <span>Verified Voxa User: <strong>{verifiedUser.full_name}</strong> ({verifiedUser.email})</span>
                                 </div>
                             )}
 
@@ -1154,12 +1512,12 @@ function TransfersView({
     );
 }
 
-// ── Statements View ──────────────────────────────────────────────────────────
+// ── Redesigned Statements View ──────────────────────────────────────────────
 function StatementsView({ bankingData, onOpenDeposit }) {
-    const [filter, setFilter] = useState('all'); // 'all' | 'credit' | 'debit'
+    const [filter, setFilter] = useState('all');
     const [searchTerm, setSearchTerm] = useState('');
 
-    const transactions = bankingData.transactions;
+    const transactions = bankingData.transactions || [];
 
     const totalInflow = useMemo(() => {
         return transactions
@@ -1181,7 +1539,7 @@ function StatementsView({ bankingData, onOpenDeposit }) {
             if (searchTerm.trim()) {
                 const term = searchTerm.toLowerCase();
                 return (
-                    tx.name.toLowerCase().includes(term) ||
+                    (tx.name || '').toLowerCase().includes(term) ||
                     (tx.category && tx.category.toLowerCase().includes(term)) ||
                     (tx.id && tx.id.toLowerCase().includes(term))
                 );
@@ -1190,36 +1548,8 @@ function StatementsView({ bankingData, onOpenDeposit }) {
         });
     }, [transactions, filter, searchTerm]);
 
-    const handleExportCsv = () => { exportCsvToUser(transactions); return;
-    /* original */
-
-        if (transactions.length === 0) {
-            alert('No transactions to export.');
-            return;
-        }
-
-        const headers = ['Transaction ID', 'Date', 'Description', 'Category', 'Type', 'Amount (INR)', 'Status'];
-        const rows = transactions.map((t) => [
-            t.id,
-            t.date,
-            `"${t.name.replace(/"/g, '""')}"`,
-            t.category || 'General',
-            t.type.toUpperCase(),
-            t.amount.toFixed(2),
-            t.status || 'Completed',
-        ]);
-
-        const csvContent =
-            'data:text/csv;charset=utf-8,' +
-            [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement('a');
-        link.setAttribute('href', encodedUri);
-        link.setAttribute('download', `Voxa_Statement_INR_${new Date().toISOString().slice(0, 10)}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    const handleExportCsv = () => {
+        exportCsvToUser(transactions);
     };
 
     const handlePrint = () => {
@@ -1227,37 +1557,37 @@ function StatementsView({ bankingData, onOpenDeposit }) {
     };
 
     return (
-        <div className="dashboard-main-content">
+        <div className="dashboard-scroll-canvas">
             <div className="tab-header">
-                <h1>Account Statements</h1>
-                <p>Full transaction ledger, audit references, and monthly export reports in Indian Rupees (₹).</p>
+                <h1 style={{ fontSize: '1.85rem', fontWeight: 800 }}>Account Audit Statements</h1>
+                <p style={{ color: '#a1a1aa' }}>Full cryptographic transaction ledger, audit references, and monthly export reports.</p>
             </div>
 
-            <div className="statements-container">
+            <div className="statements-container-v2">
                 {/* KPI Metrics */}
                 <div className="statement-kpis-grid">
-                    <div className="statement-kpi-card glass glass-card">
+                    <div className="statement-kpi-card">
                         <span className="statement-kpi-title">Total Inflow</span>
                         <span className="statement-kpi-value green">+{formatINR(totalInflow)}</span>
                     </div>
-                    <div className="statement-kpi-card glass glass-card">
+                    <div className="statement-kpi-card">
                         <span className="statement-kpi-title">Total Outflow</span>
                         <span className="statement-kpi-value red">-{formatINR(totalOutflow)}</span>
                     </div>
-                    <div className="statement-kpi-card glass glass-card">
+                    <div className="statement-kpi-card">
                         <span className="statement-kpi-title">Net Cash Flow</span>
                         <span className={`statement-kpi-value ${netChange >= 0 ? 'green' : 'red'}`}>
                             {netChange >= 0 ? '+' : '-'}{formatINR(Math.abs(netChange))}
                         </span>
                     </div>
-                    <div className="statement-kpi-card glass glass-card">
-                        <span className="statement-kpi-title">Total Transactions</span>
+                    <div className="statement-kpi-card">
+                        <span className="statement-kpi-title">Total Records</span>
                         <span className="statement-kpi-value">{transactions.length}</span>
                     </div>
                 </div>
 
                 {/* Toolbar */}
-                <div className="statement-toolbar">
+                <div className="statement-toolbar-v2">
                     <div className="statement-filters">
                         <button
                             className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
@@ -1302,20 +1632,20 @@ function StatementsView({ bankingData, onOpenDeposit }) {
                 </div>
 
                 {/* Statements Table */}
-                <div className="statement-table-card glass glass-card">
+                <div className="statement-table-card">
                     {filteredList.length === 0 ? (
                         <div className="empty-state-card">
                             <div className="empty-state-icon">
                                 <FileText size={28} />
                             </div>
-                            <h4>No matching statement records</h4>
-                            <p>
+                            <h4 style={{ color: '#ffffff', fontWeight: 600 }}>No matching statement records</h4>
+                            <p style={{ color: '#a1a1aa' }}>
                                 {transactions.length === 0
                                     ? 'Your account has 0 transactions recorded so far.'
                                     : 'No transactions match the selected filter.'}
                             </p>
                             {transactions.length === 0 && (
-                                <button className="btn-deposit-primary" onClick={onOpenDeposit} style={{ marginTop: '0.5rem' }}>
+                                <button className="welcome-action-pill primary" onClick={onOpenDeposit} style={{ marginTop: '0.5rem' }}>
                                     <PlusCircle size={16} /> Make a Deposit
                                 </button>
                             )}
@@ -1335,24 +1665,25 @@ function StatementsView({ bankingData, onOpenDeposit }) {
                             <tbody>
                                 {filteredList.map((tx) => (
                                     <tr key={tx.id}>
-                                        <td style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>{tx.date}</td>
+                                        <td style={{ color: '#a1a1aa', fontSize: '0.85rem' }}>{tx.date}</td>
                                         <td style={{ fontWeight: 600 }}>{tx.name}</td>
-                                        <td style={{ fontFamily: 'monospace', color: 'var(--color-text-muted)', fontSize: '0.82rem' }}>
+                                        <td style={{ fontFamily: 'monospace', color: '#a1a1aa', fontSize: '0.82rem' }}>
                                             {tx.id}
                                         </td>
                                         <td>
-                                            <span style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)' }}>
+                                            <span style={{ fontSize: '0.82rem', color: '#a1a1aa' }}>
                                                 {tx.category || 'General'}
                                             </span>
                                         </td>
                                         <td>
-                                            <span className="status-pill completed">Completed</span>
+                                            <span className="ledger-status-pill">Completed</span>
                                         </td>
                                         <td
                                             style={{
                                                 textAlign: 'right',
+                                                fontFamily: 'monospace',
                                                 fontWeight: 700,
-                                                color: tx.type === 'credit' ? '#4ade80' : '#f87171',
+                                                color: tx.type === 'credit' ? '#ffffff' : '#d4d4d8',
                                             }}
                                         >
                                             {tx.amount > 0 ? '+' : '-'}{formatINR(Math.abs(tx.amount))}
@@ -1368,9 +1699,415 @@ function StatementsView({ bankingData, onOpenDeposit }) {
     );
 }
 
-// ── Settings View ────────────────────────────────────────────────────────────
-function SettingsView({ user, bankingData, setBankingData }) {
-    // Password state
+// ── Modal: Biometric Voiceprint Enrollment (160-D Mel Vector) ────────────────
+function VoiceEnrollmentModal({ isOpen, onClose, user, onSuccess }) {
+    const [step, setStep] = useState('intro'); // 'intro', 'countdown', 'recording', 'saving', 'success', 'error'
+    const [countdown, setCountdown] = useState(3);
+    const [recordTimeLeft, setRecordTimeLeft] = useState(4.5);
+    const [errorMsg, setErrorMsg] = useState('');
+    const recorderRef = useRef(null);
+
+    useEffect(() => {
+        if (!isOpen) {
+            setStep('intro');
+            setCountdown(3);
+            setRecordTimeLeft(4.5);
+            setErrorMsg('');
+            if (recorderRef.current) {
+                try { recorderRef.current.stop(); } catch {}
+                recorderRef.current = null;
+            }
+        }
+    }, [isOpen]);
+
+    if (!isOpen) return null;
+
+    const startEnrollmentFlow = async () => {
+        setErrorMsg('');
+        setStep('countdown');
+        let count = 3;
+        setCountdown(3);
+
+        const countInterval = setInterval(() => {
+            count -= 1;
+            if (count > 0) {
+                setCountdown(count);
+            } else {
+                clearInterval(countInterval);
+                startActualRecording();
+            }
+        }, 1000);
+    };
+
+    const startActualRecording = async () => {
+        try {
+            const recorder = new WavAudioRecorder();
+            recorderRef.current = recorder;
+            await recorder.start();
+            setStep('recording');
+            setRecordTimeLeft(4.5);
+
+            let remaining = 4.5;
+            const timer = setInterval(async () => {
+                remaining -= 0.5;
+                setRecordTimeLeft(Math.max(0, parseFloat(remaining.toFixed(1))));
+
+                if (remaining <= 0) {
+                    clearInterval(timer);
+                    setStep('saving');
+                    try {
+                        const audioData = recorder.stop();
+                        recorderRef.current = null;
+
+                        const enrollRes = await voiceApi.biometrics.enroll({
+                            user_id: user?.id || 'default_user',
+                            audio_base64: audioData.base64,
+                            user_email: user?.email || '',
+                            user_name: user?.full_name || '',
+                        });
+
+                        playSuccessChime();
+                        setStep('success');
+                        if (onSuccess) onSuccess(enrollRes.data);
+                        setTimeout(() => {
+                            onClose();
+                        }, 2200);
+                    } catch (saveErr) {
+                        console.error('Enrollment error:', saveErr);
+                        setErrorMsg(saveErr.response?.data?.detail || 'Voice acoustic enrollment failed. Please try again in a quiet room.');
+                        setStep('error');
+                    }
+                }
+            }, 500);
+        } catch (micErr) {
+            console.error('Microphone error:', micErr);
+            setErrorMsg('Microphone access denied. Please allow microphone permissions in your browser.');
+            setStep('error');
+        }
+    };
+
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-card" style={{ maxWidth: 520 }} onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(249, 115, 22, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <ShieldCheck size={20} color="#f97316" />
+                        </div>
+                        <div>
+                            <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#ffffff' }}>Biometric Voice Enrollment</h3>
+                            <p style={{ margin: 0, fontSize: '0.8rem', color: '#a1a1aa' }}>160-Dimensional Acoustic Voiceprint Generation</p>
+                        </div>
+                    </div>
+                    <button className="modal-close-btn" onClick={onClose}><X size={18} /></button>
+                </div>
+
+                <div style={{ padding: '1rem 0' }}>
+                    {step === 'intro' && (
+                        <div>
+                            <p style={{ color: '#d4d4d8', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                                Secure your account with voice biometrics. Once enrolled, voice transfers can <strong>only be authorized by your acoustic vocal signature</strong>.
+                            </p>
+                            <div style={{ background: 'rgba(255, 255, 255, 0.04)', borderRadius: 10, padding: '14px 18px', border: '1px solid rgba(255, 255, 255, 0.08)', marginBottom: '1.5rem' }}>
+                                <span style={{ fontSize: '0.75rem', color: '#f97316', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Passphrase to speak:</span>
+                                <p style={{ color: '#ffffff', fontSize: '0.98rem', fontWeight: 600, marginTop: 6, marginBottom: 0, fontStyle: 'italic' }}>
+                                    "I authorize VoxaBank to secure my funds with my unique voice signature."
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                className="btn-submit-transfer"
+                                onClick={startEnrollmentFlow}
+                                id="start-voice-enrollment-btn"
+                            >
+                                <Mic size={16} /> Begin Voice Recording (4.5s)
+                            </button>
+                        </div>
+                    )}
+
+                    {step === 'countdown' && (
+                        <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
+                            <div style={{ fontSize: '4rem', fontWeight: 900, color: '#f97316', lineHeight: 1 }}>{countdown}</div>
+                            <p style={{ color: '#a1a1aa', marginTop: '1rem', fontSize: '0.92rem' }}>Get ready to speak the phrase clearly into your microphone...</p>
+                        </div>
+                    )}
+
+                    {step === 'recording' && (
+                        <div style={{ textAlign: 'center', padding: '1.5rem 1rem' }}>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '4px 12px', borderRadius: 9999, background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', fontSize: '0.8rem', fontWeight: 600 }}>
+                                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#ef4444', animation: 'dotPulse 0.8s infinite alternate' }} />
+                                Recording Live Voice Sample ({recordTimeLeft}s)
+                            </div>
+                            <div className="waveform-bars-container">
+                                {[...Array(8)].map((_, i) => (
+                                    <div key={i} className="waveform-bar" />
+                                ))}
+                            </div>
+                            <p style={{ color: '#ffffff', fontSize: '1.05rem', fontWeight: 600, fontStyle: 'italic', margin: '0 auto', maxWidth: 420 }}>
+                                "I authorize VoxaBank to secure my funds with my unique voice signature."
+                            </p>
+                        </div>
+                    )}
+
+                    {step === 'saving' && (
+                        <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
+                            <RefreshCw size={36} color="#f97316" className="spinning-icon" style={{ animation: 'spin 1s linear infinite' }} />
+                            <h4 style={{ color: '#ffffff', marginTop: '1rem' }}>Extracting Mel-Acoustic Voiceprint...</h4>
+                            <p style={{ color: '#a1a1aa', fontSize: '0.85rem' }}>Computing 160-D MFCC feature vector & acoustic energy normalization</p>
+                        </div>
+                    )}
+
+                    {step === 'success' && (
+                        <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
+                            <CheckCircle size={48} color="#4ade80" style={{ margin: '0 auto' }} />
+                            <h4 style={{ color: '#ffffff', marginTop: '1rem', fontSize: '1.25rem' }}>Voice Biometric Enrolled!</h4>
+                            <p style={{ color: '#a1a1aa', fontSize: '0.88rem', marginTop: 6 }}>
+                                Your acoustic voiceprint has been saved. Voice Lock for fund transfers is now active!
+                            </p>
+                        </div>
+                    )}
+
+                    {step === 'error' && (
+                        <div style={{ textAlign: 'center', padding: '1.5rem 1rem' }}>
+                            <AlertCircle size={42} color="#f87171" style={{ margin: '0 auto' }} />
+                            <h4 style={{ color: '#ffffff', marginTop: '0.75rem' }}>Enrollment Failed</h4>
+                            <p style={{ color: '#f87171', fontSize: '0.85rem' }}>{errorMsg}</p>
+                            <button
+                                type="button"
+                                className="btn-submit-transfer"
+                                style={{ marginTop: '1rem' }}
+                                onClick={() => setStep('intro')}
+                            >
+                                Try Again
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ── Voice Biometrics & "Hey Voxa" Settings Card ──────────────────────────────
+function VoiceBiometricsSettingsCard({
+    user,
+    biometrics,
+    onRefreshStatus,
+    onOpenEnrollModal,
+    wakeWordEnabled,
+    onToggleWakeWord,
+}) {
+    const [testingVoice, setTestingVoice] = useState(false);
+    const [testCount, setTestCount] = useState(3);
+    const [testResult, setTestResult] = useState(null);
+    const [togglingLock, setTogglingLock] = useState(false);
+    const testRecorderRef = useRef(null);
+
+    const handleToggleLock = async () => {
+        if (!biometrics?.has_voiceprint) {
+            onOpenEnrollModal();
+            return;
+        }
+        setTogglingLock(true);
+        try {
+            const next = !biometrics?.voice_locked_transfers;
+            await voiceApi.biometrics.toggleLock(user?.id || 'default_user', next);
+            if (onRefreshStatus) onRefreshStatus();
+        } catch (err) {
+            console.error('Toggle lock error:', err);
+        } finally {
+            setTogglingLock(false);
+        }
+    };
+
+    const handleTestVerification = async () => {
+        if (!biometrics?.has_voiceprint) {
+            onOpenEnrollModal();
+            return;
+        }
+
+        setTestResult(null);
+        setTestingVoice(true);
+        setTestCount(3);
+
+        try {
+            const recorder = new WavAudioRecorder();
+            testRecorderRef.current = recorder;
+            await recorder.start();
+
+            let count = 3;
+            const timer = setInterval(async () => {
+                count -= 1;
+                setTestCount(count);
+                if (count <= 0) {
+                    clearInterval(timer);
+                    try {
+                        const audioData = recorder.stop();
+                        testRecorderRef.current = null;
+                        const verifyRes = await voiceApi.biometrics.verify({
+                            user_id: user?.id || 'default_user',
+                            audio_base64: audioData.base64,
+                        });
+                        setTestResult(verifyRes.data);
+                        if (verifyRes.data.verified) {
+                            playSuccessChime();
+                        } else {
+                            playDeniedChime();
+                        }
+                    } catch (verifyErr) {
+                        setTestResult({ verified: false, message: 'Verification failed. Audio was not recognized.' });
+                        playDeniedChime();
+                    } finally {
+                        setTestingVoice(false);
+                    }
+                }
+            }, 1000);
+        } catch (e) {
+            setTestingVoice(false);
+            setTestResult({ verified: false, message: 'Could not access microphone.' });
+        }
+    };
+
+    const handleDeleteVoiceprint = async () => {
+        if (!window.confirm('Are you sure you want to delete your enrolled voiceprint? Transfers will no longer require your voice.')) {
+            return;
+        }
+        try {
+            await voiceApi.biometrics.deleteVoiceprint(user?.id || 'default_user');
+            if (onRefreshStatus) onRefreshStatus();
+            setTestResult(null);
+        } catch (err) {
+            console.error('Delete voiceprint error:', err);
+        }
+    };
+
+    return (
+        <div className="settings-card">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+                <div>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: 8, margin: 0 }}>
+                        <ShieldCheck size={20} color="#f97316" />
+                        Voice Biometrics & "Hey Voxa" Hands-Free Controls
+                    </h3>
+                    <p className="settings-card-desc" style={{ marginTop: 4, marginBottom: 0 }}>
+                        Acoustic speaker verification for money transfers and hands-free ambient wake word detection.
+                    </p>
+                </div>
+                <div>
+                    {biometrics?.has_voiceprint ? (
+                        <span className="biometrics-status-badge enrolled">
+                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#4ade80' }} />
+                            Voiceprint Active (160-D Vector)
+                        </span>
+                    ) : (
+                        <span className="biometrics-status-badge unenrolled">
+                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#fb923c' }} />
+                            Voiceprint Not Enrolled
+                        </span>
+                    )}
+                </div>
+            </div>
+
+            <div className="toggles-list" style={{ marginTop: '1.25rem', borderTop: 'none', paddingTop: 0 }}>
+                {/* Voice-Locked Transfers */}
+                <div className="toggle-row">
+                    <div className="toggle-info">
+                        <h5>Transfer Voice Lock (Biometric Speaker Authorization)</h5>
+                        <p>Only the enrolled account owner's acoustic voiceprint can authorize transfers. Unauthorized voices or text-only attempts are immediately rejected.</p>
+                    </div>
+                    <label className="switch">
+                        <input
+                            type="checkbox"
+                            checked={biometrics?.voice_locked_transfers ?? false}
+                            onChange={handleToggleLock}
+                            disabled={togglingLock}
+                        />
+                        <span className="switch-slider" />
+                    </label>
+                </div>
+
+                {/* Hey Voxa Ambient Listener */}
+                <div className="toggle-row">
+                    <div className="toggle-info">
+                        <h5>"Hey Voxa" Wake Word Detection</h5>
+                        <p>Listen in the background for "Hey Voxa" to automatically open the assistant and accept spoken commands hands-free.</p>
+                    </div>
+                    <label className="switch">
+                        <input
+                            type="checkbox"
+                            checked={wakeWordEnabled}
+                            onChange={onToggleWakeWord}
+                        />
+                        <span className="switch-slider" />
+                    </label>
+                </div>
+            </div>
+
+            {/* Biometric Actions */}
+            <div className="voice-biometric-actions">
+                <button
+                    type="button"
+                    className="btn-bio-action primary"
+                    onClick={onOpenEnrollModal}
+                    id="settings-enroll-voice-btn"
+                >
+                    <Mic size={15} />
+                    {biometrics?.has_voiceprint ? 'Re-enroll / Update Voiceprint' : 'Enroll My Voice (4.5s)'}
+                </button>
+
+                {biometrics?.has_voiceprint && (
+                    <button
+                        type="button"
+                        className="btn-bio-action secondary"
+                        onClick={handleTestVerification}
+                        disabled={testingVoice}
+                        id="settings-test-voice-btn"
+                    >
+                        <Radio size={15} />
+                        {testingVoice ? `Speak now... (${testCount}s)` : 'Test My Voice Match'}
+                    </button>
+                )}
+
+                {biometrics?.has_voiceprint && (
+                    <button
+                        type="button"
+                        className="btn-bio-action danger"
+                        onClick={handleDeleteVoiceprint}
+                        id="settings-delete-voice-btn"
+                    >
+                        <X size={15} />
+                        Delete Voiceprint
+                    </button>
+                )}
+            </div>
+
+            {/* Test Voice Match Results */}
+            {testResult && (
+                <div className={`voice-test-result ${testResult.verified ? 'verified' : 'denied'}`}>
+                    {testResult.verified ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
+                    <div>
+                        <strong>{testResult.verified ? 'Voice Biometrics Verified!' : 'Voice Authentication Mismatch!'}</strong>
+                        <span style={{ marginLeft: 8, fontSize: '0.8rem', opacity: 0.85 }}>
+                            Cosine Similarity: {(testResult.similarity || 0).toFixed(3)} ({testResult.confidence || 0}% match) — {testResult.message}
+                        </span>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+// ── Redesigned Settings View ────────────────────────────────────────────────
+function SettingsView({
+    user,
+    bankingData,
+    setBankingData,
+    biometrics,
+    onRefreshBiometrics,
+    onOpenEnrollModal,
+    wakeWordEnabled,
+    onToggleWakeWord,
+}) {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -1441,17 +2178,17 @@ function SettingsView({ user, bankingData, setBankingData }) {
         : 'October 2026';
 
     return (
-        <div className="dashboard-main-content">
+        <div className="dashboard-scroll-canvas">
             <div className="tab-header">
-                <h1>Account Settings</h1>
-                <p>Manage your account profile, security credentials, and banking preferences.</p>
+                <h1 style={{ fontSize: '1.85rem', fontWeight: 800 }}>Account & Security Settings</h1>
+                <p style={{ color: '#a1a1aa' }}>Manage your profile credentials, domestic wire routing codes, and security channels.</p>
             </div>
 
-            <div className="settings-container">
+            <div className="settings-layout-v2">
                 {/* Full Account Information */}
-                <div className="settings-card glass glass-card">
-                    <h3>Account Profile & Banking Details</h3>
-                    <p className="settings-card-desc">Your verified account identifiers for domestic IMPS, NEFT, and RTGS transfers.</p>
+                <div className="settings-card">
+                    <h3>Verified Banking Identifiers</h3>
+                    <p className="settings-card-desc">Routing codes for IMPS, NEFT, RTGS, and UPI settlement networks.</p>
 
                     <div className="account-info-grid">
                         <div className="info-item">
@@ -1471,7 +2208,7 @@ function SettingsView({ user, bankingData, setBankingData }) {
                                     onClick={() => handleCopy('acc', bankingData.accountNumber)}
                                     title="Copy Account Number"
                                 >
-                                    {copiedField === 'acc' ? <Check size={14} color="#4ade80" /> : <Copy size={14} />}
+                                    {copiedField === 'acc' ? <Check size={14} color="#ffffff" /> : <Copy size={14} />}
                                 </button>
                             </span>
                         </div>
@@ -1484,18 +2221,19 @@ function SettingsView({ user, bankingData, setBankingData }) {
                                     onClick={() => handleCopy('ifsc', bankingData.ifscCode)}
                                     title="Copy IFSC Code"
                                 >
-                                    {copiedField === 'ifsc' ? <Check size={14} color="#4ade80" /> : <Copy size={14} />}
+                                    {copiedField === 'ifsc' ? <Check size={14} color="#ffffff" /> : <Copy size={14} />}
                                 </button>
                             </span>
                         </div>
                         <div className="info-item">
-                            <span className="info-item-label">Account Type</span>
-                            <span className="info-item-value">Voxa Savings (Premier Tier)</span>
+                            <span className="info-item-label">Account Tier</span>
+                            <span className="info-item-value">Obsidian Premier (Zero Fee)</span>
                         </div>
                         <div className="info-item">
                             <span className="info-item-label">KYC Verification</span>
-                            <span className="info-item-value" style={{ color: '#4ade80' }}>
-                                Verified & Active ✓
+                            <span className="info-item-value" style={{ color: '#ffffff', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#f97316', display: 'inline-block' }}></span>
+                                Verified & Active
                             </span>
                         </div>
                         <div className="info-item">
@@ -1509,123 +2247,138 @@ function SettingsView({ user, bankingData, setBankingData }) {
                     </div>
                 </div>
 
-                {/* Change Password Form */}
-                <div className="settings-card glass glass-card">
-                    <h3>Change Password</h3>
-                    <p className="settings-card-desc">Update your password to keep your banking credentials secure.</p>
+                {/* Right Side: Password & Preferences */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    {/* Change Password Form */}
+                    <div className="settings-card">
+                        <h3>Change Password</h3>
+                        <p className="settings-card-desc">Update your password to keep your banking credentials secure.</p>
 
-                    {pwAlert && (
-                        <div className={`password-alert ${pwAlert.type}`} style={{ marginBottom: '1.25rem' }}>
-                            {pwAlert.message}
-                        </div>
-                    )}
-
-                    <form onSubmit={handleChangePassword} className="password-form">
-                        <div className="form-field-group">
-                            <label className="form-field-label">Current Password</label>
-                            <div className="password-input-wrapper">
-                                <input
-                                    type={showCurr ? 'text' : 'password'}
-                                    value={currentPassword}
-                                    onChange={(e) => setCurrentPassword(e.target.value)}
-                                    placeholder="Enter current password"
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    className="password-eye-btn"
-                                    onClick={() => setShowCurr(!showCurr)}
-                                >
-                                    {showCurr ? <EyeOff size={16} /> : <Eye size={16} />}
-                                </button>
+                        {pwAlert && (
+                            <div className={`password-alert ${pwAlert.type}`} style={{ marginBottom: '1.25rem' }}>
+                                {pwAlert.message}
                             </div>
-                        </div>
+                        )}
 
-                        <div className="form-field-group">
-                            <label className="form-field-label">New Password</label>
-                            <div className="password-input-wrapper">
-                                <input
-                                    type={showNew ? 'text' : 'password'}
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    placeholder="Min 8 chars with uppercase & symbol"
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    className="password-eye-btn"
-                                    onClick={() => setShowNew(!showNew)}
-                                >
-                                    {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
-                                </button>
+                        <form onSubmit={handleChangePassword}>
+                            <div className="form-field-group">
+                                <label className="form-field-label">Current Password</label>
+                                <div className="password-input-wrapper">
+                                    <input
+                                        type={showCurr ? 'text' : 'password'}
+                                        value={currentPassword}
+                                        onChange={(e) => setCurrentPassword(e.target.value)}
+                                        placeholder="Enter current password"
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        className="password-eye-btn"
+                                        onClick={() => setShowCurr(!showCurr)}
+                                    >
+                                        {showCurr ? <EyeOff size={16} /> : <Eye size={16} />}
+                                    </button>
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="form-field-group">
-                            <label className="form-field-label">Confirm New Password</label>
-                            <div className="password-input-wrapper">
-                                <input
-                                    type={showConf ? 'text' : 'password'}
-                                    value={confirmNewPassword}
-                                    onChange={(e) => setConfirmNewPassword(e.target.value)}
-                                    placeholder="Re-enter new password"
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    className="password-eye-btn"
-                                    onClick={() => setShowConf(!showConf)}
-                                >
-                                    {showConf ? <EyeOff size={16} /> : <Eye size={16} />}
-                                </button>
+                            <div className="form-field-group">
+                                <label className="form-field-label">New Password</label>
+                                <div className="password-input-wrapper">
+                                    <input
+                                        type={showNew ? 'text' : 'password'}
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        placeholder="Min 8 chars"
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        className="password-eye-btn"
+                                        onClick={() => setShowNew(!showNew)}
+                                    >
+                                        {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
+                                    </button>
+                                </div>
                             </div>
-                        </div>
 
-                        <button
-                            type="submit"
-                            className="btn-save-settings"
-                            disabled={pwLoading}
-                            id="change-password-submit-btn"
-                        >
-                            {pwLoading ? 'Updating…' : 'Update Password'}
-                        </button>
-                    </form>
-                </div>
+                            <div className="form-field-group">
+                                <label className="form-field-label">Confirm New Password</label>
+                                <div className="password-input-wrapper">
+                                    <input
+                                        type={showConf ? 'text' : 'password'}
+                                        value={confirmNewPassword}
+                                        onChange={(e) => setConfirmNewPassword(e.target.value)}
+                                        placeholder="Re-enter new password"
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        className="password-eye-btn"
+                                        onClick={() => setShowConf(!showConf)}
+                                    >
+                                        {showConf ? <EyeOff size={16} /> : <Eye size={16} />}
+                                    </button>
+                                </div>
+                            </div>
 
-                {/* Preferences */}
-                <div className="settings-card glass glass-card">
-                    <h3>Notifications & Security Preferences</h3>
-                    <div className="toggles-list" style={{ borderTop: 'none', paddingTop: 0 }}>
-                        <div className="toggle-row">
-                            <div className="toggle-info">
-                                <h5>Instant Email Alerts</h5>
-                                <p>Receive immediate security emails for every deposit and withdrawal</p>
+                            <button
+                                type="submit"
+                                className="btn-save-settings"
+                                disabled={pwLoading}
+                                id="change-password-submit-btn"
+                            >
+                                {pwLoading ? 'Updating…' : 'Update Password'}
+                            </button>
+                        </form>
+                    </div>
+
+                    {/* Preferences */}
+                    <div className="settings-card">
+                        <h3>Notifications & Security Preferences</h3>
+                        <div className="toggles-list" style={{ borderTop: 'none', paddingTop: 0 }}>
+                            <div className="toggle-row">
+                                <div className="toggle-info">
+                                    <h5>Instant Email Alerts</h5>
+                                    <p>Receive immediate security emails for every deposit and withdrawal</p>
+                                </div>
+                                <label className="switch">
+                                    <input
+                                        type="checkbox"
+                                        checked={bankingData.preferences?.emailAlerts ?? true}
+                                        onChange={() => handleTogglePref('emailAlerts')}
+                                    />
+                                    <span className="switch-slider" />
+                                </label>
                             </div>
-                            <label className="switch">
-                                <input
-                                    type="checkbox"
-                                    checked={bankingData.preferences?.emailAlerts ?? true}
-                                    onChange={() => handleTogglePref('emailAlerts')}
-                                />
-                                <span className="switch-slider" />
-                            </label>
-                        </div>
-                        <div className="toggle-row">
-                            <div className="toggle-info">
-                                <h5>Two-Factor Authentication (2FA)</h5>
-                                <p>Prompt for OTP / authenticator code on new device sign-ins</p>
+                            <div className="toggle-row">
+                                <div className="toggle-info">
+                                    <h5>Two-Factor Authentication (2FA)</h5>
+                                    <p>Prompt for OTP / authenticator code on new device sign-ins</p>
+                                </div>
+                                <label className="switch">
+                                    <input
+                                        type="checkbox"
+                                        checked={bankingData.preferences?.twoFactor ?? true}
+                                        onChange={() => handleTogglePref('twoFactor')}
+                                    />
+                                    <span className="switch-slider" />
+                                </label>
                             </div>
-                            <label className="switch">
-                                <input
-                                    type="checkbox"
-                                    checked={bankingData.preferences?.twoFactor ?? true}
-                                    onChange={() => handleTogglePref('twoFactor')}
-                                />
-                                <span className="switch-slider" />
-                            </label>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            {/* Dedicated Full-Width Voice Biometrics & Hey Voxa Card */}
+            <div style={{ marginTop: '1.5rem' }}>
+                <VoiceBiometricsSettingsCard
+                    user={user}
+                    biometrics={biometrics}
+                    onRefreshStatus={onRefreshBiometrics}
+                    onOpenEnrollModal={onOpenEnrollModal}
+                    wakeWordEnabled={wakeWordEnabled}
+                    onToggleWakeWord={onToggleWakeWord}
+                />
             </div>
         </div>
     );
@@ -1664,7 +2417,7 @@ function DepositModal({ isOpen, onClose, onDepositSuccess }) {
                     </button>
                 </div>
 
-                <form onSubmit={handleConfirm} className="modal-body">
+                <form onSubmit={handleConfirm}>
                     <div className="amount-input-box">
                         <span className="amount-currency-symbol">₹</span>
                         <input
@@ -1693,17 +2446,17 @@ function DepositModal({ isOpen, onClose, onDepositSuccess }) {
                         ))}
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
-                        <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Payment Method</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', marginBottom: '1.5rem' }}>
+                        <span style={{ fontSize: '0.85rem', color: '#a1a1aa' }}>Payment Method</span>
 
                         <div
                             className={`deposit-method-card ${method === 'UPI / NetBanking' ? 'selected' : ''}`}
                             onClick={() => setMethod('UPI / NetBanking')}
                         >
-                            <Zap size={20} color="var(--color-primary)" />
+                            <Zap size={20} color="#ffffff" />
                             <div>
                                 <div style={{ fontSize: '0.92rem', fontWeight: 600 }}>UPI (GPay / PhonePe / Paytm)</div>
-                                <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>Instant • 0% convenience fee</div>
+                                <div style={{ fontSize: '0.78rem', color: '#a1a1aa' }}>Instant • 0% convenience fee</div>
                             </div>
                         </div>
 
@@ -1711,10 +2464,10 @@ function DepositModal({ isOpen, onClose, onDepositSuccess }) {
                             className={`deposit-method-card ${method === 'IMPS / NEFT' ? 'selected' : ''}`}
                             onClick={() => setMethod('IMPS / NEFT')}
                         >
-                            <CreditCard size={20} color="var(--color-primary)" />
+                            <CreditCard size={20} color="#ffffff" />
                             <div>
                                 <div style={{ fontSize: '0.92rem', fontWeight: 600 }}>NetBanking / IMPS / NEFT</div>
-                                <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>Direct Bank Transfer • Instant</div>
+                                <div style={{ fontSize: '0.78rem', color: '#a1a1aa' }}>Direct Bank Transfer • Instant</div>
                             </div>
                         </div>
                     </div>
@@ -1722,7 +2475,6 @@ function DepositModal({ isOpen, onClose, onDepositSuccess }) {
                     <button
                         type="submit"
                         className="btn-submit-transfer"
-                        style={{ marginTop: '1rem' }}
                         id="confirm-deposit-btn"
                     >
                         Confirm Deposit
@@ -1768,7 +2520,7 @@ function PayBillsModal({ isOpen, onClose, balance, onPaySuccess }) {
             <div className="modal-card" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <div>
-                        <h3>Pay Utilities & Bills</h3>
+                        <h3>Pay Utilities & Invoices</h3>
                         <p>Pay verified electricity, broadband, mobile, and rent bills in ₹.</p>
                     </div>
                     <button className="modal-close-btn" onClick={onClose}>
@@ -1776,9 +2528,9 @@ function PayBillsModal({ isOpen, onClose, balance, onPaySuccess }) {
                     </button>
                 </div>
 
-                <form onSubmit={handlePay} className="modal-body">
+                <form onSubmit={handlePay}>
                     {error && (
-                        <div className="password-alert error">{error}</div>
+                        <div className="password-alert error" style={{ marginBottom: '1rem' }}>{error}</div>
                     )}
 
                     <div className="form-field-group">
@@ -1856,7 +2608,7 @@ function TransferReceiptModal({ receipt, onClose }) {
 
                 <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
                     <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '0.3rem' }}>Transfer Successful!</h3>
-                    <p style={{ color: 'var(--color-text-muted)', fontSize: '0.92rem' }}>
+                    <p style={{ color: '#a1a1aa', fontSize: '0.92rem' }}>
                         Funds have been dispatched instantly to the verified Voxa user.
                     </p>
                 </div>
@@ -1864,7 +2616,7 @@ function TransferReceiptModal({ receipt, onClose }) {
                 <div className="receipt-details-list">
                     <div className="receipt-row">
                         <span>Amount Transferred</span>
-                        <strong style={{ color: '#4ade80', fontSize: '1.15rem' }}>
+                        <strong style={{ color: '#ffffff', fontSize: '1.15rem' }}>
                             {formatINR(receipt.amount)} INR
                         </strong>
                     </div>
@@ -1886,7 +2638,7 @@ function TransferReceiptModal({ receipt, onClose }) {
                     </div>
                     <div className="receipt-row">
                         <span>Status</span>
-                        <span className="status-pill completed">Completed</span>
+                        <span className="ledger-status-pill">Completed</span>
                     </div>
                 </div>
 
@@ -1902,8 +2654,10 @@ function TransferReceiptModal({ receipt, onClose }) {
     );
 }
 
-// ── Assistant Panel (Voice / Queries) ────────────────────────────────────────
-function AssistantPanel({
+// ── Modern Dockable AI Copilot Panel (Voice & Queries) ───────────────────────
+function ModernAICopilotPanel({
+    isOpen,
+    onClose,
     user,
     bankingData,
     setBankingData,
@@ -1914,19 +2668,24 @@ function AssistantPanel({
     onNavigateTab,
     voiceAssistantRef,
     onRefreshAccount,
+    onListeningStateChange,
 }) {
-    const [isTyping, setIsTyping] = useState(false);
     const [query, setQuery] = useState('');
     const [isListening, setIsListening] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [ttsEnabled, setTtsEnabled] = useState(true);
     const [interimTranscript, setInterimTranscript] = useState('');
+    const [voiceError, setVoiceError] = useState('');
+    const [voiceLang, setVoiceLang] = useState('en-IN');
+    const voiceLangRef = useRef('en-IN');
+    useEffect(() => { voiceLangRef.current = voiceLang; }, [voiceLang]);
+
     const [messages, setMessages] = useState([
         {
             id: 1,
             sender: 'bot',
-            text: 'Hello! I am your VoxaBank AI Voice Assistant. Speak or type to transfer money, check balances, freeze cards, or export statements.',
+            text: 'Hello! I am your VoxaBank AI Neural Copilot. Speak or type to transfer money, check balances, freeze cards, or export statements.',
             time: 'Just now',
         },
     ]);
@@ -1936,12 +2695,7 @@ function AssistantPanel({
     const accumulatedTranscriptRef = useRef('');
     const isListeningRef = useRef(false);
     const handleSendQueryRef = useRef(null);
-    const [voiceError, setVoiceError] = useState('');
-    const [voiceLang, setVoiceLang] = useState('en-IN');
-    const voiceLangRef = useRef('en-IN');
-    useEffect(() => {
-        voiceLangRef.current = voiceLang;
-    }, [voiceLang]);
+    const audioRecorderRef = useRef(null);
 
     // Speak helper using Web Speech API
     const speakText = useCallback(
@@ -1972,9 +2726,9 @@ function AssistantPanel({
         [ttsEnabled]
     );
 
-    // Main query processor
+    // Main query processor with Live Voice Biometrics Support
     const handleSendQuery = useCallback(
-        async (rawText) => {
+        async (rawText, audioBase64 = null) => {
             const text = (rawText || query).trim();
             if (!text) return;
 
@@ -2008,12 +2762,14 @@ function AssistantPanel({
                     current_balance: Number(bankingData.balance),
                     user_name: user?.full_name || 'Member',
                     user_email: user?.email,
+                    user_id: user?.id,
                     account_number: bankingData.accountNumber,
                     card: bankingData.card,
                     preferences: bankingData.preferences,
                     transactions: bankingData.transactions,
                     inflow: totalInflow,
                     outflow: totalOutflow,
+                    audio_base64: audioBase64,
                 });
                 const data = res.data;
 
@@ -2031,14 +2787,21 @@ function AssistantPanel({
 
                 speakText(data.bot_response);
 
-                // 1. Privacy Toggle Sync
+                // Voice Biometrics Audio Chime Feedback
+                if (data.status === 'voice_auth_failed') {
+                    playDeniedChime();
+                } else if (data.status === 'ok' && data.action_payload?.action === 'TRANSFER_SUCCESS') {
+                    playSuccessChime();
+                }
+
+                // Privacy Toggle Sync
                 if (data.intent === 'account_overview' && data.sub_intent === 'privacy_toggle') {
                     setIsMasked((prev) => !prev);
                 } else if (data.action_payload?.action === 'TOGGLE_PRIVACY') {
                     setIsMasked(Boolean(data.action_payload.is_masked));
                 }
 
-                // 2. Transfer & Bill Payment Confirmation / Execution Sync
+                // Transfer & Bill Confirmation Sync
                 if (data.status === 'confirm' && (
                     data.action_payload?.action === 'TRANSFER_CONFIRMATION' ||
                     data.action_payload?.action === 'BILL_CONFIRMATION' ||
@@ -2047,12 +2810,11 @@ function AssistantPanel({
                     onVoiceTransferConfirm(data.action_payload);
                 } else if (data.status === 'ok' && data.action_payload?.action === 'TRANSFER_SUCCESS') {
                     const amt = parseFloat(data.action_payload.amount);
-                    const recipient = data.action_payload.recipient || 'Beneficiary';
-                    const recipientTarget = data.action_payload.recipient_id || data.action_payload.recipient_email || recipient;
+                    const rec = data.action_payload.recipient || 'Beneficiary';
+                    const recipientTarget = data.action_payload.recipient_id || data.action_payload.recipient_email || rec;
                     const cat = data.action_payload.category || 'Peer Transfer';
                     const refId = `TXN-VOX-${Date.now().toString(36).toUpperCase()}`;
 
-                    // Execute transfer against backend database so recipient ledger is credited in Supabase
                     try {
                         const transferRes = await bankingApi.transfer({
                             recipient: recipientTarget,
@@ -2072,7 +2834,7 @@ function AssistantPanel({
                                 transactions: [
                                     {
                                         id: actualRefId,
-                                        name: `Transfer to ${transferRes.data.recipient || recipient}`,
+                                        name: `Transfer to ${transferRes.data.recipient || rec}`,
                                         date: actualDate,
                                         amount: -amt,
                                         type: 'debit',
@@ -2087,7 +2849,7 @@ function AssistantPanel({
 
                         setTransferReceipt({
                             id: actualRefId,
-                            recipient: transferRes.data.recipient || recipient,
+                            recipient: transferRes.data.recipient || rec,
                             amount: amt,
                             date: actualDate,
                             category: cat,
@@ -2095,44 +2857,14 @@ function AssistantPanel({
                         });
                     } catch (transferErr) {
                         console.error('Voice transfer backend sync error:', transferErr);
-                        const newTx = {
-                            id: refId,
-                            name: `Transfer to ${recipient}`,
-                            date: `Today, ${timeStr}`,
-                            amount: -amt,
-                            type: 'debit',
-                            category: cat,
-                            status: 'Completed',
-                            ref: refId,
-                        };
-
-                        setBankingData((prev) => ({
-                            ...prev,
-                            balance: Math.max(0, prev.balance - amt),
-                            transactions: [newTx, ...prev.transactions],
-                        }));
-
-                        setTransferReceipt({
-                            id: refId,
-                            recipient,
-                            amount: amt,
-                            date: `Today, ${timeStr}`,
-                            category: cat,
-                            type: 'debit',
-                        });
                     }
                 } else if (data.status === 'ok' && data.action_payload?.action === 'BILL_SUCCESS') {
                     const amt = parseFloat(data.action_payload.amount);
                     const biller = data.action_payload.biller || 'Electricity & Gas';
                     const refId = `TXN-BILL-${Date.now().toString(36).toUpperCase()}`;
 
-                    // Execute bill payment against backend database so user ledger is deducted in Supabase
                     try {
-                        const billRes = await bankingApi.billPay({
-                            biller,
-                            amount: amt,
-                        });
-
+                        const billRes = await bankingApi.billPay({ biller, amount: amt });
                         const actualRefId = billRes.data?.ref_id || refId;
                         const actualDate = billRes.data?.date || `Today, ${timeStr}`;
 
@@ -2158,45 +2890,11 @@ function AssistantPanel({
                             }));
                         }
                     } catch (billErr) {
-                        console.error('Voice bill payment backend sync error:', billErr);
-                        const newTx = {
-                            id: refId,
-                            name: `Bill Payment — ${biller}`,
-                            date: `Today, ${timeStr}`,
-                            amount: -amt,
-                            type: 'debit',
-                            category: 'Utilities',
-                            status: 'Completed',
-                            ref: refId,
-                        };
-
-                        setBankingData((prev) => ({
-                            ...prev,
-                            balance: Math.max(0, prev.balance - amt),
-                            transactions: [newTx, ...prev.transactions],
-                        }));
+                        console.error('Voice bill pay sync error:', billErr);
                     }
                 }
 
-                // 3b. Security & Notification Preferences Sync (2FA & Email Alerts)
-                if (data.action_payload?.action === 'TOGGLE_PREFERENCE') {
-                    const { two_factor, email_alerts, has_2fa, has_email } = data.action_payload;
-                    setBankingData((prev) => {
-                        const newPrefs = { ...(prev.preferences || {}) };
-                        if (has_2fa && two_factor !== undefined) {
-                            newPrefs.twoFactor = Boolean(two_factor);
-                        }
-                        if (has_email && email_alerts !== undefined) {
-                            newPrefs.emailAlerts = Boolean(email_alerts);
-                        }
-                        return {
-                            ...prev,
-                            preferences: newPrefs,
-                        };
-                    });
-                }
-
-                // 3. Card Management Sync
+                // Card Freeze Sync
                 if (data.action_payload?.action === 'FREEZE_CARD') {
                     setBankingData((prev) => ({
                         ...prev,
@@ -2207,58 +2905,13 @@ function AssistantPanel({
                         ...prev,
                         card: { ...prev.card, frozen: false },
                     }));
-                } else if (data.action_payload?.action === 'TOGGLE_CARD_CHANNEL') {
-                    const channelKey = data.action_payload.channel; // 'international', 'domestic', 'online', 'atm'
-                    const isEnabled = Boolean(data.action_payload.enabled);
-                    setBankingData((prev) => ({
-                        ...prev,
-                        card: {
-                            ...prev.card,
-                            [channelKey]: isEnabled,
-                        },
-                    }));
-                } else if (data.action_payload?.action === 'SET_CARD_LIMIT') {
-                    const limKey = data.action_payload.limit_type === 'per_txn' ? 'perTxLimit' : 'dailyLimit';
-                    const val = Number(data.action_payload.amount);
-                    if (!isNaN(val) && val > 0) {
-                        setBankingData((prev) => ({
-                            ...prev,
-                            card: {
-                                ...prev.card,
-                                [limKey]: val,
-                            },
-                        }));
-                    }
                 }
 
-                // 4. Statements CSV Export Sync
+                // CSV Export Sync
                 if (data.sub_intent === 'export_csv' || data.action_payload?.action === 'EXPORT_CSV') {
                     exportCsvToUser(bankingData.transactions);
                 } else if (data.sub_intent === 'print_statement' || data.action_payload?.action === 'PRINT_STATEMENT') {
                     window.print();
-                }
-
-                // 5. Deposit Sync
-                if (data.status === 'ok' && data.action_payload?.action === 'DEPOSIT_SUCCESS') {
-                    const amt = parseFloat(data.action_payload.amount);
-                    const method = data.action_payload.method || 'UPI';
-                    const refId = `TXN-DEP-${Date.now().toString(36).toUpperCase()}`;
-
-                    const newTx = {
-                        id: refId,
-                        name: `Deposit via ${method}`,
-                        date: `Today, ${timeStr}`,
-                        amount: amt,
-                        type: 'credit',
-                        category: 'Deposit',
-                        status: 'Completed',
-                    };
-
-                    setBankingData((prev) => ({
-                        ...prev,
-                        balance: prev.balance + amt,
-                        transactions: [newTx, ...prev.transactions],
-                    }));
                 }
             } catch (err) {
                 console.error('Voice assistant request error:', err);
@@ -2274,10 +2927,9 @@ function AssistantPanel({
                 setIsProcessing(false);
             }
         },
-        [query, user, bankingData.balance, bankingData.transactions, speakText, setIsMasked, onVoiceTransferConfirm, setBankingData, setTransferReceipt]
+        [query, user, bankingData.balance, bankingData.transactions, speakText, setIsMasked, onVoiceTransferConfirm, setBankingData, setTransferReceipt, onRefreshAccount]
     );
 
-    // Keep handleSendQueryRef always pointing to latest handler
     useEffect(() => {
         handleSendQueryRef.current = handleSendQuery;
     });
@@ -2289,6 +2941,19 @@ function AssistantPanel({
         }
         isListeningRef.current = false;
         setIsListening(false);
+
+        if (onListeningStateChange) onListeningStateChange(false);
+
+        let recordedBase64 = null;
+        if (audioRecorderRef.current) {
+            try {
+                const recData = audioRecorderRef.current.stop();
+                recordedBase64 = recData?.base64 || null;
+            } catch (e) {
+                console.warn('WAV recorder stop error:', e);
+            }
+            audioRecorderRef.current = null;
+        }
 
         const pending = (queryToSend !== null ? queryToSend : (accumulatedTranscriptRef.current || interimTranscript)).trim();
         setInterimTranscript('');
@@ -2304,9 +2969,9 @@ function AssistantPanel({
         }
 
         if (pending && handleSendQueryRef.current) {
-            handleSendQueryRef.current(pending);
+            handleSendQueryRef.current(pending, recordedBase64);
         }
-    }, [interimTranscript]);
+    }, [interimTranscript, onListeningStateChange]);
 
     const initiateRecognitionSession = useCallback(() => {
         if (!isListeningRef.current) return;
@@ -2319,7 +2984,6 @@ function AssistantPanel({
             return;
         }
 
-        // Clean up previous instance cleanly
         if (recognitionRef.current) {
             try {
                 recognitionRef.current.onend = null;
@@ -2365,13 +3029,11 @@ function AssistantPanel({
                     setInterimTranscript(currentFullText);
                 }
 
-                // Reset silence timer on every speech packet
                 if (silenceTimerRef.current) {
                     clearTimeout(silenceTimerRef.current);
                     silenceTimerRef.current = null;
                 }
 
-                // Auto-submit after 2.8 seconds of natural silence after speaking
                 if (currentFullText) {
                     silenceTimerRef.current = setTimeout(() => {
                         const finalQuery = (accumulatedTranscriptRef.current + ' ' + currentInterim).trim();
@@ -2383,27 +3045,10 @@ function AssistantPanel({
             };
 
             rec.onerror = (e) => {
-                // Non-fatal: 'no-speech' is expected when user is quiet
-                if (e.error === 'no-speech') {
-                    return;
-                }
-                if (e.error === 'aborted') {
-                    return;
-                }
-                console.warn('Speech recognition warning/error:', e.error);
-
+                if (e.error === 'no-speech' || e.error === 'aborted') return;
+                console.warn('Speech recognition error:', e.error);
                 if (e.error === 'not-allowed') {
-                    setVoiceError('Microphone blocked. Click the lock/tune icon 🔒 in the browser address bar to allow microphone access.');
-                    isListeningRef.current = false;
-                    setIsListening(false);
-                } else if (e.error === 'network') {
-                    setVoiceError('Speech service connection issue. Please check your internet connection or type your query below.');
-                    isListeningRef.current = false;
-                    setIsListening(false);
-                } else if (e.error === 'audio-capture') {
-                    setVoiceError('No microphone detected. Please connect a microphone or headset.');
-                    isListeningRef.current = false;
-                    setIsListening(false);
+                    setVoiceError('Microphone permission blocked. Please allow mic access in your browser.');
                 }
             };
 
@@ -2413,11 +3058,8 @@ function AssistantPanel({
                     if (pendingQuery && !silenceTimerRef.current) {
                         handleStopListening(pendingQuery);
                     } else if (!pendingQuery) {
-                        // User was quiet or Chrome timed out its window; restart a fresh instance cleanly!
                         setTimeout(() => {
-                            if (isListeningRef.current) {
-                                initiateRecognitionSession();
-                            }
+                            if (isListeningRef.current) initiateRecognitionSession();
                         }, 120);
                     }
                 } else {
@@ -2428,9 +3070,7 @@ function AssistantPanel({
             recognitionRef.current = rec;
             rec.start();
         } catch (err) {
-            console.error('Failed to start speech recognition session:', err);
-            setVoiceError('Unable to start speech recognition. Please check your microphone or type your query.');
-            isListeningRef.current = false;
+            console.error('Speech recognition start failed:', err);
             setIsListening(false);
         }
     }, [handleStopListening, interimTranscript]);
@@ -2448,16 +3088,19 @@ function AssistantPanel({
         accumulatedTranscriptRef.current = '';
         setInterimTranscript('');
 
-        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRec) {
-            setVoiceError('Speech Recognition is not supported in this browser. Please use Google Chrome or Microsoft Edge.');
-            return;
-        }
+        if (onListeningStateChange) onListeningStateChange(true);
+
+        try {
+            audioRecorderRef.current = new WavAudioRecorder();
+            audioRecorderRef.current.start().catch((err) => {
+                console.warn('WAV recorder start error:', err);
+            });
+        } catch (e) {}
 
         isListeningRef.current = true;
         setIsListening(true);
         initiateRecognitionSession();
-    }, [initiateRecognitionSession]);
+    }, [initiateRecognitionSession, onListeningStateChange]);
 
     const handleSpeakToggle = () => {
         if (isListening) {
@@ -2467,25 +3110,23 @@ function AssistantPanel({
         }
     };
 
-    // Clean up recognition strictly on component unmount
     useEffect(() => {
         return () => {
-            if (silenceTimerRef.current) {
-                clearTimeout(silenceTimerRef.current);
-            }
+            if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
             if (recognitionRef.current) {
-                try {
-                    recognitionRef.current.abort();
-                } catch {}
+                try { recognitionRef.current.abort(); } catch {}
+            }
+            if (audioRecorderRef.current) {
+                try { audioRecorderRef.current.stop(); } catch {}
+                audioRecorderRef.current = null;
             }
         };
     }, []);
 
-    // Expose methods to parent ref
     useEffect(() => {
         if (voiceAssistantRef) {
             voiceAssistantRef.current = {
-                sendQuery: handleSendQuery,
+                sendQuery: (q, audio = null) => handleSendQuery(q, audio),
                 startListening: handleStartListening,
                 stopListening: handleStopListening,
                 toggleListening: handleSpeakToggle,
@@ -2503,7 +3144,7 @@ function AssistantPanel({
             {
                 id: Date.now(),
                 sender: 'bot',
-                text: 'Dialogue state reset. How can I help you today?',
+                text: 'Dialogue state reset. How can I assist you?',
                 time: 'Just now',
             },
         ]);
@@ -2514,145 +3155,90 @@ function AssistantPanel({
     };
 
     return (
-        <aside className="assistant-panel">
-            <div className="dashboard-card glass glass-card">
-                <LeafLogo size={48} />
-                <h2 className="dashboard-brand">Voxa Bank AI</h2>
-
-                {/* Big Mic Button with Active Pulse Animation */}
-                <button
-                    className={`dashboard-speak-btn ${isListening ? 'active-pulse' : ''}`}
-                    onClick={handleSpeakToggle}
-                    title={isListening ? 'Click to stop listening' : 'Click to speak to VoxaBank AI'}
-                    id="dashboard-voice-mic-btn"
-                >
-                    <Mic size={36} />
-                    <span>{isListening ? 'Listening...' : isProcessing ? 'Thinking...' : isSpeaking ? 'Speaking...' : 'Speak Now'}</span>
-                </button>
-
-                {/* Dialect Switcher Pill */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', margin: '0.35rem 0' }}>
-                    <button
-                        type="button"
-                        className="glass-pill"
-                        style={{
-                            fontSize: '0.7rem',
-                            padding: '0.2rem 0.55rem',
-                            border: voiceLang === 'en-IN' ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.12)',
-                            background: voiceLang === 'en-IN' ? 'rgba(16, 185, 129, 0.2)' : 'transparent',
-                            color: voiceLang === 'en-IN' ? '#34d399' : 'rgba(255,255,255,0.6)',
-                            cursor: 'pointer',
-                        }}
-                        onClick={() => setVoiceLang('en-IN')}
-                        title="Indian English (optimized for INR ₹, Indian names and accent)"
-                    >
-                        🇮🇳 English (IN)
-                    </button>
-                    <button
-                        type="button"
-                        className="glass-pill"
-                        style={{
-                            fontSize: '0.7rem',
-                            padding: '0.2rem 0.55rem',
-                            border: voiceLang === 'en-US' ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.12)',
-                            background: voiceLang === 'en-US' ? 'rgba(16, 185, 129, 0.2)' : 'transparent',
-                            color: voiceLang === 'en-US' ? '#34d399' : 'rgba(255,255,255,0.6)',
-                            cursor: 'pointer',
-                        }}
-                        onClick={() => setVoiceLang('en-US')}
-                        title="US English"
-                    >
-                        🇺🇸 English (US)
-                    </button>
-                </div>
-
-                {/* Done Speaking Quick Submit Button */}
-                {isListening && (
-                    <button
-                        type="button"
-                        className="glass-pill"
-                        style={{
-                            marginTop: '0.3rem',
-                            fontSize: '0.78rem',
-                            padding: '0.35rem 0.85rem',
-                            color: 'var(--color-primary)',
-                            background: 'rgba(74, 222, 128, 0.12)',
-                            border: '1px solid rgba(74, 222, 128, 0.3)',
-                            cursor: 'pointer',
-                        }}
-                        onClick={() => handleStopListening()}
-                    >
-                        ✓ Done Speaking — Submit
-                    </button>
-                )}
-
-                {/* Listening Prompt Hint */}
-                {isListening && !interimTranscript && (
-                    <div style={{
-                        fontSize: '0.75rem',
-                        color: '#94a3b8',
-                        fontStyle: 'italic',
-                        marginTop: '0.35rem',
-                        textAlign: 'center',
-                        lineHeight: 1.3,
-                    }}>
-                        Listening... Say "Check my balance" or "Transfer 500 to Abhinav"
+        <aside className={`assistant-panel-v2 ${isOpen ? 'open' : 'closed'}`}>
+            <div className="copilot-panel-inner">
+                {/* Header */}
+                <div className="copilot-header">
+                    <div className="copilot-brand-title">
+                        <LeafLogo size={24} />
+                        <h2>Voxa Neural Copilot</h2>
+                        <span className="copilot-status-badge">Whisper AI</span>
                     </div>
-                )}
-
-                {/* Voice Error Notification Banner */}
-                {voiceError && (
-                    <div style={{
-                        marginTop: '0.6rem',
-                        marginBottom: '0.3rem',
-                        padding: '0.55rem 0.8rem',
-                        borderRadius: '8px',
-                        background: 'rgba(239, 68, 68, 0.15)',
-                        border: '1px solid rgba(239, 68, 68, 0.35)',
-                        color: '#fca5a5',
-                        fontSize: '0.78rem',
-                        lineHeight: 1.35,
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        justifyContent: 'space-between',
-                        gap: '6px',
-                        textAlign: 'left',
-                    }}>
-                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
-                            <AlertCircle size={15} style={{ flexShrink: 0, marginTop: '2px' }} />
-                            <span>{voiceError}</span>
-                        </div>
+                    <div className="copilot-header-actions">
                         <button
-                            type="button"
-                            onClick={() => setVoiceError('')}
-                            style={{ background: 'none', border: 'none', color: '#fca5a5', cursor: 'pointer', padding: 0 }}
-                            title="Dismiss"
+                            className="copilot-mini-btn"
+                            onClick={() => setTtsEnabled(!ttsEnabled)}
+                            title={ttsEnabled ? 'Mute Speech' : 'Enable Speech'}
                         >
-                            <X size={14} />
+                            {ttsEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
+                        </button>
+                        <button
+                            className="copilot-mini-btn"
+                            onClick={handleResetSession}
+                            title="Reset dialogue memory"
+                        >
+                            <RefreshCw size={14} />
+                        </button>
+                        <button
+                            className="copilot-mini-btn"
+                            onClick={onClose}
+                            title="Close Copilot Panel"
+                        >
+                            <X size={16} />
                         </button>
                     </div>
-                )}
+                </div>
 
-                {/* Soundwave Frequency Visualization */}
-                {isListening && (
-                    <div className="voice-wave-container">
-                        <div className="voice-wave-bar"></div>
-                        <div className="voice-wave-bar"></div>
-                        <div className="voice-wave-bar"></div>
-                        <div className="voice-wave-bar"></div>
-                        <div className="voice-wave-bar"></div>
+                {/* Voice Stage */}
+                <div className="copilot-mic-stage">
+                    <button
+                        className={`copilot-big-mic-btn ${isListening ? 'active-pulse' : ''}`}
+                        onClick={handleSpeakToggle}
+                        id="copilot-voice-mic-btn"
+                    >
+                        <Mic size={38} />
+                        <span>{isListening ? 'Listening…' : isProcessing ? 'Thinking…' : isSpeaking ? 'Speaking…' : 'Speak Now'}</span>
+                    </button>
+
+                    {/* Dialect Switcher */}
+                    <div className="copilot-dialect-bar">
+                        <button
+                            type="button"
+                            className={`dialect-pill-btn ${voiceLang === 'en-IN' ? 'active' : ''}`}
+                            onClick={() => setVoiceLang('en-IN')}
+                        >
+                            English (IN)
+                        </button>
+                        <button
+                            type="button"
+                            className={`dialect-pill-btn ${voiceLang === 'en-US' ? 'active' : ''}`}
+                            onClick={() => setVoiceLang('en-US')}
+                        >
+                            English (US)
+                        </button>
                     </div>
-                )}
 
-                {/* Live Interim Transcript Display */}
-                {interimTranscript && (
-                    <div className="voice-interim-box">
-                        "{interimTranscript}"
-                    </div>
-                )}
+                    {/* Wave visualizer */}
+                    {isListening && (
+                        <div className="voice-wave-container">
+                            <div className="voice-wave-bar" />
+                            <div className="voice-wave-bar" />
+                            <div className="voice-wave-bar" />
+                            <div className="voice-wave-bar" />
+                            <div className="voice-wave-bar" />
+                        </div>
+                    )}
 
-                {/* Conversation History Feed */}
-                <div className="assistant-dialog-feed">
+                    {/* Live Interim Transcript */}
+                    {interimTranscript && (
+                        <div className="voice-interim-box">
+                            "{interimTranscript}"
+                        </div>
+                    )}
+                </div>
+
+                {/* Dialogue History */}
+                <div className="copilot-chat-feed">
                     {messages.map((m) => (
                         <div key={m.id} className={`dialog-msg ${m.sender}`}>
                             <div className={`dialog-bubble ${m.isError ? 'error-bubble' : ''}`}>
@@ -2663,19 +3249,19 @@ function AssistantPanel({
                     ))}
                 </div>
 
-                {/* Quick Action Suggestion Chips */}
-                <div className="assistant-suggestions">
+                {/* Quick Prompts */}
+                <div className="copilot-suggestions-wrap">
                     <button
                         type="button"
                         className="suggestion-chip"
                         onClick={() => handleSendQuery('Transfer 100 to Pasumarthy')}
                     >
-                        Send ₹100 to Pasumarthy
+                        Send ₹100
                     </button>
                     <button
                         type="button"
                         className="suggestion-chip"
-                        onClick={() => handleSendQuery('Check my balance')}
+                        onClick={() => handleSendQuery('Check my account balance')}
                     >
                         Check Balance
                     </button>
@@ -2702,91 +3288,56 @@ function AssistantPanel({
                     </button>
                 </div>
 
-                {/* Typed Query Form Fallback */}
-                {!isTyping ? (
-                    <button
-                        className="dashboard-type-btn glass-pill"
-                        onClick={() => setIsTyping(true)}
-                        id="dashboard-type-queries-btn"
-                    >
-                        <span>Type your Queries</span>
-                        <ArrowRight size={18} />
+                {/* Query Input Form */}
+                <form
+                    className="copilot-query-form"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleSendQuery();
+                    }}
+                >
+                    <input
+                        type="text"
+                        className="copilot-query-input"
+                        placeholder="Type question or instruction..."
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                    />
+                    <button type="submit" className="copilot-send-btn" id="copilot-query-submit-btn">
+                        <ArrowRight size={16} />
                     </button>
-                ) : (
-                    <form
-                        className="query-input-form"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleSendQuery();
-                        }}
-                    >
-                        <input
-                            type="text"
-                            className="query-input"
-                            placeholder="Ask Voxa anything..."
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            autoFocus
-                        />
-                        <button type="submit" className="query-send-btn" id="query-submit-btn">
-                            <ArrowRight size={18} />
-                        </button>
-                    </form>
-                )}
-
-                {/* Assistant Toolbar Controls */}
-                <div className="assistant-toolbar">
-                    <button
-                        type="button"
-                        className={`assistant-tool-btn ${ttsEnabled ? 'active' : ''}`}
-                        onClick={() => setTtsEnabled(!ttsEnabled)}
-                        title={ttsEnabled ? 'Mute Voice Responses' : 'Enable Voice Audio Responses'}
-                    >
-                        {ttsEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
-                        <span>{ttsEnabled ? 'Audio On' : 'Muted'}</span>
-                    </button>
-                    <button
-                        type="button"
-                        className="assistant-tool-btn"
-                        onClick={handleResetSession}
-                        title="Reset assistant dialogue memory"
-                    >
-                        <RefreshCw size={14} />
-                        <span>Reset Session</span>
-                    </button>
-                </div>
+                </form>
             </div>
         </aside>
     );
 }
 
-
+// ── Main Dashboard Export ────────────────────────────────────────────────────
 export default function Dashboard({ onBack }) {
     const { user, logout } = useAuth();
     const [activeTab, setActiveTab] = useState('home');
 
-    // Storage Key tied to the authenticated user ID
+    // Layout States (Default: Clean Widescreen with Collapsed Sidebar & Closed AI Copilot as in Image 1)
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+    const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+    const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+
     const storageKey = user ? `voxa_banking_${user.id}` : 'voxa_banking_guest';
 
-    // State initialized from localStorage or fresh 0 balance
     const [bankingData, setBankingData] = useState(() => {
         try {
             const saved = localStorage.getItem(storageKey);
-            if (saved) {
-                return JSON.parse(saved);
-            }
+            if (saved) return JSON.parse(saved);
         } catch {}
         return getInitialBankingData(user);
     });
 
-    // Save state on any bankingData change
     useEffect(() => {
         try {
             localStorage.setItem(storageKey, JSON.stringify(bankingData));
         } catch {}
     }, [bankingData, storageKey]);
 
-    // Privacy mask state
     const [isMasked, setIsMasked] = useState(false);
 
     // Modals
@@ -2796,16 +3347,184 @@ export default function Dashboard({ onBack }) {
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [voiceTransferModal, setVoiceTransferModal] = useState(null);
 
-    // Ref to communicate with AssistantPanel
+    // Voice Biometrics State
+    const [biometrics, setBiometrics] = useState({
+        has_voiceprint: false,
+        voice_locked_transfers: false,
+    });
+    const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
+
+    const refreshBiometrics = useCallback(async () => {
+        if (!user?.id) return;
+        try {
+            const res = await voiceApi.biometrics.getStatus(user.id);
+            if (res.data) {
+                setBiometrics(res.data);
+            }
+        } catch (e) {
+            console.debug('Biometrics fetch notice:', e);
+        }
+    }, [user?.id]);
+
+    useEffect(() => {
+        refreshBiometrics();
+    }, [refreshBiometrics]);
+
+    // Ambient "Hey Voxa" Wake Word Detection
+    const [wakeWordEnabled, setWakeWordEnabled] = useState(() => {
+        return localStorage.getItem('voxa_wake_word_enabled') !== 'false';
+    });
+    const [wakeDetectedBanner, setWakeDetectedBanner] = useState(false);
+    const wakeRecognitionRef = useRef(null);
+    const wakeTimeoutRef = useRef(null);
+    const isActivelyListeningRef = useRef(false);
+
+    const handleToggleWakeWord = useCallback(() => {
+        setWakeWordEnabled((prev) => {
+            const next = !prev;
+            localStorage.setItem('voxa_wake_word_enabled', next ? 'true' : 'false');
+            return next;
+        });
+    }, []);
+
+    const handleListeningStateChange = useCallback((active) => {
+        isActivelyListeningRef.current = active;
+        if (active && wakeRecognitionRef.current) {
+            try {
+                wakeRecognitionRef.current.onend = null;
+                wakeRecognitionRef.current.onerror = null;
+                wakeRecognitionRef.current.abort();
+            } catch {}
+            wakeRecognitionRef.current = null;
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!wakeWordEnabled) {
+            if (wakeRecognitionRef.current) {
+                try {
+                    wakeRecognitionRef.current.onend = null;
+                    wakeRecognitionRef.current.onerror = null;
+                    wakeRecognitionRef.current.abort();
+                } catch {}
+                wakeRecognitionRef.current = null;
+            }
+            return;
+        }
+
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRec) return;
+
+        let isRunning = true;
+
+        function startWakeListener() {
+            if (!isRunning || !wakeWordEnabled || isActivelyListeningRef.current) return;
+
+            try {
+                if (wakeRecognitionRef.current) {
+                    try {
+                        wakeRecognitionRef.current.onend = null;
+                        wakeRecognitionRef.current.onerror = null;
+                        wakeRecognitionRef.current.abort();
+                    } catch {}
+                }
+
+                const rec = new SpeechRec();
+                rec.continuous = true;
+                rec.interimResults = true;
+                rec.lang = 'en-IN';
+                rec.maxAlternatives = 1;
+
+                rec.onstart = () => {};
+
+                rec.onresult = (e) => {
+                    let fullTranscript = '';
+                    for (let i = e.resultIndex; i < e.results.length; i++) {
+                        fullTranscript += ' ' + e.results[i][0].transcript;
+                    }
+                    const lower = fullTranscript.toLowerCase();
+
+                    // Detect "hey voxa", "voxa", "ok voxa", "hi voxa", "hello voxa"
+                    const wakeMatch = lower.match(/\b(?:hey|hi|ok|hello)?\s*(?:voxa|boxa|vox|vaxa)\b/i);
+                    if (wakeMatch) {
+                        const wakeIndex = wakeMatch.index + wakeMatch[0].length;
+                        const trailing = fullTranscript.slice(wakeIndex).trim().replace(/^[,\.\!\?\-\s]+/, '');
+
+                        try {
+                            rec.onend = null;
+                            rec.onerror = null;
+                            rec.abort();
+                        } catch {}
+
+                        playWakeChime();
+
+                        setWakeDetectedBanner(true);
+                        if (wakeTimeoutRef.current) clearTimeout(wakeTimeoutRef.current);
+                        wakeTimeoutRef.current = setTimeout(() => {
+                            setWakeDetectedBanner(false);
+                        }, 3500);
+
+                        setIsAssistantOpen(true);
+
+                        setTimeout(() => {
+                            if (trailing && trailing.length > 2) {
+                                voiceAssistantRef.current?.sendQuery(trailing);
+                            } else {
+                                voiceAssistantRef.current?.startListening();
+                            }
+                        }, 250);
+                    }
+                };
+
+                rec.onerror = (e) => {
+                    if (e.error === 'no-speech' || e.error === 'aborted') return;
+                    console.debug('Wake word listener notice:', e.error);
+                };
+
+                rec.onend = () => {
+                    if (isRunning && wakeWordEnabled && !isActivelyListeningRef.current) {
+                        setTimeout(() => {
+                            if (isRunning && wakeWordEnabled && !isActivelyListeningRef.current) {
+                                startWakeListener();
+                            }
+                        }, 350);
+                    }
+                };
+
+                wakeRecognitionRef.current = rec;
+                rec.start();
+            } catch (err) {
+                console.debug('Wake listener initialization notice:', err);
+            }
+        }
+
+        startWakeListener();
+
+        return () => {
+            isRunning = false;
+            if (wakeTimeoutRef.current) clearTimeout(wakeTimeoutRef.current);
+            if (wakeRecognitionRef.current) {
+                try {
+                    wakeRecognitionRef.current.onend = null;
+                    wakeRecognitionRef.current.onerror = null;
+                    wakeRecognitionRef.current.abort();
+                } catch {}
+                wakeRecognitionRef.current = null;
+            }
+        };
+    }, [wakeWordEnabled, setIsAssistantOpen]);
+
+    // Transfer prefilled recipient from beneficiary clicks
+    const [prefilledRecipient, setPrefilledRecipient] = useState('');
+
     const voiceAssistantRef = useRef(null);
 
-    // Refresh live account state from Supabase audit ledger
+    // Supabase Live Account Sync
     const refreshAccountState = useCallback(async () => {
         if (!user) return;
         try {
             const res = await bankingApi.getAccount();
             if (res.data) {
-                // If server ledger has 0 records but client localStorage has a balance, sync it seamlessly
                 if (res.data.transactions.length === 0) {
                     try {
                         const localRaw = localStorage.getItem(storageKey);
@@ -2832,26 +3551,21 @@ export default function Dashboard({ onBack }) {
                 }));
             }
         } catch (err) {
-            // Keep using local state if offline
+            // Keep local state
         }
     }, [user, storageKey]);
 
-    // Initial sync and real-time polling so peer transfers show up instantly
     useEffect(() => {
         refreshAccountState();
-
-        // 5s polling interval ensures recipient in any window/browser receives money in real-time
         const interval = setInterval(refreshAccountState, 5000);
         const onFocus = () => refreshAccountState();
         window.addEventListener('focus', onFocus);
-
         return () => {
             clearInterval(interval);
             window.removeEventListener('focus', onFocus);
         };
     }, [refreshAccountState]);
 
-    // Handlers
     const handleDepositSuccess = useCallback(async (amount, method) => {
         const now = new Date();
         const dateStr = `Today, ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
@@ -2918,84 +3632,155 @@ export default function Dashboard({ onBack }) {
         if (onBack) onBack();
     };
 
+    const handleSelectBeneficiaryFromHome = (u) => {
+        setPrefilledRecipient(u.email);
+        setActiveTab('transfers');
+    };
+
     return (
-        <div className="dashboard-page">
-            <Sidebar
+        <div className="dashboard-shell">
+            {/* Ambient Background Glows */}
+            <div className="dashboard-ambient-glow-1" />
+            <div className="dashboard-ambient-glow-2" />
+
+            {/* Collapsible Left Navigation Sidebar */}
+            <ModernSidebar
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
                 onBack={onBack}
                 onRequestLogout={() => setIsLogoutModalOpen(true)}
+                isCollapsed={isSidebarCollapsed}
+                setIsCollapsed={setIsSidebarCollapsed}
+                isMobileOpen={isMobileSidebarOpen}
+                setIsMobileOpen={setIsMobileSidebarOpen}
+                onOpenTransfer={() => setActiveTab('transfers')}
             />
 
-            {activeTab === 'home' && (
-                <HomeView
-                    user={user}
-                    bankingData={bankingData}
-                    onOpenDeposit={() => setIsDepositOpen(true)}
-                    onOpenBillPay={() => setIsBillPayOpen(true)}
-                    onNavigateTab={setActiveTab}
+            {/* Main Center Workspace */}
+            <div className="dashboard-workspace">
+                {/* Top Financial Command Bar */}
+                <TopFinancialCommandBar
+                    activeTab={activeTab}
                     isMasked={isMasked}
                     setIsMasked={setIsMasked}
-                />
-            )}
-
-            {activeTab === 'cards' && (
-                <CardsView
-                    bankingData={bankingData}
-                    setBankingData={setBankingData}
-                />
-            )}
-
-            {activeTab === 'transfers' && (
-                <TransfersView
-                    user={user}
-                    bankingData={bankingData}
-                    setBankingData={setBankingData}
+                    isAssistantOpen={isAssistantOpen}
+                    setIsAssistantOpen={setIsAssistantOpen}
                     onOpenDeposit={() => setIsDepositOpen(true)}
-                    onTransferSuccess={(rec) => setTransferReceipt(rec)}
-                    onRefreshAccount={refreshAccountState}
+                    onOpenBillPay={() => setIsBillPayOpen(true)}
+                    onOpenTransfer={() => setActiveTab('transfers')}
+                    onTriggerVoiceMic={() => {
+                        if (!isAssistantOpen) setIsAssistantOpen(true);
+                        if (voiceAssistantRef.current) {
+                            voiceAssistantRef.current.toggleListening();
+                        }
+                    }}
+                    isVoiceListening={voiceAssistantRef.current?.isListening}
+                    onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+                    wakeWordEnabled={wakeWordEnabled}
+                    onToggleWakeWord={handleToggleWakeWord}
+                />
+
+                {/* Workspace Body: Dynamic View + Copilot Dock */}
+                <div className="dashboard-workspace-body">
+                    {activeTab === 'home' && (
+                        <HomeView
+                            user={user}
+                            bankingData={bankingData}
+                            setBankingData={setBankingData}
+                            onOpenDeposit={() => setIsDepositOpen(true)}
+                            onOpenBillPay={() => setIsBillPayOpen(true)}
+                            onNavigateTab={setActiveTab}
+                            isMasked={isMasked}
+                            setIsMasked={setIsMasked}
+                            onSelectBeneficiaryTransfer={handleSelectBeneficiaryFromHome}
+                        />
+                    )}
+
+                    {activeTab === 'cards' && (
+                        <CardsView
+                            bankingData={bankingData}
+                            setBankingData={setBankingData}
+                        />
+                    )}
+
+                    {activeTab === 'transfers' && (
+                        <TransfersView
+                            user={user}
+                            bankingData={bankingData}
+                            setBankingData={setBankingData}
+                            onOpenDeposit={() => setIsDepositOpen(true)}
+                            onTransferSuccess={(rec) => setTransferReceipt(rec)}
+                            onRefreshAccount={refreshAccountState}
+                            prefilledRecipient={prefilledRecipient}
+                            biometrics={biometrics}
+                        />
+                    )}
+
+                    {activeTab === 'statements' && (
+                        <StatementsView
+                            bankingData={bankingData}
+                            onOpenDeposit={() => setIsDepositOpen(true)}
+                        />
+                    )}
+
+                    {activeTab === 'settings' && (
+                        <SettingsView
+                            user={user}
+                            bankingData={bankingData}
+                            setBankingData={setBankingData}
+                            biometrics={biometrics}
+                            onRefreshBiometrics={refreshBiometrics}
+                            onOpenEnrollModal={() => setIsEnrollModalOpen(true)}
+                            wakeWordEnabled={wakeWordEnabled}
+                            onToggleWakeWord={handleToggleWakeWord}
+                        />
+                    )}
+
+                    {/* AI Copilot Panel (Docked or Collapsed) */}
+                    <ModernAICopilotPanel
+                        isOpen={isAssistantOpen}
+                        onClose={() => setIsAssistantOpen(false)}
+                        user={user}
+                        bankingData={bankingData}
+                        setBankingData={setBankingData}
+                        isMasked={isMasked}
+                        setIsMasked={setIsMasked}
+                        onVoiceTransferConfirm={(payload) => setVoiceTransferModal(payload)}
+                        setTransferReceipt={setTransferReceipt}
+                        onNavigateTab={setActiveTab}
+                        voiceAssistantRef={voiceAssistantRef}
+                        onRefreshAccount={refreshAccountState}
+                        onListeningStateChange={handleListeningStateChange}
+                    />
+                </div>
+            </div>
+
+            {/* Ambient "Hey Voxa" Detected Notification Banner */}
+            {wakeDetectedBanner && (
+                <div className="hey-voxa-hud-banner">
+                    <div className="hey-voxa-hud-pulse" />
+                    <Mic size={18} color="#f97316" />
+                    <div className="hey-voxa-hud-text">
+                        <span className="hey-voxa-hud-title">"Hey Voxa" Activated</span>
+                        <span className="hey-voxa-hud-sub">Listening for your spoken command...</span>
+                    </div>
+                </div>
+            )}
+
+            {/* Floating Voice Trigger Button (Visible when Copilot panel is closed) */}
+            {!isAssistantOpen && (
+                <FloatingVoiceButton
+                    onClick={() => {
+                        setIsAssistantOpen(true);
+                        if (voiceAssistantRef.current) {
+                            voiceAssistantRef.current.toggleListening();
+                        }
+                    }}
+                    isListening={voiceAssistantRef.current?.isListening}
                 />
             )}
 
-            {activeTab === 'statements' && (
-                <StatementsView
-                    bankingData={bankingData}
-                    onOpenDeposit={() => setIsDepositOpen(true)}
-                />
-            )}
-
-            {activeTab === 'settings' && (
-                <SettingsView
-                    user={user}
-                    bankingData={bankingData}
-                    setBankingData={setBankingData}
-                />
-            )}
-
-            <AssistantPanel
-                user={user}
-                bankingData={bankingData}
-                setBankingData={setBankingData}
-                isMasked={isMasked}
-                setIsMasked={setIsMasked}
-                onVoiceTransferConfirm={(payload) => setVoiceTransferModal(payload)}
-                setTransferReceipt={setTransferReceipt}
-                onNavigateTab={setActiveTab}
-                voiceAssistantRef={voiceAssistantRef}
-                onRefreshAccount={refreshAccountState}
-            />
-
-            {/* Floating Voice Assistant Mic Button */}
-            <FloatingVoiceButton
-                onClick={() => {
-                    if (voiceAssistantRef.current) {
-                        voiceAssistantRef.current.toggleListening();
-                    }
-                }}
-                isListening={voiceAssistantRef.current?.isListening}
-            />
-
-            {/* Voice Action Confirmation Modal (Transfer / Bill Pay / Deposit) */}
+            {/* Voice Confirmation Modal */}
             <VoiceActionConfirmModal
                 actionData={voiceTransferModal}
                 onClose={() => setVoiceTransferModal(null)}
@@ -3011,6 +3796,14 @@ export default function Dashboard({ onBack }) {
                         voiceAssistantRef.current.sendQuery('no');
                     }
                 }}
+            />
+
+            {/* Biometric Voice Enrollment Modal */}
+            <VoiceEnrollmentModal
+                isOpen={isEnrollModalOpen}
+                onClose={() => setIsEnrollModalOpen(false)}
+                user={user}
+                onSuccess={() => refreshBiometrics()}
             />
 
             {/* Modals */}

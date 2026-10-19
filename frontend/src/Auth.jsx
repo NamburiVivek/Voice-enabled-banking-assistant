@@ -1,8 +1,8 @@
 /**
  * Auth.jsx - Login + Sign Up page with two-panel layout.
- * 🔒 All inputs sanitised via the backend (Pydantic).
- * 🔒 Password never stored or logged client-side.
- * 🔒 Generic error messages to prevent user enumeration.
+ * [Security] All inputs sanitised via the backend (Pydantic).
+ * [Security] Password never stored or logged client-side.
+ * [Security] Generic error messages to prevent user enumeration.
  */
 
 import React, { useState, useCallback } from 'react';
@@ -20,6 +20,7 @@ import {
   CheckCircle,
 } from 'lucide-react';
 import { useAuth } from './AuthContext';
+import VoxaLogo from './components/VoxaLogo.jsx';
 import './Auth.css';
 
 // ── Password strength calculator ──────────────────────────────────
@@ -59,26 +60,26 @@ function BrandPanel() {
     <div className="auth-brand-panel">
       <div className="auth-brand-content">
         <div className="auth-brand-logo">
-          <LeafLogo size={32} />
-          <span className="auth-brand-logo-name">Voxa Bank AI</span>
+          <VoxaLogo size={36} />
+          <span className="auth-brand-logo-name">VOXABANK <span style={{ fontSize: '0.65rem', padding: '2px 6px', background: 'rgba(255,255,255,0.08)', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.15)', color: '#a1a1aa' }}>AI CORE</span></span>
         </div>
 
         <div className="auth-brand-hero">
           <h1 className="auth-brand-tagline">
-            Banking that<br />
-            <span>understands you</span>
+            Institutional banking,<br />
+            <span>driven by voice.</span>
           </h1>
           <p className="auth-brand-desc">
-            Transfer money, check balances, and manage your finances — all with
-            your voice. Secure, instant, and always available.
+            Transfer funds, manage card security, pay utility invoices, and export
+            audited statements — powered by sub-second neural voice AI.
           </p>
         </div>
 
         <div className="auth-brand-badges">
           {[
-            { icon: <Mic size={18} />, title: 'Voice-First Banking', sub: 'Natural language commands' },
-            { icon: <ShieldCheck size={18} />, title: 'Bank-Grade Security', sub: 'End-to-end encrypted' },
-            { icon: <Zap size={18} />, title: 'Instant Responses', sub: 'Powered by Groq AI' },
+            { icon: <Mic size={18} />, title: 'Voice-First Banking Core', sub: 'Sub-15ms NLU parsing' },
+            { icon: <ShieldCheck size={18} />, title: 'RBI Grounded Compliance', sub: 'Hardware-sealed AES-256 vault' },
+            { icon: <Zap size={18} />, title: 'Instant UPI 2.0 Settlement', sub: 'Direct zero-latency ledger' },
           ].map(({ icon, title, sub }) => (
             <div key={title} className="auth-badge">
               <div className="auth-badge-icon">{icon}</div>
@@ -91,24 +92,6 @@ function BrandPanel() {
         </div>
       </div>
     </div>
-  );
-}
-
-// ── Leaf Logo (reused from Dashboard) ────────────────────────────
-function LeafLogo({ size = 40 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="leafGradAuth" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="var(--color-primary)" />
-          <stop offset="100%" stopColor="var(--color-accent)" />
-        </linearGradient>
-      </defs>
-      <path d="M50 92 L50 22" stroke="url(#leafGradAuth)" strokeWidth="3" strokeLinecap="round" />
-      <path d="M50 34 C30 34 14 18 12 4 C34 4 50 16 50 34 Z" fill="url(#leafGradAuth)" />
-      <path d="M50 50 C72 50 88 34 90 20 C68 20 50 32 50 50 Z" fill="url(#leafGradAuth)" />
-      <path d="M50 62 C34 62 22 50 19 38 C39 38 50 46 50 62 Z" fill="url(#leafGradAuth)" />
-    </svg>
   );
 }
 
