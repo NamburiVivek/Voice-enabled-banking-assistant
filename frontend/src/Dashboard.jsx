@@ -459,8 +459,6 @@ function TopFinancialCommandBar({
     onTriggerVoiceMic,
     isVoiceListening,
     onToggleMobileSidebar,
-    wakeWordEnabled,
-    onToggleWakeWord,
 }) {
     const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -522,21 +520,8 @@ function TopFinancialCommandBar({
                 </button>
             </div>
 
-            {/* Right: "Hey Voxa" Wake Pill, Clock, Privacy, Deposit, & AI Copilot */}
+            {/* Right: Clock, Privacy, Deposit, & AI Copilot */}
             <div className="topbar-right-group">
-                {/* Hands-Free "Hey Voxa" Radar Status */}
-                <button
-                    type="button"
-                    className={`topbar-hey-voxa-pill ${wakeWordEnabled ? 'active' : ''}`}
-                    onClick={onToggleWakeWord}
-                    title={wakeWordEnabled ? "Hey Voxa is listening — say 'Hey Voxa' anytime hands-free" : "Hey Voxa paused — click to activate hands-free"}
-                    id="topbar-hey-voxa-toggle-btn"
-                >
-                    <span className={`wake-radar-ping ${wakeWordEnabled ? 'pulsing' : ''}`} />
-                    <Radio size={13} />
-                    <span>"Hey Voxa"</span>
-                </button>
-
                 <div className="topbar-clock">
                     {timeStr} IST
                 </div>
@@ -1905,25 +1890,15 @@ function VoiceEnrollmentModal({ isOpen, onClose, user, onSuccess }) {
     );
 }
 
-// ── Voice Biometrics & "Hey Voxa" Settings Card ──────────────────────────────
-function VoiceBiometricsSettingsCard({
-    user,
-    biometrics,
-    onRefreshStatus,
-    onOpenEnrollModal,
-    wakeWordEnabled,
-    onToggleWakeWord,
+// ── AI Assistant Voice Persona Settings Card ─────────────────────────────────
+function AIAssistantVoiceSettingsCard({
+    selectedVoiceName,
+    onVoiceChange,
+    voiceRate,
+    onRateChange,
+    voicePitch,
+    onPitchChange,
 }) {
-    const [testingVoice, setTestingVoice] = useState(false);
-    const [testCount, setTestCount] = useState(3);
-    const [testResult, setTestResult] = useState(null);
-    const [togglingLock, setTogglingLock] = useState(false);
-    const testRecorderRef = useRef(null);
-
-    // AI Voice Persona Settings
-    const [ttsVoiceName, setTtsVoiceName] = useState(() => localStorage.getItem('voxa_tts_voice_name') || '');
-    const [ttsRate, setTtsRate] = useState(() => parseFloat(localStorage.getItem('voxa_tts_rate') || '1.0'));
-    const [ttsPitch, setTtsPitch] = useState(() => parseFloat(localStorage.getItem('voxa_tts_pitch') || '1.0'));
     const [voicesList, setVoicesList] = useState([]);
 
     useEffect(() => {
@@ -1938,97 +1913,24 @@ function VoiceBiometricsSettingsCard({
         };
         load();
         window.speechSynthesis.onvoiceschanged = load;
+        return () => {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.onvoiceschanged = null;
+            }
+        };
     }, []);
 
     const previewSelectedVoice = () => {
         if (!('speechSynthesis' in window)) return;
         window.speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance("Hello! This is your customized Voxa AI assistant voice.");
-        u.rate = ttsRate;
-        u.pitch = ttsPitch;
-        if (ttsVoiceName) {
-            const v = window.speechSynthesis.getVoices().find((x) => x.name === ttsVoiceName);
+        u.rate = voiceRate;
+        u.pitch = voicePitch;
+        if (selectedVoiceName) {
+            const v = window.speechSynthesis.getVoices().find((x) => x.name === selectedVoiceName);
             if (v) u.voice = v;
         }
         window.speechSynthesis.speak(u);
-    };
-
-    const handleToggleLock = async () => {
-        if (!biometrics?.has_voiceprint) {
-            onOpenEnrollModal();
-            return;
-        }
-        setTogglingLock(true);
-        try {
-            const next = !biometrics?.voice_locked_transfers;
-            await voiceApi.biometrics.toggleLock(user?.id || 'default_user', next);
-            if (onRefreshStatus) onRefreshStatus();
-        } catch (err) {
-            console.error('Toggle lock error:', err);
-        } finally {
-            setTogglingLock(false);
-        }
-    };
-
-    const handleTestVerification = async () => {
-        if (!biometrics?.has_voiceprint) {
-            onOpenEnrollModal();
-            return;
-        }
-
-        setTestResult(null);
-        setTestingVoice(true);
-        setTestCount(3);
-
-        try {
-            const recorder = new WavAudioRecorder();
-            testRecorderRef.current = recorder;
-            await recorder.start();
-
-            let count = 3;
-            const timer = setInterval(async () => {
-                count -= 1;
-                setTestCount(count);
-                if (count <= 0) {
-                    clearInterval(timer);
-                    try {
-                        const audioData = recorder.stop();
-                        testRecorderRef.current = null;
-                        const verifyRes = await voiceApi.biometrics.verify({
-                            user_id: user?.id || 'default_user',
-                            audio_base64: audioData.base64,
-                        });
-                        setTestResult(verifyRes.data);
-                        if (verifyRes.data.verified) {
-                            playSuccessChime();
-                        } else {
-                            playDeniedChime();
-                        }
-                    } catch (verifyErr) {
-                        setTestResult({ verified: false, message: 'Verification failed. Audio was not recognized.' });
-                        playDeniedChime();
-                    } finally {
-                        setTestingVoice(false);
-                    }
-                }
-            }, 1000);
-        } catch (e) {
-            setTestingVoice(false);
-            setTestResult({ verified: false, message: 'Could not access microphone.' });
-        }
-    };
-
-    const handleDeleteVoiceprint = async () => {
-        if (!window.confirm('Are you sure you want to delete your enrolled voiceprint? Transfers will no longer require your voice.')) {
-            return;
-        }
-        try {
-            await voiceApi.biometrics.deleteVoiceprint(user?.id || 'default_user');
-            if (onRefreshStatus) onRefreshStatus();
-            setTestResult(null);
-        } catch (err) {
-            console.error('Delete voiceprint error:', err);
-        }
     };
 
     return (
@@ -2036,129 +1938,28 @@ function VoiceBiometricsSettingsCard({
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
                 <div>
                     <h3 style={{ display: 'flex', alignItems: 'center', gap: 8, margin: 0 }}>
-                        <ShieldCheck size={20} color="#f97316" />
-                        Voice Biometrics & "Hey Voxa" Hands-Free Controls
+                        <Sliders size={20} color="#f97316" />
+                        AI Assistant Spoken Voice Persona
                     </h3>
                     <p className="settings-card-desc" style={{ marginTop: 4, marginBottom: 0 }}>
-                        Acoustic speaker verification for money transfers and hands-free ambient wake word detection.
+                        Configure the synthesizer voice, speech speed, and pitch used by your AI Assistant across the dashboard.
                     </p>
                 </div>
                 <div>
-                    {biometrics?.has_voiceprint ? (
-                        <span className="biometrics-status-badge enrolled">
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#4ade80' }} />
-                            Voiceprint Active (160-D Vector)
-                        </span>
-                    ) : (
-                        <span className="biometrics-status-badge unenrolled">
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#fb923c' }} />
-                            Voiceprint Not Enrolled
-                        </span>
-                    )}
+                    <span className="biometrics-status-badge enrolled">
+                        <Volume2 size={14} color="#4ade80" />
+                        Live Synchronized
+                    </span>
                 </div>
             </div>
 
-            <div className="toggles-list" style={{ marginTop: '1.25rem', borderTop: 'none', paddingTop: 0 }}>
-                {/* Voice-Locked Transfers */}
-                <div className="toggle-row">
-                    <div className="toggle-info">
-                        <h5>Transfer Voice Lock (Biometric Speaker Authorization)</h5>
-                        <p>Only the enrolled account owner's acoustic voiceprint can authorize transfers. Unauthorized voices or text-only attempts are immediately rejected.</p>
-                    </div>
-                    <label className="switch">
-                        <input
-                            type="checkbox"
-                            checked={biometrics?.voice_locked_transfers ?? false}
-                            onChange={handleToggleLock}
-                            disabled={togglingLock}
-                        />
-                        <span className="switch-slider" />
-                    </label>
-                </div>
-
-                {/* Hey Voxa Ambient Listener */}
-                <div className="toggle-row">
-                    <div className="toggle-info">
-                        <h5>"Hey Voxa" Wake Word Detection</h5>
-                        <p>Listen in the background for "Hey Voxa" to automatically open the assistant and accept spoken commands hands-free.</p>
-                    </div>
-                    <label className="switch">
-                        <input
-                            type="checkbox"
-                            checked={wakeWordEnabled}
-                            onChange={onToggleWakeWord}
-                        />
-                        <span className="switch-slider" />
-                    </label>
-                </div>
-            </div>
-
-            {/* Biometric Actions */}
-            <div className="voice-biometric-actions">
-                <button
-                    type="button"
-                    className="btn-bio-action primary"
-                    onClick={onOpenEnrollModal}
-                    id="settings-enroll-voice-btn"
-                >
-                    <Mic size={15} />
-                    {biometrics?.has_voiceprint ? 'Re-enroll / Update Voiceprint' : 'Enroll My Voice (4.5s)'}
-                </button>
-
-                {biometrics?.has_voiceprint && (
-                    <button
-                        type="button"
-                        className="btn-bio-action secondary"
-                        onClick={handleTestVerification}
-                        disabled={testingVoice}
-                        id="settings-test-voice-btn"
-                    >
-                        <Radio size={15} />
-                        {testingVoice ? `Speak now... (${testCount}s)` : 'Test My Voice Match'}
-                    </button>
-                )}
-
-                {biometrics?.has_voiceprint && (
-                    <button
-                        type="button"
-                        className="btn-bio-action danger"
-                        onClick={handleDeleteVoiceprint}
-                        id="settings-delete-voice-btn"
-                    >
-                        <X size={15} />
-                        Delete Voiceprint
-                    </button>
-                )}
-            </div>
-
-            {/* Test Voice Match Results */}
-            {testResult && (
-                <div className={`voice-test-result ${testResult.verified ? 'verified' : 'denied'}`}>
-                    {testResult.verified ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
-                    <div>
-                        <strong>{testResult.verified ? 'Voice Biometrics Verified!' : 'Voice Authentication Mismatch!'}</strong>
-                        <span style={{ marginLeft: 8, fontSize: '0.8rem', opacity: 0.85 }}>
-                            Cosine Similarity: {(testResult.similarity || 0).toFixed(3)} ({testResult.confidence || 0}% match) — {testResult.message}
-                        </span>
-                    </div>
-                </div>
-            )}
-
-            {/* AI Assistant Voice Persona Customization */}
             <div style={{ marginTop: '1.25rem', paddingTop: '1.25rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                <h4 style={{ margin: '0 0 0.75rem 0', fontSize: '0.92rem', color: '#ffffff', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Sliders size={15} color="#f97316" />
-                    AI Assistant Spoken Voice Persona
-                </h4>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', alignItems: 'flex-end' }}>
                     <div className="voice-setting-field">
                         <label>Speech Synthesis Voice</label>
                         <select
-                            value={ttsVoiceName}
-                            onChange={(e) => {
-                                setTtsVoiceName(e.target.value);
-                                localStorage.setItem('voxa_tts_voice_name', e.target.value);
-                            }}
+                            value={selectedVoiceName}
+                            onChange={(e) => onVoiceChange(e.target.value)}
                         >
                             <option value="">Default (Browser Default Voice)</option>
                             {voicesList.map((v) => (
@@ -2172,38 +1973,30 @@ function VoiceBiometricsSettingsCard({
                     <div className="voice-setting-field">
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <label>Speech Rate</label>
-                            <span className="slider-val-badge">{ttsRate.toFixed(2)}x</span>
+                            <span className="slider-val-badge">{voiceRate.toFixed(2)}x</span>
                         </div>
                         <input
                             type="range"
                             min="0.6"
                             max="1.6"
                             step="0.05"
-                            value={ttsRate}
-                            onChange={(e) => {
-                                const val = parseFloat(e.target.value);
-                                setTtsRate(val);
-                                localStorage.setItem('voxa_tts_rate', val.toString());
-                            }}
+                            value={voiceRate}
+                            onChange={(e) => onRateChange(parseFloat(e.target.value))}
                         />
                     </div>
 
                     <div className="voice-setting-field">
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <label>Speech Pitch</label>
-                            <span className="slider-val-badge">{ttsPitch.toFixed(2)}</span>
+                            <span className="slider-val-badge">{voicePitch.toFixed(2)}</span>
                         </div>
                         <input
                             type="range"
                             min="0.6"
                             max="1.5"
                             step="0.05"
-                            value={ttsPitch}
-                            onChange={(e) => {
-                                const val = parseFloat(e.target.value);
-                                setTtsPitch(val);
-                                localStorage.setItem('voxa_tts_pitch', val.toString());
-                            }}
+                            value={voicePitch}
+                            onChange={(e) => onPitchChange(parseFloat(e.target.value))}
                         />
                     </div>
 
@@ -2229,11 +2022,12 @@ function SettingsView({
     user,
     bankingData,
     setBankingData,
-    biometrics,
-    onRefreshBiometrics,
-    onOpenEnrollModal,
-    wakeWordEnabled,
-    onToggleWakeWord,
+    selectedVoiceName,
+    onVoiceChange,
+    voiceRate,
+    onRateChange,
+    voicePitch,
+    onPitchChange,
 }) {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -2499,15 +2293,15 @@ function SettingsView({
                 </div>
             </div>
 
-            {/* Dedicated Full-Width Voice Biometrics & Hey Voxa Card */}
+            {/* Dedicated Full-Width AI Voice Persona Card */}
             <div style={{ marginTop: '1.5rem' }}>
-                <VoiceBiometricsSettingsCard
-                    user={user}
-                    biometrics={biometrics}
-                    onRefreshStatus={onRefreshBiometrics}
-                    onOpenEnrollModal={onOpenEnrollModal}
-                    wakeWordEnabled={wakeWordEnabled}
-                    onToggleWakeWord={onToggleWakeWord}
+                <AIAssistantVoiceSettingsCard
+                    selectedVoiceName={selectedVoiceName}
+                    onVoiceChange={onVoiceChange}
+                    voiceRate={voiceRate}
+                    onRateChange={onRateChange}
+                    voicePitch={voicePitch}
+                    onPitchChange={onPitchChange}
                 />
             </div>
         </div>
@@ -2977,44 +2771,44 @@ function MemberDetailsView() {
         {
             name: 'Pasumarthy Abhinav',
             initials: 'PA',
-            role: 'Lead Full-Stack & AI Systems Engineer',
+            role: 'Lead Full-Stack & System Integration Engineer',
             email: 'pasumarthyabhinav955@gmail.com',
             github: 'abhii-navv',
             contributions: [
+                'Frontend, backend APIs, database and system integration',
                 'Engineered real-time FastAPI async banking backend and high-performance React 19 dashboard.',
                 'Built virtual debit card lifecycle, dynamic limit controls, and EMV channel authorization toggles.',
-                'Architected Render deployment, unified PyTorch thread optimizations, and memory-safe model pre-warming.',
-                'Designed biometric verification UX, transaction confirmation modals, and glassmorphic UI system.'
+                'Architected Render deployment, unified PyTorch thread optimizations, and memory-safe model pre-warming.'
             ],
-            skills: ['FastAPI', 'React 19', 'PyTorch', 'System Architecture', 'Supabase', 'UI/UX Design', 'Cloud Deploy']
+            skills: ['Frontend (React 19)', 'Backend APIs (FastAPI)', 'Database & Supabase', 'System Integration', 'PyTorch', 'Cloud Deploy']
         },
         {
             name: 'Namburi Vivek',
             initials: 'NV',
-            role: 'AI & NLP Research Lead • Repository Creator',
+            role: 'Speech-to-Text, Text-to-Speech & RAG Systems Lead • Repo Creator',
             email: 'viveknamburiviveknamburi@gmail.com',
             github: 'NamburiVivek',
             contributions: [
+                'Speech-to-Text, Text-to-Speech, speech recognition evaluation',
+                'RAG-based banking knowledge retrieval and RBI regulatory vector retriever',
                 'Designed Hierarchical Multi-Task Neural NLU architecture with gated intent-conditioned sub-heads.',
-                'Generated and curated the core banking intent dataset (20 intents, 72 sub-intents, slot annotations).',
-                'Developed the STT speech noise augmentation engine to benchmark acoustic robustness across Indian accents.',
-                'Trained and validated neural checkpoints (nlu_fast.pt), achieving 94.87% intent and 91.24% sub-intent accuracy.'
+                'Generated and curated core banking intent dataset and benchmarked acoustic robustness across Indian accents.'
             ],
-            skills: ['PyTorch', 'Transformers', 'SentenceTransformers', 'Dataset Curation', 'Acoustic DSP', 'LoRA / PEFT']
+            skills: ['Speech-to-Text', 'Text-to-Speech', 'Speech Evaluation', 'RAG Retrieval', 'PyTorch', 'Acoustic DSP']
         },
         {
-            name: 'Ethish',
-            initials: 'ET',
-            role: 'Security & Voice Biometrics Engineer',
-            email: 'ethish@voxabank.internal',
+            name: 'Rudraraju Ethish',
+            initials: 'RE',
+            role: 'NLP Pipeline & LLM Integration Engineer',
+            email: 'ethishrudraraju@gmail.com',
             github: 'Ethish107',
             contributions: [
-                'Implemented 160-dim acoustic voiceprint enrollment and Dynamic Time Warping (DTW) verification.',
-                'Configured anti-spoofing noise floor thresholds and hardware mic feature extraction pipelines.',
-                'Assembled the Reserve Bank of India (RBI) regulatory knowledge base and semantic RAG vector retriever.',
-                'Formulated zero-hallucination compliance guards and customer liability fraud policies.'
+                'NLP and AI pipeline; LLM integration; query understanding and response generation',
+                'Configured anti-spoofing noise floor thresholds and acoustic feature pipelines.',
+                'Formulated zero-hallucination compliance guards and customer liability fraud policies.',
+                'Implemented conversational context tracking and multi-turn dialog state machines.'
             ],
-            skills: ['Voice Biometrics', 'Audio DSP', 'MFCC & DTW', 'RAG Vector Index', 'RBI Compliance', 'Security']
+            skills: ['NLP Pipeline', 'LLM Integration', 'Query Understanding', 'Response Generation', 'Prompt Engineering', 'Python']
         }
     ];
 
@@ -3035,6 +2829,56 @@ function MemberDetailsView() {
                         <span className="model-tag-pill">Natural Language Processing</span>
                         <span className="model-tag-pill orange">Release v2.4</span>
                     </div>
+                </div>
+            </div>
+
+            {/* Technical Contribution Table Matching Technical Breakdown */}
+            <div className="contribution-table-card">
+                <div className="contribution-table-header-bar">
+                    <div>
+                        <h3 className="contribution-table-title">Technical Contribution Breakdown</h3>
+                        <p className="contribution-table-sub">Core individual engineering ownership and module responsibilities</p>
+                    </div>
+                    <span className="contribution-status-pill">Active Deliverables</span>
+                </div>
+                <div className="contribution-table-wrapper">
+                    <table className="contribution-table">
+                        <thead>
+                            <tr>
+                                <th style={{ width: '28%' }}>Member Name</th>
+                                <th style={{ width: '72%' }}>Contribution (Technical)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td className="member-name-cell">
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <span className="member-initial-dot">PA</span>
+                                        <span>Pasumarthy Abhinav</span>
+                                    </div>
+                                </td>
+                                <td>Frontend, backend APIs, database and system integration</td>
+                            </tr>
+                            <tr>
+                                <td className="member-name-cell">
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <span className="member-initial-dot">NV</span>
+                                        <span>Namburi Vivek</span>
+                                    </div>
+                                </td>
+                                <td>Speech-to-Text, Text-to-Speech, speech recognition evaluation; RAG-based banking knowledge retrieval</td>
+                            </tr>
+                            <tr>
+                                <td className="member-name-cell">
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <span className="member-initial-dot">RE</span>
+                                        <span>Rudraraju Ethish</span>
+                                    </div>
+                                </td>
+                                <td>NLP and AI pipeline; LLM integration; query understanding and response generation</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -3399,6 +3243,12 @@ function ModernAICopilotPanel({
     voiceAssistantRef,
     onRefreshAccount,
     onListeningStateChange,
+    selectedVoiceName,
+    onVoiceChange,
+    voiceRate,
+    onRateChange,
+    voicePitch,
+    onPitchChange,
 }) {
     const [query, setQuery] = useState('');
     const [isListening, setIsListening] = useState(false);
@@ -3413,17 +3263,6 @@ function ModernAICopilotPanel({
 
     const [isVoiceSettingsOpen, setIsVoiceSettingsOpen] = useState(false);
     const [availableVoices, setAvailableVoices] = useState([]);
-    const [selectedVoiceName, setSelectedVoiceName] = useState(() => {
-        return localStorage.getItem('voxa_tts_voice_name') || '';
-    });
-    const [voiceRate, setVoiceRate] = useState(() => {
-        const saved = localStorage.getItem('voxa_tts_rate');
-        return saved ? parseFloat(saved) : 1.0;
-    });
-    const [voicePitch, setVoicePitch] = useState(() => {
-        const saved = localStorage.getItem('voxa_tts_pitch');
-        return saved ? parseFloat(saved) : 1.0;
-    });
 
     useEffect(() => {
         if (!('speechSynthesis' in window)) return;
@@ -3445,16 +3284,13 @@ function ModernAICopilotPanel({
     }, []);
 
     const handleVoiceChange = (name) => {
-        setSelectedVoiceName(name);
-        localStorage.setItem('voxa_tts_voice_name', name);
+        if (onVoiceChange) onVoiceChange(name);
     };
     const handleRateChange = (r) => {
-        setVoiceRate(r);
-        localStorage.setItem('voxa_tts_rate', r.toString());
+        if (onRateChange) onRateChange(r);
     };
     const handlePitchChange = (p) => {
-        setVoicePitch(p);
-        localStorage.setItem('voxa_tts_pitch', p.toString());
+        if (onPitchChange) onPitchChange(p);
     };
 
     const [messages, setMessages] = useState([
@@ -3678,6 +3514,39 @@ function ModernAICopilotPanel({
                         }
                     } catch (billErr) {
                         console.error('Voice bill pay sync error:', billErr);
+                    }
+                } else if (data.status === 'ok' && data.action_payload?.action === 'DEPOSIT_SUCCESS') {
+                    const amt = parseFloat(data.action_payload.amount);
+                    const method = data.action_payload.method || 'UPI';
+                    const now = new Date();
+                    const dateStr = `Today, ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                    const refId = `TXN-DEP-${Date.now().toString(36).toUpperCase()}`;
+
+                    const newTx = {
+                        id: refId,
+                        name: `Deposit via ${method}`,
+                        date: dateStr,
+                        amount: amt,
+                        type: 'credit',
+                        category: 'Deposit',
+                        status: 'Completed',
+                        ref: refId,
+                    };
+
+                    setBankingData((prev) => ({
+                        ...prev,
+                        balance: prev.balance + amt,
+                        transactions: [newTx, ...prev.transactions],
+                    }));
+
+                    try {
+                        await bankingApi.deposit({ amount: amt, method });
+                    } catch (depErr) {
+                        console.error('Voice deposit backend sync error:', depErr);
+                    }
+
+                    if (onRefreshAccount) {
+                        await onRefreshAccount();
                     }
                 }
 
@@ -4287,150 +4156,33 @@ export default function Dashboard({ onBack }) {
         voiceApi.health().catch(() => {});
     }, [refreshBiometrics]);
 
-    // Ambient "Hey Voxa" Wake Word Detection
-    const [wakeWordEnabled, setWakeWordEnabled] = useState(() => {
-        return localStorage.getItem('voxa_wake_word_enabled') !== 'false';
+    // Global AI Assistant Spoken Voice Persona State (Synchronized across Dashboard & Settings)
+    const [selectedVoiceName, setSelectedVoiceName] = useState(() => localStorage.getItem('voxa_tts_voice_name') || '');
+    const [voiceRate, setVoiceRate] = useState(() => {
+        const saved = localStorage.getItem('voxa_tts_rate');
+        return saved ? parseFloat(saved) : 1.0;
     });
-    const [wakeDetectedBanner, setWakeDetectedBanner] = useState(false);
-    const wakeRecognitionRef = useRef(null);
-    const wakeTimeoutRef = useRef(null);
-    const isActivelyListeningRef = useRef(false);
+    const [voicePitch, setVoicePitch] = useState(() => {
+        const saved = localStorage.getItem('voxa_tts_pitch');
+        return saved ? parseFloat(saved) : 1.0;
+    });
 
-    const handleToggleWakeWord = useCallback(() => {
-        setWakeWordEnabled((prev) => {
-            const next = !prev;
-            localStorage.setItem('voxa_wake_word_enabled', next ? 'true' : 'false');
-            return next;
-        });
+    const handleVoiceChange = useCallback((name) => {
+        setSelectedVoiceName(name);
+        localStorage.setItem('voxa_tts_voice_name', name);
     }, []);
 
-    const handleListeningStateChange = useCallback((active) => {
-        isActivelyListeningRef.current = active;
-        if (active && wakeRecognitionRef.current) {
-            try {
-                wakeRecognitionRef.current.onend = null;
-                wakeRecognitionRef.current.onerror = null;
-                wakeRecognitionRef.current.abort();
-            } catch { }
-            wakeRecognitionRef.current = null;
-        }
+    const handleRateChange = useCallback((rate) => {
+        setVoiceRate(rate);
+        localStorage.setItem('voxa_tts_rate', rate.toString());
     }, []);
 
-    useEffect(() => {
-        if (!wakeWordEnabled) {
-            if (wakeRecognitionRef.current) {
-                try {
-                    wakeRecognitionRef.current.onend = null;
-                    wakeRecognitionRef.current.onerror = null;
-                    wakeRecognitionRef.current.abort();
-                } catch { }
-                wakeRecognitionRef.current = null;
-            }
-            return;
-        }
+    const handlePitchChange = useCallback((pitch) => {
+        setVoicePitch(pitch);
+        localStorage.setItem('voxa_tts_pitch', pitch.toString());
+    }, []);
 
-        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRec) return;
-
-        let isRunning = true;
-
-        function startWakeListener() {
-            if (!isRunning || !wakeWordEnabled || isActivelyListeningRef.current) return;
-
-            try {
-                if (wakeRecognitionRef.current) {
-                    try {
-                        wakeRecognitionRef.current.onend = null;
-                        wakeRecognitionRef.current.onerror = null;
-                        wakeRecognitionRef.current.abort();
-                    } catch { }
-                }
-
-                const rec = new SpeechRec();
-                rec.continuous = true;
-                rec.interimResults = true;
-                rec.lang = (navigator.language && navigator.language.startsWith('en')) ? navigator.language : 'en-US';
-                rec.maxAlternatives = 1;
-
-                rec.onstart = () => { };
-
-                rec.onresult = (e) => {
-                    let fullTranscript = '';
-                    for (let i = e.resultIndex; i < e.results.length; i++) {
-                        fullTranscript += ' ' + e.results[i][0].transcript;
-                    }
-                    const lower = fullTranscript.toLowerCase();
-
-                    // Detect "hey voxa", "voxa", "ok voxa", "hi voxa", "hello voxa" and frequent acoustic speech-to-text approximations
-                    const wakeMatch = lower.match(/\b(?:hey|hi|ok|hello|listening)?\s*(?:voxa|vox|vaxa|boxa|boxer|voxer|foxa|fox|folks|focus|woxa|wasa|vosa|boksa)\b/i);
-                    if (wakeMatch) {
-                        const wakeIndex = wakeMatch.index + wakeMatch[0].length;
-                        const trailing = fullTranscript.slice(wakeIndex).trim().replace(/^[,\.\!\?\-\s]+/, '');
-
-                        try {
-                            rec.onend = null;
-                            rec.onerror = null;
-                            rec.abort();
-                        } catch { }
-
-                        playWakeChime();
-
-                        setWakeDetectedBanner(true);
-                        if (wakeTimeoutRef.current) clearTimeout(wakeTimeoutRef.current);
-                        wakeTimeoutRef.current = setTimeout(() => {
-                            setWakeDetectedBanner(false);
-                        }, 3500);
-
-                        setIsAssistantOpen(true);
-
-                        // Allow 450ms for Windows audio hardware to release the microphone before the assistant session starts
-                        setTimeout(() => {
-                            if (trailing && trailing.length > 2) {
-                                voiceAssistantRef.current?.sendQuery(trailing);
-                            } else {
-                                voiceAssistantRef.current?.startListening();
-                            }
-                        }, 450);
-                    }
-                };
-
-                rec.onerror = (e) => {
-                    if (e.error === 'no-speech' || e.error === 'aborted') return;
-                    console.debug('Wake word listener notice:', e.error);
-                };
-
-                rec.onend = () => {
-                    if (isRunning && wakeWordEnabled && !isActivelyListeningRef.current) {
-                        setTimeout(() => {
-                            if (isRunning && wakeWordEnabled && !isActivelyListeningRef.current) {
-                                startWakeListener();
-                            }
-                        }, 350);
-                    }
-                };
-
-                wakeRecognitionRef.current = rec;
-                rec.start();
-            } catch (err) {
-                console.debug('Wake listener initialization notice:', err);
-            }
-        }
-
-        startWakeListener();
-
-        return () => {
-            isRunning = false;
-            if (wakeTimeoutRef.current) clearTimeout(wakeTimeoutRef.current);
-            if (wakeRecognitionRef.current) {
-                try {
-                    wakeRecognitionRef.current.onend = null;
-                    wakeRecognitionRef.current.onerror = null;
-                    wakeRecognitionRef.current.abort();
-                } catch { }
-                wakeRecognitionRef.current = null;
-            }
-        };
-    }, [wakeWordEnabled, setIsAssistantOpen]);
+    const handleListeningStateChange = useCallback(() => {}, []);
 
     // Transfer prefilled recipient from beneficiary clicks
     const [prefilledRecipient, setPrefilledRecipient] = useState('');
@@ -4594,8 +4346,6 @@ export default function Dashboard({ onBack }) {
                     }}
                     isVoiceListening={voiceAssistantRef.current?.isListening}
                     onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-                    wakeWordEnabled={wakeWordEnabled}
-                    onToggleWakeWord={handleToggleWakeWord}
                 />
 
                 {/* Workspace Body: Dynamic View + Copilot Dock */}
@@ -4654,11 +4404,12 @@ export default function Dashboard({ onBack }) {
                             user={user}
                             bankingData={bankingData}
                             setBankingData={setBankingData}
-                            biometrics={biometrics}
-                            onRefreshBiometrics={refreshBiometrics}
-                            onOpenEnrollModal={() => setIsEnrollModalOpen(true)}
-                            wakeWordEnabled={wakeWordEnabled}
-                            onToggleWakeWord={handleToggleWakeWord}
+                            selectedVoiceName={selectedVoiceName}
+                            onVoiceChange={handleVoiceChange}
+                            voiceRate={voiceRate}
+                            onRateChange={handleRateChange}
+                            voicePitch={voicePitch}
+                            onPitchChange={handlePitchChange}
                         />
                     )}
 
@@ -4677,21 +4428,15 @@ export default function Dashboard({ onBack }) {
                         voiceAssistantRef={voiceAssistantRef}
                         onRefreshAccount={refreshAccountState}
                         onListeningStateChange={handleListeningStateChange}
+                        selectedVoiceName={selectedVoiceName}
+                        onVoiceChange={handleVoiceChange}
+                        voiceRate={voiceRate}
+                        onRateChange={handleRateChange}
+                        voicePitch={voicePitch}
+                        onPitchChange={handlePitchChange}
                     />
                 </div>
             </div>
-
-            {/* Ambient "Hey Voxa" Detected Notification Banner */}
-            {wakeDetectedBanner && (
-                <div className="hey-voxa-hud-banner">
-                    <div className="hey-voxa-hud-pulse" />
-                    <Mic size={18} color="#f97316" />
-                    <div className="hey-voxa-hud-text">
-                        <span className="hey-voxa-hud-title">"Hey Voxa" Activated</span>
-                        <span className="hey-voxa-hud-sub">Listening for your spoken command...</span>
-                    </div>
-                </div>
-            )}
 
             {/* Floating Voice Trigger Button (Visible when Copilot panel is closed) */}
             {!isAssistantOpen && (

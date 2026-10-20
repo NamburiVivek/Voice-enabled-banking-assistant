@@ -447,6 +447,16 @@ python backend/ai/evaluate_stt_robustness.py
 
 ---
 
+## 👥 Team & Technical Contributions
+
+| Member Name | Contribution (Technical) |
+| :--- | :--- |
+| **Pasumarthy Abhinav** | Frontend, backend APIs, database and system integration |
+| **Namburi Vivek** | Speech-to-Text, Text-to-Speech, speech recognition evaluation; RAG-based banking knowledge retrieval |
+| **Rudraraju Ethish** | NLP and AI pipeline; LLM integration; query understanding and response generation |
+
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
