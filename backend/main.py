@@ -19,6 +19,13 @@ for p in (AI_DIR, BASE_DIR):
     if p not in sys.path:
         sys.path.insert(0, p)
 
+# Cap PyTorch thread buffers to prevent OOM on single-core / low-memory containers
+try:
+    import torch
+    torch.set_num_threads(1)
+except Exception:
+    pass
+
 from fastapi import FastAPI, Request, status, HTTPException as FastAPIHTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
