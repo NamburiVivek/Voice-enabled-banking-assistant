@@ -165,14 +165,16 @@ class NLU:
         if any(w in t for w in bill_words) and not any(k in t for k in ("transfer", "send")):
             intent = "bill_payment"
             sub = "pay_utility_bill"
-        elif any(w in t for w in ("freeze", "unfreeze", "block card", "lock card", "debit card", "card limit", "daily limit", "channel")):
+        elif any(w in t for w in ("freeze", "unfreeze", "block card", "lock card", "debit card", "card limit", "daily limit", "channel", "international", "domestic", "forex", "online transactions", "atm cash", "atm transactions")):
             intent = "card_management"
             if "unfreeze" in t:
                 sub = "unfreeze_card"
             elif "freeze" in t or "block" in t:
                 sub = "freeze_card"
             elif "limit" in t:
-                sub = "set_card_limit"
+                sub = "set_spending_limit"
+            elif any(c in t for c in ("international", "domestic", "online", "atm", "forex", "cross-border", "channel")):
+                sub = "channel_control"
             else:
                 sub = "card_controls"
         elif any(w in t for w in ("send", "transfer", "pay", "wire", "remit", "gpay", "phonepe", "upi")):
@@ -194,9 +196,12 @@ class NLU:
         elif any(w in t for w in ("statement", "transactions", "history", "inflow", "outflow", "cash flow", "spending", "export csv")):
             intent = "statement_analytics"
             sub = "view_transactions"
-        elif any(w in t for w in ("ifsc", "account number", "kyc", "profile", "branch")):
+        elif any(w in t for w in ("ifsc", "account number", "kyc", "profile", "branch", "2fa", "two-factor", "two factor", "email alert", "email alerts", "notification", "notifications", "alerts")):
             intent = "banking_profile"
-            sub = "view_profile"
+            if any(w in t for w in ("2fa", "two-factor", "two factor", "email alert", "email alerts", "notification", "notifications", "alerts")):
+                sub = "security_preferences"
+            else:
+                sub = "view_profile"
         elif any(w in t for w in ("hello", "hi", "hey", "good morning", "good afternoon", "good evening", "overview", "dashboard")):
             intent = "account_overview"
             sub = "dashboard_overview"

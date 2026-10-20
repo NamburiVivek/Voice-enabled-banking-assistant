@@ -67,6 +67,7 @@ class VoiceChatResponse(BaseModel):
     updated_balance: float
     is_masked: Optional[bool] = None
     preferences: Optional[Dict[str, Any]] = None
+    card: Optional[Dict[str, Any]] = None
 
 
 @router.post(
@@ -195,8 +196,22 @@ async def voice_chat(payload: VoiceChatRequest):
         # Process structured response
         res = assistant.reply_structured(payload.query.strip(), session, bank=bank)
         res["preferences"] = {
-            "emailAlerts": bank.user.get("instant_email_alerts", True),
-            "twoFactor": bank.user.get("two_factor_auth", True),
+            "emailAlerts": bool(bank.user.get("instant_email_alerts", True)),
+            "twoFactor": bool(bank.user.get("two_factor_auth", True)),
+        }
+        res["card"] = {
+            "cardNumber": bank.card.get("number", "4532 8901 3412 6656"),
+            "last4": bank.card.get("last4", "6656"),
+            "expiry": bank.card.get("expiry", "08/29"),
+            "cvv": bank.card.get("cvv", "829"),
+            "cardholder": bank.card.get("name") or bank.user.get("name", "VOXA MEMBER"),
+            "dailyLimit": float(bank.card.get("daily_limit", 50000)),
+            "perTxLimit": float(bank.card.get("per_txn_limit", 25000)),
+            "domestic": bool(bank.card.get("channels", {}).get("domestic", True)),
+            "international": bool(bank.card.get("channels", {}).get("international", False)),
+            "online": bool(bank.card.get("channels", {}).get("online", True)),
+            "atm": bool(bank.card.get("channels", {}).get("atm", True)),
+            "frozen": bool(bank.card.get("is_frozen", False)),
         }
 
         # ── Voice Biometrics Security Check for Transfers ──────────────────

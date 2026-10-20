@@ -313,7 +313,7 @@ class Assistant:
                     action_payload = {"action": "UNFREEZE_CARD", "frozen": False}
                 elif sub == "view_card_details":
                     action_payload = {"action": "VIEW_CARD_DETAILS"}
-                elif sub == "channel_control":
+                elif sub in ("channel_control", "card_controls") or any(w in text.lower() for w in ("international", "domestic", "online", "atm", "forex", "cross-border", "channel")):
                     txt = text.lower()
                     chan = "international"
                     if "domestic" in txt:
@@ -324,7 +324,7 @@ class Assistant:
                         chan = "online"
                     elif "atm" in txt or "cash" in txt:
                         chan = "atm"
-                    is_enable = not ("disable" in txt or "turn off" in txt or "switch off" in txt or "block" in txt or "stop" in txt)
+                    is_enable = not any(w in txt for w in ("disable", "turn off", "switch off", "block", "stop", "off", "deactivate"))
                     action_payload = {
                         "action": "TOGGLE_CARD_CHANNEL",
                         "channel": chan,
@@ -348,7 +348,7 @@ class Assistant:
             elif final_intent == "banking_profile":
                 if sub == "view_ifsc_account":
                     action_payload = {"action": "VIEW_ACCOUNT_DETAILS"}
-                elif sub == "security_preferences":
+                elif sub in ("security_preferences", "view_profile") or any(w in text.lower() for w in ("2fa", "two-factor", "two factor", "email", "alert", "alerts", "notification", "notifications")):
                     txt = text.lower()
                     has_2fa = any(w in txt for w in ("2fa", "two-factor", "two factor", "second factor"))
                     has_email = any(w in txt for w in ("email", "alert", "alerts", "notification", "notifications"))
@@ -359,6 +359,13 @@ class Assistant:
                         "has_2fa": has_2fa,
                         "has_email": has_email,
                     }
+
+        # Inherit structured action payload from dialog manager if not explicitly set
+        if not action_payload and result.get("action"):
+            action_payload = {
+                "action": result["action"],
+                **{k: v for k, v in result.items() if k not in ("status", "intent", "facts")},
+            }
         elif status == "cancelled":
             action_payload = {"action": "OPERATION_CANCELLED"}
 

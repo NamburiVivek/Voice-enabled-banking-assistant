@@ -944,7 +944,7 @@ function CardsView({ bankingData, setBankingData }) {
     const handleToggleChannel = (key) => {
         setBankingData((prev) => ({
             ...prev,
-            card: { ...prev.card, [key]: !prev.card[key] },
+            card: { ...prev.card, [key]: !Boolean(prev.card?.[key]) },
         }));
     };
 
@@ -2126,13 +2126,16 @@ function SettingsView({
     };
 
     const handleTogglePref = (key) => {
-        setBankingData((prev) => ({
-            ...prev,
-            preferences: {
-                ...prev.preferences,
-                [key]: !prev.preferences?.[key],
-            },
-        }));
+        setBankingData((prev) => {
+            const currentVal = prev.preferences?.[key] !== undefined ? Boolean(prev.preferences[key]) : true;
+            return {
+                ...prev,
+                preferences: {
+                    ...prev.preferences,
+                    [key]: !currentVal,
+                },
+            };
+        });
     };
 
     const handleChangePassword = async (e) => {
@@ -2894,7 +2897,7 @@ function ModernAICopilotPanel({
                     }
                 }
 
-                // Card Freeze Sync
+                // Card Freeze & Channel Controls Sync
                 if (data.action_payload?.action === 'FREEZE_CARD') {
                     setBankingData((prev) => ({
                         ...prev,
@@ -2904,6 +2907,53 @@ function ModernAICopilotPanel({
                     setBankingData((prev) => ({
                         ...prev,
                         card: { ...prev.card, frozen: false },
+                    }));
+                } else if (data.action_payload?.action === 'TOGGLE_CARD_CHANNEL' && data.action_payload.channel) {
+                    const ch = data.action_payload.channel;
+                    const isEn = Boolean(data.action_payload.enabled);
+                    setBankingData((prev) => ({
+                        ...prev,
+                        card: { ...prev.card, [ch]: isEn },
+                    }));
+                } else if (data.action_payload?.action === 'SET_CARD_LIMIT' && data.action_payload.amount) {
+                    const limKey = data.action_payload.limit_type === 'per_tx' ? 'perTxLimit' : 'dailyLimit';
+                    setBankingData((prev) => ({
+                        ...prev,
+                        card: { ...prev.card, [limKey]: Number(data.action_payload.amount) },
+                    }));
+                }
+
+                // Full Card State Sync from Voice API if returned
+                if (data.card) {
+                    setBankingData((prev) => ({
+                        ...prev,
+                        card: {
+                            ...prev.card,
+                            ...data.card,
+                        },
+                    }));
+                }
+
+                // Security & Notification Preferences Sync
+                if (data.action_payload?.action === 'TOGGLE_PREFERENCE') {
+                    setBankingData((prev) => ({
+                        ...prev,
+                        preferences: {
+                            ...prev.preferences,
+                            ...(data.action_payload.has_email ? { emailAlerts: Boolean(data.action_payload.email_alerts) } : {}),
+                            ...(data.action_payload.has_2fa ? { twoFactor: Boolean(data.action_payload.two_factor) } : {}),
+                        },
+                    }));
+                }
+
+                if (data.preferences && (data.intent === 'banking_profile' || data.action_payload?.action === 'TOGGLE_PREFERENCE')) {
+                    setBankingData((prev) => ({
+                        ...prev,
+                        preferences: {
+                            ...prev.preferences,
+                            emailAlerts: Boolean(data.preferences.emailAlerts),
+                            twoFactor: Boolean(data.preferences.twoFactor),
+                        },
                     }));
                 }
 

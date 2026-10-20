@@ -607,7 +607,7 @@ def handle(intent, sub, slots, text, session, bank: MockBank):
                 bank.card["per_txn_limit"] = amt
                 return {"status": "ok", "intent": intent, "facts": f"Per-transaction spending limit successfully updated to ₹{amt:,}."}
 
-        if sub == "channel_control":
+        if sub in ("channel_control", "card_controls") or any(w in text.lower() for w in ("international", "domestic", "online", "atm", "forex", "cross-border", "channel")):
             txt = text.lower()
             channel = "international"
             if "domestic" in txt:
@@ -619,11 +619,18 @@ def handle(intent, sub, slots, text, session, bank: MockBank):
             elif "atm" in txt or "cash" in txt:
                 channel = "atm"
 
-            is_enable = not ("disable" in txt or "turn off" in txt or "switch off" in txt or "block" in txt or "stop" in txt)
+            is_enable = not any(w in txt for w in ("disable", "turn off", "switch off", "block", "stop", "off", "deactivate"))
             if channel in bank.card["channels"]:
                 bank.card["channels"][channel] = is_enable
             state_str = "ENABLED" if is_enable else "DISABLED"
-            return {"status": "ok", "intent": intent, "facts": f"Card Channel Control: {channel.title()} transactions are now {state_str} on your card."}
+            return {
+                "status": "ok",
+                "intent": intent,
+                "action": "TOGGLE_CARD_CHANNEL",
+                "channel": channel,
+                "enabled": is_enable,
+                "facts": f"Card Channel Control: {channel.title()} transactions are now {state_str} on your card.",
+            }
 
     # Feature 5: Deposit Funds
     if intent == "deposit_funds":
@@ -712,7 +719,7 @@ def handle(intent, sub, slots, text, session, bank: MockBank):
                 "intent": intent,
                 "facts": f"Account Tier: {u['tier']}. KYC Status: {u['kyc_status']}. Your account has full transaction privileges and zero restrictions.",
             }
-        if sub == "security_preferences":
+        if sub in ("security_preferences", "view_profile") or any(w in text.lower() for w in ("2fa", "two-factor", "two factor", "email alert", "email alerts", "notification", "notifications")):
             txt = text.lower()
             has_2fa = any(w in txt for w in ("2fa", "two-factor", "two factor", "second factor"))
             has_email = any(w in txt for w in ("email", "alert", "alerts", "notification", "notifications"))
@@ -743,12 +750,22 @@ def handle(intent, sub, slots, text, session, bank: MockBank):
                 return {
                     "status": "ok",
                     "intent": intent,
+                    "action": "TOGGLE_PREFERENCE",
+                    "two_factor": u["two_factor_auth"],
+                    "email_alerts": u["instant_email_alerts"],
+                    "has_2fa": has_2fa,
+                    "has_email": has_email,
                     "facts": "Security Settings Updated: " + "; ".join(changes) + ".",
                 }
 
             return {
                 "status": "ok",
                 "intent": intent,
+                "action": "TOGGLE_PREFERENCE",
+                "two_factor": u.get("two_factor_auth", True),
+                "email_alerts": u.get("instant_email_alerts", True),
+                "has_2fa": has_2fa,
+                "has_email": has_email,
                 "facts": f"Security Settings: 2FA is {'Active' if u.get('two_factor_auth', True) else 'Disabled'}, Instant Email Alerts are {'Active' if u.get('instant_email_alerts', True) else 'Disabled'}.",
             }
         return {
