@@ -13,7 +13,7 @@ python-dotenv==1.0.1
 httpx>=0.26,<0.28
 email-validator==2.2.0
 
-# ── AI & Voice Assistant Requirements ──
+# ── AI & Voice Assistant Production Runtime ──
 torch
 transformers>=4.44
 sentence-transformers
@@ -22,9 +22,3 @@ numpy
 gTTS
 pypdf
 scikit-learn
-pandas
-num2words
-accelerate
-peft>=0.12
-datasets
-sentencepiece

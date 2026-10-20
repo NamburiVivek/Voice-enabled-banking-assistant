@@ -12,6 +12,16 @@ import os
 import sys
 from contextlib import asynccontextmanager
 
+# ── Memory Optimization for 512MB Cloud Containers (Render / Railway) ────────
+# Cap glibc memory arenas and single-core BLAS/OMP thread pools to prevent OOM
+os.environ["MALLOC_ARENA_MAX"] = "2"
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 # ── Ensure backend and backend/ai directories are in Python path ──────────────
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 AI_DIR = os.path.join(BASE_DIR, "ai")
@@ -19,10 +29,17 @@ for p in (AI_DIR, BASE_DIR):
     if p not in sys.path:
         sys.path.insert(0, p)
 
-# Cap PyTorch thread buffers to prevent OOM on single-core / low-memory containers
+# Cap PyTorch thread buffers and disable gradient tracking to conserve RAM
 try:
     import torch
     torch.set_num_threads(1)
+    if hasattr(torch, "set_num_interop_threads"):
+        try:
+            torch.set_num_interop_threads(1)
+        except Exception:
+            pass
+    if hasattr(torch, "set_grad_enabled"):
+        torch.set_grad_enabled(False)
 except Exception:
     pass
 

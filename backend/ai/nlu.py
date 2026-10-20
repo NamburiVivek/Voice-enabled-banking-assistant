@@ -96,6 +96,8 @@ class NLU:
                     ).to(self.device)
                     self.model.load_state_dict(ckpt["state_dict"])
                     self.model.eval()
+                    import gc
+                    gc.collect()
                 except Exception as e:
                     print(f"[NLU] Warning: Could not load fast model weights ({e}).")
                     self.model = None
@@ -117,7 +119,7 @@ class NLU:
                     print(f"[NLU] Warning: Causal LM load failed ({e}).")
                     self.llm_model = None
 
-    @torch.no_grad()
+    @torch.inference_mode()
     def predict_batch(self, texts, bs=32):
         if self.use_fast and self.encoder is not None and self.model is not None:
             results = []

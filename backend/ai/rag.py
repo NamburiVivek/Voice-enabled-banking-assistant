@@ -30,9 +30,10 @@ def load_texts(folder=DEFAULT_FOLDER):
         if ext in (".txt", ".md"):
             texts.append(open(path, encoding="utf-8", errors="ignore").read())
         elif ext == ".csv":
-            import pandas as pd
-            df = pd.read_csv(path).fillna("")
-            texts += [" | ".join(f"{c}: {v}" for c, v in row.items()) for _, row in df.iterrows()]
+            import csv
+            with open(path, encoding="utf-8", errors="ignore") as f:
+                reader = csv.DictReader(f)
+                texts += [" | ".join(f"{c}: {v}" for c, v in row.items()) for row in reader]
         elif ext == ".json":
             data = json.load(open(path, encoding="utf-8"))
             items = data if isinstance(data, list) else [data]

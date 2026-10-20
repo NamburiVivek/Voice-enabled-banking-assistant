@@ -2,13 +2,10 @@
 # Exit immediately if a command exits with a non-zero status
 set -o errexit
 
-echo "📦 Installing backend requirements with CPU-optimized PyTorch..."
+echo "📦 Installing lean backend requirements with CPU-optimized PyTorch..."
 pip install --upgrade pip
-pip install torch --index-url https://download.pytorch.org/whl/cpu
-pip install -r requirements.txt
-if [ -f ai/requirements.txt ]; then
-    pip install -r ai/requirements.txt
-fi
+pip install torch --index-url https://download.pytorch.org/whl/cpu --no-cache-dir
+pip install -r requirements.txt --no-cache-dir
 
 echo "🧠 Pre-caching sentence-transformers embedding model for instantaneous startup..."
 python -c "
@@ -19,3 +16,4 @@ try:
 except Exception as e:
     print('⚠️ Notice during pre-cache:', e)
 "
+

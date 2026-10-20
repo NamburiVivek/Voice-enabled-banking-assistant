@@ -32,13 +32,28 @@ def get_assistant():
                 # STT is handled natively in the browser via Web Speech API or sent as text
                 from ai.assistant import Assistant
                 _assistant_instance = Assistant(load_stt=False)
+                import gc
+                gc.collect()
                 logger.info("[VoiceAPI] Assistant pipeline ready.")
     return _assistant_instance
 
 
-# Multi-turn session state memory
+# Multi-turn session state memory (capped to prevent memory leak on 512MB hosts)
+MAX_ACTIVE_SESSIONS = 30
 _sessions: Dict[str, dict] = {}
 _session_banks: Dict[str, MockBank] = {}
+
+
+def _prune_sessions_if_needed():
+    """Evicts oldest sessions when count exceeds MAX_ACTIVE_SESSIONS to prevent unbounded growth."""
+    if len(_sessions) > MAX_ACTIVE_SESSIONS:
+        keys_to_remove = list(_sessions.keys())[:15]
+        for k in keys_to_remove:
+            _sessions.pop(k, None)
+            _session_banks.pop(k, None)
+        import gc
+        gc.collect()
+
 
 
 class VoiceChatRequest(BaseModel):
@@ -87,6 +102,7 @@ async def voice_chat(payload: VoiceChatRequest):
 
         # Initialize or retrieve user session
         sess_id = payload.session_id or "default_session"
+        _prune_sessions_if_needed()
         if sess_id not in _sessions:
             _sessions[sess_id] = {}
         if sess_id not in _session_banks:
