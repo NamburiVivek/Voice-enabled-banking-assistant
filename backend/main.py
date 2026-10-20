@@ -204,6 +204,7 @@ async def root():
     }
 
 
+@app.get("/health", tags=["health"])
 @app.get("/api/health", tags=["health"])
 async def health():
     return {"status": "ok", "service": settings.APP_NAME}

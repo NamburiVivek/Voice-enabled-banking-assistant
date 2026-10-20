@@ -1920,6 +1920,39 @@ function VoiceBiometricsSettingsCard({
     const [togglingLock, setTogglingLock] = useState(false);
     const testRecorderRef = useRef(null);
 
+    // AI Voice Persona Settings
+    const [ttsVoiceName, setTtsVoiceName] = useState(() => localStorage.getItem('voxa_tts_voice_name') || '');
+    const [ttsRate, setTtsRate] = useState(() => parseFloat(localStorage.getItem('voxa_tts_rate') || '1.0'));
+    const [ttsPitch, setTtsPitch] = useState(() => parseFloat(localStorage.getItem('voxa_tts_pitch') || '1.0'));
+    const [voicesList, setVoicesList] = useState([]);
+
+    useEffect(() => {
+        if (!('speechSynthesis' in window)) return;
+        const load = () => {
+            const list = window.speechSynthesis.getVoices();
+            if (list && list.length) {
+                const en = list.filter((v) => v.lang.startsWith('en'));
+                const other = list.filter((v) => !v.lang.startsWith('en'));
+                setVoicesList([...en, ...other]);
+            }
+        };
+        load();
+        window.speechSynthesis.onvoiceschanged = load;
+    }, []);
+
+    const previewSelectedVoice = () => {
+        if (!('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance("Hello! This is your customized Voxa AI assistant voice.");
+        u.rate = ttsRate;
+        u.pitch = ttsPitch;
+        if (ttsVoiceName) {
+            const v = window.speechSynthesis.getVoices().find((x) => x.name === ttsVoiceName);
+            if (v) u.voice = v;
+        }
+        window.speechSynthesis.speak(u);
+    };
+
     const handleToggleLock = async () => {
         if (!biometrics?.has_voiceprint) {
             onOpenEnrollModal();
@@ -2110,6 +2143,83 @@ function VoiceBiometricsSettingsCard({
                     </div>
                 </div>
             )}
+
+            {/* AI Assistant Voice Persona Customization */}
+            <div style={{ marginTop: '1.25rem', paddingTop: '1.25rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <h4 style={{ margin: '0 0 0.75rem 0', fontSize: '0.92rem', color: '#ffffff', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Sliders size={15} color="#f97316" />
+                    AI Assistant Spoken Voice Persona
+                </h4>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', alignItems: 'flex-end' }}>
+                    <div className="voice-setting-field">
+                        <label>Speech Synthesis Voice</label>
+                        <select
+                            value={ttsVoiceName}
+                            onChange={(e) => {
+                                setTtsVoiceName(e.target.value);
+                                localStorage.setItem('voxa_tts_voice_name', e.target.value);
+                            }}
+                        >
+                            <option value="">Default (Browser Default Voice)</option>
+                            {voicesList.map((v) => (
+                                <option key={`${v.name}-${v.lang}`} value={v.name}>
+                                    {v.name} ({v.lang})
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="voice-setting-field">
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <label>Speech Rate</label>
+                            <span className="slider-val-badge">{ttsRate.toFixed(2)}x</span>
+                        </div>
+                        <input
+                            type="range"
+                            min="0.6"
+                            max="1.6"
+                            step="0.05"
+                            value={ttsRate}
+                            onChange={(e) => {
+                                const val = parseFloat(e.target.value);
+                                setTtsRate(val);
+                                localStorage.setItem('voxa_tts_rate', val.toString());
+                            }}
+                        />
+                    </div>
+
+                    <div className="voice-setting-field">
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <label>Speech Pitch</label>
+                            <span className="slider-val-badge">{ttsPitch.toFixed(2)}</span>
+                        </div>
+                        <input
+                            type="range"
+                            min="0.6"
+                            max="1.5"
+                            step="0.05"
+                            value={ttsPitch}
+                            onChange={(e) => {
+                                const val = parseFloat(e.target.value);
+                                setTtsPitch(val);
+                                localStorage.setItem('voxa_tts_pitch', val.toString());
+                            }}
+                        />
+                    </div>
+
+                    <div>
+                        <button
+                            type="button"
+                            className="btn-voice-preview"
+                            onClick={previewSelectedVoice}
+                            style={{ height: '38px', width: '100%' }}
+                        >
+                            <Volume2 size={14} />
+                            Test Voice Sample
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
@@ -3301,6 +3411,52 @@ function ModernAICopilotPanel({
     const voiceLangRef = useRef('en-IN');
     useEffect(() => { voiceLangRef.current = voiceLang; }, [voiceLang]);
 
+    const [isVoiceSettingsOpen, setIsVoiceSettingsOpen] = useState(false);
+    const [availableVoices, setAvailableVoices] = useState([]);
+    const [selectedVoiceName, setSelectedVoiceName] = useState(() => {
+        return localStorage.getItem('voxa_tts_voice_name') || '';
+    });
+    const [voiceRate, setVoiceRate] = useState(() => {
+        const saved = localStorage.getItem('voxa_tts_rate');
+        return saved ? parseFloat(saved) : 1.0;
+    });
+    const [voicePitch, setVoicePitch] = useState(() => {
+        const saved = localStorage.getItem('voxa_tts_pitch');
+        return saved ? parseFloat(saved) : 1.0;
+    });
+
+    useEffect(() => {
+        if (!('speechSynthesis' in window)) return;
+        const updateVoices = () => {
+            const vList = window.speechSynthesis.getVoices();
+            if (vList && vList.length > 0) {
+                const englishVoices = vList.filter((v) => v.lang.startsWith('en'));
+                const others = vList.filter((v) => !v.lang.startsWith('en'));
+                setAvailableVoices([...englishVoices, ...others]);
+            }
+        };
+        updateVoices();
+        window.speechSynthesis.onvoiceschanged = updateVoices;
+        return () => {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.onvoiceschanged = null;
+            }
+        };
+    }, []);
+
+    const handleVoiceChange = (name) => {
+        setSelectedVoiceName(name);
+        localStorage.setItem('voxa_tts_voice_name', name);
+    };
+    const handleRateChange = (r) => {
+        setVoiceRate(r);
+        localStorage.setItem('voxa_tts_rate', r.toString());
+    };
+    const handlePitchChange = (p) => {
+        setVoicePitch(p);
+        localStorage.setItem('voxa_tts_pitch', p.toString());
+    };
+
     const [messages, setMessages] = useState([
         {
             id: 1,
@@ -3317,21 +3473,28 @@ function ModernAICopilotPanel({
     const handleSendQueryRef = useRef(null);
     const audioRecorderRef = useRef(null);
 
-    // Speak helper using Web Speech API
+    // Speak helper using Web Speech API with customizable voices
     const speakText = useCallback(
         (text) => {
             if (!ttsEnabled || !('speechSynthesis' in window)) return;
             try {
                 window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 1.0;
-                utterance.pitch = 1.0;
+                utterance.rate = voiceRate;
+                utterance.pitch = voicePitch;
 
                 const voices = window.speechSynthesis.getVoices();
-                const preferred =
-                    voices.find((v) => v.lang.includes('en-IN') || v.name.includes('India')) ||
-                    voices.find((v) => v.lang.startsWith('en'));
-                if (preferred) utterance.voice = preferred;
+                let voiceToUse = null;
+                if (selectedVoiceName) {
+                    voiceToUse = voices.find((v) => v.name === selectedVoiceName);
+                }
+                if (!voiceToUse) {
+                    voiceToUse =
+                        voices.find((v) => voiceLang === 'en-IN' && (v.lang.includes('en-IN') || v.name.includes('India'))) ||
+                        voices.find((v) => v.lang.startsWith(voiceLang ? voiceLang.slice(0, 2) : 'en')) ||
+                        voices[0];
+                }
+                if (voiceToUse) utterance.voice = voiceToUse;
 
                 utterance.onstart = () => setIsSpeaking(true);
                 utterance.onend = () => setIsSpeaking(false);
@@ -3343,8 +3506,12 @@ function ModernAICopilotPanel({
                 setIsSpeaking(false);
             }
         },
-        [ttsEnabled]
+        [ttsEnabled, voiceRate, voicePitch, selectedVoiceName, voiceLang]
     );
+
+    const handlePreviewVoice = () => {
+        speakText("Hello! This is how your Voxa AI assistant sounds. Ready to assist with your banking.");
+    };
 
     // Main query processor with Live Voice Biometrics Support
     const handleSendQuery = useCallback(
@@ -3582,14 +3749,15 @@ function ModernAICopilotPanel({
                 }
             } catch (err) {
                 console.error('Voice assistant request error:', err);
-                const errDetail =
-                    err.response?.data?.detail ||
-                    'Voice assistant could not connect to server. Ensure FastAPI is running on port 8000.';
+                const isColdStart = err.code === 'ECONNABORTED' || !err.response || err.message?.includes('timeout') || err.message?.includes('Network Error');
+                const errDetail = isColdStart
+                    ? 'Connecting to Voxa AI cloud backend (server is waking up from sleep, please wait a moment and try again)...'
+                    : (err.response?.data?.detail || 'Voice assistant could not connect to server. Ensure FastAPI is running on port 8000.');
                 setMessages((prev) => [
                     ...prev,
                     { id: Date.now() + 1, sender: 'bot', text: errDetail, isError: true, time: timeStr },
                 ]);
-                speakText('Sorry, I encountered an error communicating with the banking server.');
+                speakText(isColdStart ? 'Connecting to cloud backend, please wait a moment.' : 'Sorry, I encountered an error communicating with the banking server.');
             } finally {
                 setIsProcessing(false);
             }
@@ -3833,6 +4001,14 @@ function ModernAICopilotPanel({
                     </div>
                     <div className="copilot-header-actions">
                         <button
+                            className={`copilot-mini-btn ${isVoiceSettingsOpen ? 'active' : ''}`}
+                            onClick={() => setIsVoiceSettingsOpen(!isVoiceSettingsOpen)}
+                            title="Customize Assistant Voice & Pitch"
+                            id="copilot-voice-settings-toggle-btn"
+                        >
+                            <Sliders size={14} />
+                        </button>
+                        <button
                             className="copilot-mini-btn"
                             onClick={() => setTtsEnabled(!ttsEnabled)}
                             title={ttsEnabled ? 'Mute Speech' : 'Enable Speech'}
@@ -3855,6 +4031,78 @@ function ModernAICopilotPanel({
                         </button>
                     </div>
                 </div>
+
+                {/* Voice Settings Dropdown Popover */}
+                {isVoiceSettingsOpen && (
+                    <div className="copilot-voice-settings-dropdown">
+                        <div className="voice-settings-header">
+                            <span>Voice & Accent Customization</span>
+                            <button
+                                type="button"
+                                className="voice-settings-close"
+                                onClick={() => setIsVoiceSettingsOpen(false)}
+                            >
+                                <X size={14} />
+                            </button>
+                        </div>
+
+                        <div className="voice-setting-field">
+                            <label>Synthesizer Voice</label>
+                            <select
+                                value={selectedVoiceName}
+                                onChange={(e) => handleVoiceChange(e.target.value)}
+                            >
+                                <option value="">Default (Auto-detect based on dialect)</option>
+                                {availableVoices.map((v) => (
+                                    <option key={`${v.name}-${v.lang}`} value={v.name}>
+                                        {v.name} ({v.lang})
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="voice-setting-field">
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <label>Speech Speed</label>
+                                <span className="slider-val-badge">{voiceRate.toFixed(2)}x</span>
+                            </div>
+                            <input
+                                type="range"
+                                min="0.6"
+                                max="1.6"
+                                step="0.05"
+                                value={voiceRate}
+                                onChange={(e) => handleRateChange(parseFloat(e.target.value))}
+                            />
+                        </div>
+
+                        <div className="voice-setting-field">
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <label>Speech Pitch</label>
+                                <span className="slider-val-badge">{voicePitch.toFixed(2)}</span>
+                            </div>
+                            <input
+                                type="range"
+                                min="0.6"
+                                max="1.5"
+                                step="0.05"
+                                value={voicePitch}
+                                onChange={(e) => handlePitchChange(parseFloat(e.target.value))}
+                            />
+                        </div>
+
+                        <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+                            <button
+                                type="button"
+                                className="btn-voice-preview"
+                                onClick={handlePreviewVoice}
+                            >
+                                <Volume2 size={13} />
+                                Preview Voice
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {/* Voice Stage */}
                 <div className="copilot-mic-stage">
@@ -4035,6 +4283,8 @@ export default function Dashboard({ onBack }) {
 
     useEffect(() => {
         refreshBiometrics();
+        // Proactively ping Render FastAPI backend so container spins up immediately upon login
+        voiceApi.health().catch(() => {});
     }, [refreshBiometrics]);
 
     // Ambient "Hey Voxa" Wake Word Detection
@@ -4099,7 +4349,7 @@ export default function Dashboard({ onBack }) {
                 const rec = new SpeechRec();
                 rec.continuous = true;
                 rec.interimResults = true;
-                rec.lang = 'en-IN';
+                rec.lang = (navigator.language && navigator.language.startsWith('en')) ? navigator.language : 'en-US';
                 rec.maxAlternatives = 1;
 
                 rec.onstart = () => { };
@@ -4111,8 +4361,8 @@ export default function Dashboard({ onBack }) {
                     }
                     const lower = fullTranscript.toLowerCase();
 
-                    // Detect "hey voxa", "voxa", "ok voxa", "hi voxa", "hello voxa"
-                    const wakeMatch = lower.match(/\b(?:hey|hi|ok|hello)?\s*(?:voxa|boxa|vox|vaxa)\b/i);
+                    // Detect "hey voxa", "voxa", "ok voxa", "hi voxa", "hello voxa" and frequent acoustic speech-to-text approximations
+                    const wakeMatch = lower.match(/\b(?:hey|hi|ok|hello|listening)?\s*(?:voxa|vox|vaxa|boxa|boxer|voxer|foxa|fox|folks|focus|woxa|wasa|vosa|boksa)\b/i);
                     if (wakeMatch) {
                         const wakeIndex = wakeMatch.index + wakeMatch[0].length;
                         const trailing = fullTranscript.slice(wakeIndex).trim().replace(/^[,\.\!\?\-\s]+/, '');
@@ -4133,13 +4383,14 @@ export default function Dashboard({ onBack }) {
 
                         setIsAssistantOpen(true);
 
+                        // Allow 450ms for Windows audio hardware to release the microphone before the assistant session starts
                         setTimeout(() => {
                             if (trailing && trailing.length > 2) {
                                 voiceAssistantRef.current?.sendQuery(trailing);
                             } else {
                                 voiceAssistantRef.current?.startListening();
                             }
-                        }, 250);
+                        }, 450);
                     }
                 };
 

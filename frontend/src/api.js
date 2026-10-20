@@ -27,7 +27,7 @@ export const tokenStore = {
 // ── Axios instance ────────────────────────────────────────────────────────────
 const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 15000,
+  timeout: 60000, // 60s timeout to allow Render free-tier containers to wake up without error
   headers: {
     'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest',  // Helps CSRF detection
@@ -130,15 +130,23 @@ export const bankingApi = {
 
 // ─── Voice AI API helpers ───────────────────────────────────────────────────
 export const voiceApi = {
-  chat: (queryOrPayload, sessionId, currentBalance = null) => {
-    if (typeof queryOrPayload === 'object' && queryOrPayload !== null) {
-      return api.post('/voice/chat', queryOrPayload);
+  health: () => api.get('/health').catch(() => api.get('/api/health')),
+  chat: async (queryOrPayload, sessionId, currentBalance = null) => {
+    const payload = (typeof queryOrPayload === 'object' && queryOrPayload !== null)
+      ? queryOrPayload
+      : { query: queryOrPayload, session_id: sessionId, current_balance: currentBalance };
+
+    try {
+      return await api.post('/voice/chat', payload);
+    } catch (err) {
+      // If server was sleeping (Render cold start) or timed out, retry once automatically
+      if (!err.response || err.code === 'ECONNABORTED' || err.response?.status >= 500) {
+        console.warn('[VoiceAPI] First attempt failed (cold start / waking up), retrying in 3 seconds...');
+        await new Promise((r) => setTimeout(r, 3000));
+        return await api.post('/voice/chat', payload);
+      }
+      throw err;
     }
-    return api.post('/voice/chat', {
-      query: queryOrPayload,
-      session_id: sessionId,
-      current_balance: currentBalance,
-    });
   },
   resetSession: (sessionId) =>
     api.post(`/voice/reset-session?session_id=${encodeURIComponent(sessionId)}`),
