@@ -79,6 +79,22 @@ limiter = Limiter(key_func=get_remote_address, default_limits=[settings.RATE_LIM
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("🚀 Voxa Bank AI API starting up")
+    # Non-blocking background warmup for AI pipeline
+    # Enables immediate port binding on cloud hosts while pre-warming the model
+    try:
+        import threading
+        from routers.voice import get_assistant
+
+        warmup_thread = threading.Thread(
+            target=get_assistant,
+            name="AssistantWarmupThread",
+            daemon=True,
+        )
+        warmup_thread.start()
+        logger.info("🧠 Voxa Bank AI Assistant background warmup initiated")
+    except Exception as e:
+        logger.warning("Voice Assistant warmup skipped: %s", e)
+
     yield
     logger.info("🛑 Voxa Bank AI API shutting down")
 

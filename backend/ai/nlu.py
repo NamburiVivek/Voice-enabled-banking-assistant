@@ -69,59 +69,81 @@ class NLU:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.use_fast = os.path.exists(model_path)
         self.labels = None
+        self.encoder = None
+        self.model = None
 
         if self.use_fast:
             print(f"[NLU] Loading High-Efficiency Hierarchical Neural NLU ({model_path})...")
             try:
-                self.encoder = SentenceTransformer(EMB_NAME, device=self.device, local_files_only=True)
-            except Exception:
-                self.encoder = SentenceTransformer(EMB_NAME, device=self.device)
-            ckpt = torch.load(model_path, map_location=self.device, weights_only=False)
-            self.intents = ckpt["intents"]
-            self.subs = ckpt["subs"]
-            self.idx2intent = ckpt["idx2intent"]
-            self.idx2sub = ckpt["idx2sub"]
+                try:
+                    self.encoder = SentenceTransformer(EMB_NAME, device=self.device, local_files_only=True)
+                except Exception:
+                    self.encoder = SentenceTransformer(EMB_NAME, device=self.device)
+            except Exception as e:
+                print(f"[NLU] Warning: SentenceTransformer unavailable ({e}). Using robust rule-based parser.")
+                self.encoder = None
 
-            self.model = HierarchicalMultiTaskNLU(
-                ckpt["emb_dim"], len(self.intents), len(self.subs)
-            ).to(self.device)
-            self.model.load_state_dict(ckpt["state_dict"])
-            self.model.eval()
+            if self.encoder is not None:
+                try:
+                    ckpt = torch.load(model_path, map_location=self.device, weights_only=False)
+                    self.intents = ckpt["intents"]
+                    self.subs = ckpt["subs"]
+                    self.idx2intent = ckpt["idx2intent"]
+                    self.idx2sub = ckpt["idx2sub"]
+
+                    self.model = HierarchicalMultiTaskNLU(
+                        ckpt["emb_dim"], len(self.intents), len(self.subs)
+                    ).to(self.device)
+                    self.model.load_state_dict(ckpt["state_dict"])
+                    self.model.eval()
+                except Exception as e:
+                    print(f"[NLU] Warning: Could not load fast model weights ({e}).")
+                    self.model = None
         else:
             # Fallback to causal LLM1 if present
             llm_path = "models/llm1"
-            print(f"[NLU] Fast model not found, falling back to Causal LM at {llm_path}...")
-            from transformers import AutoModelForCausalLM, AutoTokenizer
-            self.tok = AutoTokenizer.from_pretrained(llm_path)
-            self.tok.padding_side = "left"
-            dtype = torch.float16 if self.device == "cuda" else torch.float32
-            self.llm_model = AutoModelForCausalLM.from_pretrained(llm_path, torch_dtype=dtype).to(self.device).eval()
-            lab_path = os.path.join(llm_path, "labels.json")
-            if os.path.exists(lab_path):
-                self.labels = json.load(open(lab_path))
+            if os.path.exists(llm_path):
+                print(f"[NLU] Fast model not found, falling back to Causal LM at {llm_path}...")
+                try:
+                    from transformers import AutoModelForCausalLM, AutoTokenizer
+                    self.tok = AutoTokenizer.from_pretrained(llm_path)
+                    self.tok.padding_side = "left"
+                    dtype = torch.float16 if self.device == "cuda" else torch.float32
+                    self.llm_model = AutoModelForCausalLM.from_pretrained(llm_path, torch_dtype=dtype).to(self.device).eval()
+                    lab_path = os.path.join(llm_path, "labels.json")
+                    if os.path.exists(lab_path):
+                        self.labels = json.load(open(lab_path))
+                except Exception as e:
+                    print(f"[NLU] Warning: Causal LM load failed ({e}).")
+                    self.llm_model = None
 
     @torch.no_grad()
     def predict_batch(self, texts, bs=32):
-        if self.use_fast:
+        if self.use_fast and self.encoder is not None and self.model is not None:
             results = []
             for i in range(0, len(texts), bs):
                 batch_texts = texts[i : i + bs]
-                embs = self.encoder.encode(batch_texts, normalize_embeddings=True, show_progress_bar=False)
-                t_embs = torch.tensor(embs, dtype=torch.float32).to(self.device)
-                logits_int, logits_sub = self.model(t_embs)
-                pred_int_idx = logits_int.argmax(dim=-1).cpu().numpy()
-                pred_sub_idx = logits_sub.argmax(dim=-1).cpu().numpy()
+                try:
+                    embs = self.encoder.encode(batch_texts, normalize_embeddings=True, show_progress_bar=False)
+                    t_embs = torch.tensor(embs, dtype=torch.float32).to(self.device)
+                    logits_int, logits_sub = self.model(t_embs)
+                    pred_int_idx = logits_int.argmax(dim=-1).cpu().numpy()
+                    pred_sub_idx = logits_sub.argmax(dim=-1).cpu().numpy()
 
-                for j, text in enumerate(batch_texts):
-                    intent = self.idx2intent[int(pred_int_idx[j])]
-                    full_sub = self.idx2sub[int(pred_sub_idx[j])]
-                    sub = full_sub.split("/")[-1] if "/" in full_sub else full_sub
+                    for j, text in enumerate(batch_texts):
+                        intent = self.idx2intent[int(pred_int_idx[j])]
+                        full_sub = self.idx2sub[int(pred_sub_idx[j])]
+                        sub = full_sub.split("/")[-1] if "/" in full_sub else full_sub
 
-                    slots = extract_slots(text, intent=intent)
-                    res = {"intent": intent, "sub_intent": sub, **slots}
-                    results.append(res)
+                        slots = extract_slots(text, intent=intent)
+                        res = {"intent": intent, "sub_intent": sub, **slots}
+                        results.append(res)
+                except Exception as e:
+                    print(f"[NLU] Neural prediction error ({e}). Using rule-based fallback.")
+                    for text in batch_texts:
+                        results.append(self._rule_based_predict(text))
             return results
-        else:
+        elif hasattr(self, "llm_model") and self.llm_model is not None and hasattr(self, "tok") and self.tok is not None:
             results = []
             for i in range(0, len(texts), bs):
                 enc = self.tok([build_prompt(t) for t in texts[i : i + bs]], return_tensors="pt", padding=True).to(self.device)
@@ -134,6 +156,56 @@ class NLU:
                     d = parse_json(gen)
                     results.append(d)
             return results
+        else:
+            return [self._rule_based_predict(t) for t in texts]
+
+    def _rule_based_predict(self, text: str) -> dict:
+        t = text.lower()
+        bill_words = ("electricity", "bescom", "gas", "broadband", "fiber", "mobile", "postpaid", "rent", "water", "bill", "recharge", "dth")
+        if any(w in t for w in bill_words) and not any(k in t for k in ("transfer", "send")):
+            intent = "bill_payment"
+            sub = "pay_utility_bill"
+        elif any(w in t for w in ("freeze", "unfreeze", "block card", "lock card", "debit card", "card limit", "daily limit", "channel")):
+            intent = "card_management"
+            if "unfreeze" in t:
+                sub = "unfreeze_card"
+            elif "freeze" in t or "block" in t:
+                sub = "freeze_card"
+            elif "limit" in t:
+                sub = "set_card_limit"
+            else:
+                sub = "card_controls"
+        elif any(w in t for w in ("send", "transfer", "pay", "wire", "remit", "gpay", "phonepe", "upi")):
+            intent = "transfer_money"
+            if "neft" in t:
+                sub = "neft_transfer"
+            elif "rtgs" in t:
+                sub = "rtgs_transfer"
+            elif "imps" in t:
+                sub = "imps_transfer"
+            else:
+                sub = "upi_transfer"
+        elif any(w in t for w in ("balance", "kitna paisa", "how much money", "account balance", "savings balance")):
+            intent = "check_balance"
+            sub = "check_savings"
+        elif any(w in t for w in ("deposit", "add money", "fund account", "top up")):
+            intent = "deposit_funds"
+            sub = "deposit_upi"
+        elif any(w in t for w in ("statement", "transactions", "history", "inflow", "outflow", "cash flow", "spending", "export csv")):
+            intent = "statement_analytics"
+            sub = "view_transactions"
+        elif any(w in t for w in ("ifsc", "account number", "kyc", "profile", "branch")):
+            intent = "banking_profile"
+            sub = "view_profile"
+        elif any(w in t for w in ("hello", "hi", "hey", "good morning", "good afternoon", "good evening", "overview", "dashboard")):
+            intent = "account_overview"
+            sub = "dashboard_overview"
+        else:
+            intent = "out_of_scope"
+            sub = "general_query"
+
+        slots = extract_slots(text, intent=intent)
+        return {"intent": intent, "sub_intent": sub, **slots}
 
     def predict(self, text: str) -> dict:
         return self.predict_batch([text], bs=1)[0]

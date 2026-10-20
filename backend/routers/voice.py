@@ -12,22 +12,27 @@ from fastapi import APIRouter, HTTPException, status
 from ai.banking import MockBank
 from ai.voice_biometrics import get_biometrics_engine
 
+import threading
+
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/voice", tags=["voice"])
 
-# Global singleton Assistant instance loaded on first startup
+# Global singleton Assistant instance loaded on startup / first request
 _assistant_instance: Optional[Any] = None
+_assistant_lock = threading.Lock()
 
 
 def get_assistant():
     global _assistant_instance
     if _assistant_instance is None:
-        logger.info("[VoiceAPI] Initializing Assistant pipeline...")
-        # STT is handled natively in the browser via Web Speech API or sent as text
-        from ai.assistant import Assistant
-        _assistant_instance = Assistant(load_stt=False)
-        logger.info("[VoiceAPI] Assistant pipeline ready.")
+        with _assistant_lock:
+            if _assistant_instance is None:
+                logger.info("[VoiceAPI] Initializing Assistant pipeline...")
+                # STT is handled natively in the browser via Web Speech API or sent as text
+                from ai.assistant import Assistant
+                _assistant_instance = Assistant(load_stt=False)
+                logger.info("[VoiceAPI] Assistant pipeline ready.")
     return _assistant_instance
 
 

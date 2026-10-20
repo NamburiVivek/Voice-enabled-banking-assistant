@@ -115,7 +115,7 @@ class Assistant:
         self.nlu = NLU(model_target)
 
         print("Loading RBI Retriever...")
-        self.rag = RBIRetriever()
+        self.rag = RBIRetriever(encoder=getattr(self.nlu, "encoder", None))
 
         print("Loading Conversational Responder...")
         self.llm2 = Responder()

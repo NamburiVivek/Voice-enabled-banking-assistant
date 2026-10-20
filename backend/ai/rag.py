@@ -52,31 +52,88 @@ def chunk(text, size=180, overlap=40):
 
 
 class RBIRetriever:
-    def __init__(self, folder=DEFAULT_FOLDER, index=INDEX):
-        from sentence_transformers import SentenceTransformer
-        try:
-            self.emb = SentenceTransformer(EMB_MODEL, local_files_only=True)
-        except Exception:
-            self.emb = SentenceTransformer(EMB_MODEL)
-        if not os.path.exists(index):
-            self.build(folder, index)
-        d = np.load(index, allow_pickle=True)
-        self.vecs, self.chunks = d["vecs"], list(d["chunks"])
+    def __init__(self, folder=DEFAULT_FOLDER, index=INDEX, encoder=None):
+        self.folder = folder
+        self.index = index
+        self.vecs = None
+        self.chunks = []
+
+        if encoder is not None:
+            self.emb = encoder
+        else:
+            try:
+                from sentence_transformers import SentenceTransformer
+                try:
+                    self.emb = SentenceTransformer(EMB_MODEL, local_files_only=True)
+                except Exception:
+                    self.emb = SentenceTransformer(EMB_MODEL)
+            except Exception as e:
+                print(f"[RAG] Warning: SentenceTransformer unavailable ({e}). Using lexical retriever fallback.")
+                self.emb = None
+
+        if os.path.exists(index):
+            try:
+                d = np.load(index, allow_pickle=True)
+                self.vecs, self.chunks = d["vecs"], list(d["chunks"])
+            except Exception as e:
+                print(f"[RAG] Warning: Could not load index ({e}). Loading raw texts.")
+                self.chunks = [c for t in load_texts(folder) for c in chunk(t)]
+        else:
+            if self.emb is not None:
+                try:
+                    self.build(folder, index)
+                except Exception as e:
+                    print(f"[RAG] Warning: Could not build index ({e}). Loading raw texts.")
+                    self.chunks = [c for t in load_texts(folder) for c in chunk(t)]
+            else:
+                self.chunks = [c for t in load_texts(folder) for c in chunk(t)]
 
     def build(self, folder, index):
         chunks = [c for t in load_texts(folder) for c in chunk(t)]
         if not chunks:
             raise SystemExit(f"No RBI text found in {folder}")
-        vecs = self.emb.encode(chunks, normalize_embeddings=True, show_progress_bar=True)
-        os.makedirs(os.path.dirname(index), exist_ok=True)
-        np.savez(index, vecs=vecs, chunks=np.array(chunks, dtype=object))
-        print(f"Indexed {len(chunks)} chunks")
+        if self.emb is not None:
+            vecs = self.emb.encode(chunks, normalize_embeddings=True, show_progress_bar=True)
+            os.makedirs(os.path.dirname(index), exist_ok=True)
+            np.savez(index, vecs=vecs, chunks=np.array(chunks, dtype=object))
+            self.vecs = vecs
+            self.chunks = chunks
+            print(f"Indexed {len(chunks)} chunks")
+        else:
+            self.chunks = chunks
 
     def search(self, query, k=3, min_score=0.25):
-        q = self.emb.encode([query], normalize_embeddings=True)[0]
-        scores = self.vecs @ q
-        top = np.argsort(-scores)[:k]
-        return [(float(scores[i]), self.chunks[i]) for i in top if scores[i] >= min_score]
+        if self.emb is not None and self.vecs is not None and len(self.chunks) > 0:
+            try:
+                q = self.emb.encode([query], normalize_embeddings=True)[0]
+                scores = self.vecs @ q
+                top = np.argsort(-scores)[:k]
+                results = [(float(scores[i]), self.chunks[i]) for i in top if scores[i] >= min_score]
+                if results:
+                    return results
+            except Exception as e:
+                print(f"[RAG] Warning: Dense search failed ({e}). Falling back to keyword search.")
+
+        # Robust lexical search fallback
+        if not self.chunks:
+            self.chunks = [c for t in load_texts(self.folder) for c in chunk(t)]
+
+        import re
+        q_words = [w for w in re.findall(r"\w+", query.lower()) if len(w) > 2 and w not in {
+            "what", "is", "the", "for", "and", "can", "how", "are", "with", "from", "that", "this"
+        }]
+        if not q_words or not self.chunks:
+            return []
+
+        scored = []
+        for c in self.chunks:
+            c_low = c.lower()
+            overlap = sum(1.0 for w in q_words if w in c_low)
+            if overlap > 0:
+                scored.append((overlap / len(q_words), c))
+
+        scored.sort(key=lambda x: x[0], reverse=True)
+        return [(score, c) for score, c in scored[:k] if score >= 0.2]
 
 
 if __name__ == "__main__":
