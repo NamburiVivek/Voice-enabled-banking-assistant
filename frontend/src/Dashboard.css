@@ -3792,6 +3792,459 @@ select.form-field-input option {
     gap: 1.25rem;
 }
 
+/* ── XAI Action Buttons & Nav Tabs ─────────────────────────────────────────── */
+.btn-xai-header-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(234, 88, 12, 0.25), rgba(249, 115, 22, 0.1));
+    border: 1px solid rgba(249, 115, 22, 0.4);
+    color: #fb923c;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-xai-header-action:hover {
+    background: linear-gradient(135deg, rgba(234, 88, 12, 0.4), rgba(249, 115, 22, 0.2));
+    border-color: #f97316;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(249, 115, 22, 0.25);
+}
+
+.btn-run-xai {
+    padding: 0.8rem 1.4rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ea580c, #f97316);
+    color: #ffffff;
+    border: none;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3);
+}
+
+.btn-run-xai:hover {
+    background: linear-gradient(135deg, #c2410c, #ea580c);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.45);
+}
+
+.btn-run-xai:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.metric-nav-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.metric-nav-pill-btn {
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #a1a1aa;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.metric-nav-pill-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.metric-nav-pill-btn.active {
+    background: rgba(249, 115, 22, 0.15);
+    border-color: #f97316;
+    color: #fb923c;
+    box-shadow: 0 0 12px rgba(249, 115, 22, 0.2);
+}
+
+/* ── Dedicated Algorithm 3 (XAI LIME) Suite Card ───────────────────────────── */
+.xai-suite-card {
+    background: linear-gradient(145deg, rgba(18, 18, 24, 0.95), rgba(12, 12, 16, 0.98));
+    border: 1px solid rgba(249, 115, 22, 0.25);
+    border-radius: 24px;
+    padding: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(249, 115, 22, 0.05);
+}
+
+.xai-suite-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ea580c, #f97316, #38bdf8, #4ade80);
+}
+
+.xai-suite-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+}
+
+.xai-badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.xai-badge {
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 0.73rem;
+    font-weight: 700;
+    font-family: var(--font-mono, monospace);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #d4d4d8;
+}
+
+.xai-badge.orange {
+    background: rgba(249, 115, 22, 0.15);
+    border-color: rgba(249, 115, 22, 0.35);
+    color: #fb923c;
+}
+
+.xai-badge.green {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.35);
+    color: #4ade80;
+}
+
+.xai-badge.cyan {
+    background: rgba(56, 189, 248, 0.15);
+    border-color: rgba(56, 189, 248, 0.35);
+    color: #38bdf8;
+}
+
+/* Mathematical Formulation Callout */
+.xai-math-box {
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1.2rem 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    align-items: center;
+}
+
+.xai-formula-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.xai-formula-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #a1a1aa;
+}
+
+.xai-formula-code {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fb923c;
+    background: rgba(249, 115, 22, 0.08);
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(249, 115, 22, 0.2);
+    display: inline-block;
+}
+
+/* Stepper Execution Grid for Algorithm 3 */
+.xai-stepper-box {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 1.25rem;
+}
+
+.xai-stepper-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.xai-step-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.6rem;
+}
+
+.xai-step-pill {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    font-size: 0.8rem;
+    color: #d4d4d8;
+    line-height: 1.4;
+}
+
+.xai-step-pill.highlight {
+    background: rgba(249, 115, 22, 0.1);
+    border-color: rgba(249, 115, 22, 0.25);
+    color: #ffffff;
+}
+
+.xai-step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(249, 115, 22, 0.25);
+    color: #fb923c;
+    font-size: 0.72rem;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+/* Interactive Word Attribution Visualizer */
+.xai-attribution-panel {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.xai-sentence-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+}
+
+.xai-token-chip {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    cursor: default;
+}
+
+.xai-token-chip:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.xai-token-chip.high_positive {
+    background: rgba(34, 197, 94, 0.2);
+    border: 1px solid rgba(34, 197, 94, 0.45);
+    color: #4ade80;
+}
+
+.xai-token-chip.positive {
+    background: rgba(56, 189, 248, 0.18);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    color: #38bdf8;
+}
+
+.xai-token-chip.neutral {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #a1a1aa;
+}
+
+.xai-token-chip.negative {
+    background: rgba(239, 68, 68, 0.18);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #f87171;
+}
+
+.xai-token-score-sub {
+    font-size: 0.68rem;
+    font-family: var(--font-mono, monospace);
+    font-weight: 600;
+    opacity: 0.9;
+    margin-top: 2px;
+}
+
+/* Horizontal Token Attribution Bar Chart */
+.xai-bars-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.xai-bar-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 75px;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.84rem;
+}
+
+.xai-bar-label {
+    font-family: var(--font-mono, monospace);
+    font-weight: 600;
+    color: #ffffff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.xai-bar-track {
+    height: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 9999px;
+    overflow: hidden;
+    position: relative;
+}
+
+.xai-bar-fill {
+    height: 100%;
+    border-radius: 9999px;
+    transition: width 0.4s ease;
+}
+
+.xai-bar-fill.positive {
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+}
+
+.xai-bar-fill.negative {
+    background: linear-gradient(90deg, #ef4444, #f87171);
+}
+
+.xai-bar-value {
+    font-family: var(--font-mono, monospace);
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-align: right;
+}
+
+.xai-bar-value.positive {
+    color: #4ade80;
+}
+
+.xai-bar-value.negative {
+    color: #f87171;
+}
+
+/* Synthesized Local Explanation Banner */
+.xai-explanation-hud {
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.12), rgba(0, 0, 0, 0.4));
+    border: 1px solid rgba(249, 115, 22, 0.25);
+    border-radius: 14px;
+    padding: 1.1rem 1.4rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.xai-explanation-text {
+    font-size: 0.88rem;
+    color: #f4f4f5;
+    line-height: 1.5;
+}
+
+/* ── Table V: Full Ablation Study Styling ──────────────────────────────────── */
+.ablation-study-card {
+    background: rgba(14, 14, 18, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 20px;
+    padding: 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.ablation-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.ablation-table th {
+    background: rgba(255, 255, 255, 0.03);
+    color: #a1a1aa;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ablation-table td {
+    padding: 0.95rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: #d4d4d8;
+    vertical-align: middle;
+}
+
+.ablation-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.ablation-table tbody tr.baseline-row {
+    background: rgba(34, 197, 94, 0.06);
+    border-left: 3px solid #22c55e;
+}
+
+.ablation-note-text {
+    font-size: 0.78rem;
+    color: #71717a;
+    font-style: italic;
+    line-height: 1.4;
+}
+
 /* ==========================================================================
    TEAM MEMBERS & CONTRIBUTOR VIEW
    ========================================================================== */

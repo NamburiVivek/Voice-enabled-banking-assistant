@@ -150,6 +150,8 @@ export const voiceApi = {
   },
   resetSession: (sessionId) =>
     api.post(`/voice/reset-session?session_id=${encodeURIComponent(sessionId)}`),
+  explain: (query) =>
+    api.post('/voice/xai/explain', { query }),
   biometrics: {
     enroll: (data) => api.post('/voice/biometrics/enroll', data),
     verify: (data) => api.post('/voice/biometrics/verify', data),

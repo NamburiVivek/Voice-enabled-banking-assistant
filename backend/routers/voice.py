@@ -361,3 +361,26 @@ async def delete_voiceprint(user_id: str):
     engine = get_biometrics_engine()
     success = engine.delete_voiceprint(user_id)
     return {"success": success, "message": "Voiceprint removed successfully."}
+
+
+# ── Algorithm 3: LIME-Based Explainable AI (XAI) Endpoint ────────────────────
+
+class XAIExplainRequest(BaseModel):
+    query: str = Field(..., min_length=1, description="Utterance text to explain using LIME")
+
+
+@router.post("/xai/explain", summary="Algorithm 3: LIME-Based Explainable AI for Intent Prediction")
+async def explain_intent_xai(body: XAIExplainRequest):
+    """
+    Executes Algorithm 3 (LIME-based Explainable AI) on utterance x.
+    Returns predicted intent i, sub-intent s, word contribution scores,
+    local explanation E, and perturbed query evaluations.
+    """
+    try:
+        from ai.xai import get_explainer
+        explainer = get_explainer()
+        return explainer.explain(body.query)
+    except Exception as e:
+        logger.error("[VoiceXAI] Explanation failed: %s", e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
