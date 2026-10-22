@@ -4,7 +4,7 @@
 [![React](https://img.shields.io/badge/Frontend-React%2019%20+%20Vite-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![PyTorch](https://img.shields.io/badge/AI-PyTorch%20%7C%20Transformers%20%7C%20PEFT-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![Supabase](https://img.shields.io/badge/Database-Supabase%20%28PostgreSQL%29-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
-[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](#license)
+
 
 **VoxaBank** is a state-of-the-art, voice-first intelligent banking platform. It combines automated Speech Recognition (STT), high-efficiency Natural Language Understanding (NLU), multi-turn dialog state tracking, and Retrieval-Augmented Generation (RAG) strictly grounded in official **Reserve Bank of India (RBI)** regulations.
 
